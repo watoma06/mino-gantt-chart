@@ -10,6 +10,7 @@
     --color-bg-light: #F2F2F2;
     --color-text: #303030;
     --color-text-light: #666666;
+    color-scheme: light; /* 全体のカラースキームを強制的にライトモードに設定 */
 }
 
 * {
@@ -23,6 +24,7 @@ body {
     background-color: var(--color-dark);
     color: var(--color-bg);
     line-height: 1.6;
+    color-scheme: light; /* ブラウザのダークモード設定を無効化 */
 }
 
 .dashboard-container {
@@ -107,29 +109,29 @@ body {
 
 /* ログアウトボタンのスタイル */
 .logout-button {
-    background: var(--color-accent) !important;
-    color: #FFFFFF !important;
-    border: none !important;
-    padding: 8px 16px !important;
-    border-radius: 6px !important;
-    cursor: pointer !important;
-    margin-left: 15px !important;
-    font-size: 14px !important;
-    transition: all 0.3s ease !important;
-    font-family: inherit !important;
+    background: var(--color-accent);
+    color: #FFFFFF;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-left: 15px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    font-family: inherit;
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
 .logout-button i {
-    color: #FFFFFF !important;
+    color: #FFFFFF;
 }
 
 .logout-button:hover {
-    transform: translateY(-2px) !important;
-    background: #e8822d !important;
-    box-shadow: 0 4px 8px rgba(255, 145, 77, 0.3) !important;
+    transform: translateY(-2px);
+    background: #e8822d;
+    box-shadow: 0 4px 8px rgba(255, 145, 77, 0.3);
 }
 
 .user-info i {
@@ -211,11 +213,11 @@ body {
     box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     border: 1px solid #e1e5e9;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    color: var(--color-dark) !important; /* 明示的に文字色を設定 */
+    color: var(--color-dark);
 }
 
 .card h3, .card p, .card span, .card small {
-    color: var(--color-dark) !important; /* すべての子要素の文字色を明示 */
+    color: var(--color-dark);
 }
 
 .card:hover {
@@ -328,13 +330,13 @@ body {
 .progress-details h3 {
     font-size: 1.3rem;
     margin-bottom: 1.5rem;
-    color: var(--color-dark) !important; /* 文字色を明示的に設定 */
+    color: var(--color-dark);
     border-bottom: 2px solid #667eea;
     padding-bottom: 0.5rem;
 }
 
 .progress-details * {
-    color: var(--color-dark) !important; /* すべての子要素の文字色を強制設定 */
+    color: var(--color-dark);
 }
 
 .task-list {
@@ -376,11 +378,11 @@ body {
 .task-info h4 {
     font-size: 1.1rem;
     margin-bottom: 0.25rem;
-    color: var(--color-dark) !important; /* 文字色を明示的に設定 */
+    color: var(--color-dark);
 }
 
 .task-info p {
-    color: var(--color-text-light) !important; /* 文字色を明示的に設定 */
+    color: var(--color-text-light);
     font-size: 0.9rem;
 }
 
@@ -670,7 +672,7 @@ body {
 }
 
 .gantt-chart-section h3 {
-    color: var(--color-dark) !important; /* 文字色を明示的に設定 */
+    color: var(--color-dark);
     margin-bottom: 1.5rem;
     font-size: 1.4rem;
     display: flex;
@@ -687,10 +689,11 @@ body {
     overflow-x: auto;
     border: 1px solid #e1e5e9;
     border-radius: 8px;
-    background: #ffffff !important; /* 強制的に白背景 */
-    color: var(--color-dark) !important; /* 強制的にダークテキスト */
+    background: #ffffff;
+    color: var(--color-dark);
     min-height: 400px;
-    position: relative; /* 絶対位置の基準とする */
+    position: relative;
+    color-scheme: light; /* ガントチャートエリアでのダークモード無効化 */
 }
 
 /* ガントチャートタイムライン */
@@ -698,21 +701,21 @@ body {
     display: grid;
     min-width: 800px;
     position: relative;
-    background: #ffffff !important; /* 強制的に白背景 */
+    background: #ffffff;
 }
 
 .gantt-header {
     display: grid;
     grid-template-columns: 200px 1fr;
-    background: #ffffff !important; /* 強制的に白背景 */
+    background: #ffffff;
     border-bottom: 2px solid #e1e5e9;
     font-weight: 600;
-    color: var(--color-dark) !important; /* 強制的にダークテキスト */
+    color: var(--color-dark);
 }
 
 .gantt-tasks-header {
-    color: var(--color-dark) !important; /* ヘッダータスク名の文字色を強制的に設定 */
-    background: #ffffff !important; /* 強制的に白背景 */
+    color: var(--color-dark);
+    background: #ffffff;
 }
 
 .gantt-tasks-header {
@@ -725,7 +728,7 @@ body {
 .gantt-dates-header {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
-    background: #ffffff !important; /* 強制的に白背景 */
+    background: #ffffff;
 }
 
 .gantt-date-cell {
@@ -736,17 +739,17 @@ body {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    background: #ffffff !important; /* 強制的に白背景 */
+    background: #ffffff;
 }
 
 .gantt-date-cell .week-number {
     font-weight: 600;
-    color: var(--color-dark) !important; /* 強制的にダークテキスト */
+    color: var(--color-dark);
 }
 
 .gantt-date-cell .week-dates {
     font-size: 0.75rem;
-    color: var(--color-text-light) !important; /* 強制的に読みやすい色 */
+    color: var(--color-text-light);
     font-weight: normal;
 }
 
@@ -756,7 +759,7 @@ body {
     grid-template-columns: 200px 1fr;
     border-bottom: 1px solid #e1e5e9;
     min-height: 60px;
-    background: #ffffff !important; /* 強制的に白背景 */
+    background: #ffffff;
 }
 
 .gantt-task-name {
@@ -765,15 +768,15 @@ body {
     display: flex;
     align-items: center;
     font-weight: 500;
-    background: #ffffff !important; /* 強制的に白背景 */
-    color: var(--color-dark) !important; /* 強制的にダークテキスト */
+    background: #ffffff;
+    color: var(--color-dark);
 }
 
 .gantt-task-timeline {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     position: relative;
-    background: #ffffff !important; /* 強制的に白背景 */
+    background: #ffffff;
 }
 
 .gantt-task-timeline > div {
@@ -785,7 +788,7 @@ body {
     border-right: 1px solid #e1e5e9;
     min-height: 60px;
     position: relative;
-    background: #ffffff !important; /* 強制的に白背景 */
+    background: #ffffff;
 }
 
 /* ガントチャートバー */
@@ -1211,32 +1214,31 @@ body {
         min-width: auto;
         flex-shrink: 0; /* ロゴが縮小されないように */
     }
-    
-    .header-logo .logo-image {
-        height: 60px !important; /* 1.5倍のサイズ */
-        max-width: 200px !important;
+     .header-logo .logo-image {
+        height: 60px;
+        max-width: 200px;
     }
-    
+
     .header-content h1 {
         font-size: 1.4rem;
         margin-bottom: 0.25rem;
         color: var(--color-text);
     }
-    
+
     .header-content h1 i {
         color: var(--color-primary);
     }
-    
+
     .header-actions {
         display: flex;
         align-items: center;
         flex-shrink: 0; /* ボタンが縮小されないように */
     }
-    
+
     .logout-button {
-        font-size: 12px !important;
-        padding: 6px 12px !important;
-        margin-left: 0 !important;
+        font-size: 12px;
+        padding: 6px 12px;
+        margin-left: 0;
         cursor: pointer;
         touch-action: manipulation; /* タッチ操作最適化 */
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1); /* タップハイライト */
@@ -1248,15 +1250,15 @@ body {
     }
     
     .logout-button {
-        padding: 8px !important;
-        border-radius: 50% !important;
-        width: 44px !important; /* Apple/Google推奨の最小タッチサイズ */
-        height: 44px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        min-width: 44px !important;
-        min-height: 44px !important;
+        padding: 8px;
+        border-radius: 50%;
+        width: 44px; /* Apple/Google推奨の最小タッチサイズ */
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 44px;
+        min-height: 44px;
     }
     
     /* プロジェクトタブの調整 */
@@ -1494,11 +1496,11 @@ body {
     
     /* ヘッダーの配色は継承されるため、フォントサイズなどの調整のみ */
     .header-logo .logo-image {
-        height: 60px !important; /* 1.5倍のサイズ */
-        max-width: 200px !important;
-        border: none !important;
-        padding: 0 !important;
-        background: none !important;
+        height: 60px; /* 1.5倍のサイズ */
+        max-width: 200px;
+        border: none;
+        padding: 0;
+        background: none;
     }
     
     .header-content h1 {
@@ -1510,8 +1512,8 @@ body {
     }
     
     .logout-button {
-        font-size: 11px !important;
-        padding: 5px 10px !important;
+        font-size: 11px;
+        padding: 5px 10px;
     }
     
     .tab-button {
@@ -1612,9 +1614,9 @@ body {
     }
     
     .logout-button {
-        font-size: 10px !important;
-        padding: 4px 8px !important;
-        margin-left: 0 !important;
+        font-size: 10px;
+        padding: 4px 8px;
+        margin-left: 0;
     }
     
     /* タブボタンの最小化 */
@@ -1816,8 +1818,8 @@ body {
     }
     
     .logout-button {
-        min-height: 36px !important;
-        touch-action: manipulation !important;
+        min-height: 36px;
+        touch-action: manipulation;
     }
     
     /* ガントチャートバーのタッチ対応 */
@@ -1901,7 +1903,7 @@ body {
 /* モバイル表示時のロゴとボタン配置 */
 @media (max-width: 768px) {
     .header-content {
-        justify-content: space-between !important;
+        justify-content: space-between;
         align-items: center;
         width: 100%;
         padding: 0 1rem;
@@ -1921,53 +1923,53 @@ body {
     }
 }
 
-/* ガントチャート全体の強制スタイル（ダークモード対策） */
-.gantt-chart-container,
-.gantt-chart-container *,
-.gantt-timeline,
-.gantt-timeline *,
-.gantt-header,
-.gantt-header *,
-.gantt-row,
-.gantt-row *,
-.gantt-task-name,
-.gantt-task-timeline,
-.gantt-cell,
-.gantt-date-cell,
-.gantt-dates-header,
-.gantt-tasks-header {
-    background-color: #ffffff !important;
-    color: var(--color-dark) !important;
+/* ガントチャート全体の強制スタイル（ブラウザダークモード対策） */
+.dashboard-container .gantt-chart-container,
+.dashboard-container .gantt-chart-container *,
+.dashboard-container .gantt-timeline,
+.dashboard-container .gantt-timeline *,
+.dashboard-container .gantt-header,
+.dashboard-container .gantt-header *,
+.dashboard-container .gantt-row,
+.dashboard-container .gantt-row *,
+.dashboard-container .gantt-task-name,
+.dashboard-container .gantt-task-timeline,
+.dashboard-container .gantt-cell,
+.dashboard-container .gantt-date-cell,
+.dashboard-container .gantt-dates-header,
+.dashboard-container .gantt-tasks-header {
+    background-color: #ffffff;
+    color: var(--color-dark);
 }
 
 /* ガントチャートバーは例外（色付きのまま） */
-.gantt-bar {
-    background-color: var(--color-primary) !important;
-    color: #ffffff !important;
+.dashboard-container .gantt-bar {
+    background-color: var(--color-primary);
+    color: #ffffff;
 }
 
-.gantt-bar.in-progress {
-    background-color: var(--color-accent) !important;
-    color: #ffffff !important;
+.dashboard-container .gantt-bar.in-progress {
+    background-color: var(--color-accent);
+    color: #ffffff;
 }
 
-.gantt-bar.waiting {
-    background-color: var(--color-accent) !important;
+.dashboard-container .gantt-bar.waiting {
+    background-color: var(--color-accent);
     opacity: 0.6;
-    color: #ffffff !important;
+    color: #ffffff;
 }
 
-.gantt-bar.completed {
-    background-color: var(--color-primary) !important;
-    color: #ffffff !important;
+.dashboard-container .gantt-bar.completed {
+    background-color: var(--color-primary);
+    color: #ffffff;
 }
 
-.gantt-bar.milestone {
-    background-color: var(--color-accent) !important;
-    color: #ffffff !important;
+.dashboard-container .gantt-bar.milestone {
+    background-color: var(--color-accent);
+    color: #ffffff;
 }
 
-.gantt-bar.blocked {
-    background-color: #303030 !important;
-    color: #ffffff !important;
+.dashboard-container .gantt-bar.blocked {
+    background-color: #303030;
+    color: #ffffff;
 }
