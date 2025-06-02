@@ -1033,6 +1033,178 @@ body {
 
 /* モバイル対応 */
 @media (max-width: 768px) {
+    /* 基本的な文字サイズ調整 */
+    body {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+    
+    /* ヘッダーの調整 */
+    .dashboard-header {
+        padding: 0.75rem 0;
+    }
+    
+    .header-content {
+        padding: 0 1rem;
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+    
+    .header-content h1 {
+        font-size: 1.4rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .user-info {
+        font-size: 0.9rem;
+        justify-content: center;
+    }
+    
+    .logout-button {
+        font-size: 12px !important;
+        padding: 6px 12px !important;
+        margin-left: 10px !important;
+    }
+    
+    /* プロジェクトタブの調整 */
+    .project-tabs {
+        padding: 0 1rem;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    .tab-button {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+        min-width: max-content;
+    }
+    
+    /* メインコンテンツの調整 */
+    .dashboard-main {
+        padding: 1rem;
+    }
+    
+    /* プロジェクト概要の調整 */
+    .project-overview h2 {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+    }
+    
+    /* カードレイアウトの調整 */
+    .overview-cards {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .card {
+        padding: 1rem;
+    }
+    
+    .card-content h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .card-content p {
+        font-size: 0.9rem;
+    }
+    
+    /* プログレスサークルの調整 */
+    .progress-circle {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .progress-circle::before {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .progress-text {
+        font-size: 1rem;
+    }
+    
+    /* アクションアイテムの調整 */
+    .action-item, .milestone-item {
+        padding: 0.6rem;
+    }
+    
+    .action-item span, .milestone-item span {
+        font-size: 0.9rem;
+    }
+    
+    .action-item small, .milestone-item small {
+        font-size: 0.8rem;
+    }
+    
+    /* 進捗詳細の調整 */
+    .progress-details {
+        padding: 1rem;
+    }
+    
+    .progress-details h3 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .task-item {
+        padding: 0.75rem;
+        gap: 0.75rem;
+    }
+    
+    .task-info h4 {
+        font-size: 1rem;
+        margin-bottom: 0.2rem;
+    }
+    
+    .task-info p {
+        font-size: 0.85rem;
+    }
+    
+    /* ヒヤリングシートセクションの調整 */
+    .hearing-sheet-section {
+        padding: 1rem;
+        margin: 1.5rem 0;
+    }
+    
+    .hearing-sheet-section h3 {
+        font-size: 1.1rem;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+    }
+    
+    .hearing-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+    
+    .hearing-item label {
+        font-size: 0.85rem;
+    }
+    
+    .hearing-item span {
+        padding: 0.4rem;
+        font-size: 0.9rem;
+    }
+    
+    /* ボタンの調整 */
+    .action-buttons {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .btn-primary, .btn-secondary, .btn-info {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    /* 通知の調整 */
     .notification-container {
         top: 1rem;
         right: 1rem;
@@ -1041,51 +1213,442 @@ body {
     
     .notification {
         max-width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    /* ガントチャートの調整 */
+    .gantt-chart-section {
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .gantt-chart-section h3 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
     }
     
     .gantt-dates-header {
-        grid-template-columns: repeat(8, 1fr);
+        grid-template-columns: repeat(6, 1fr);
     }
     
     .gantt-task-timeline {
-        grid-template-columns: repeat(8, 1fr);
+        grid-template-columns: repeat(6, 1fr);
     }
     
     .gantt-header {
-        grid-template-columns: 150px 1fr;
+        grid-template-columns: 120px 1fr;
     }
     
     .gantt-row {
-        grid-template-columns: 150px 1fr;
+        grid-template-columns: 120px 1fr;
     }
     
     .gantt-task-name {
-        font-size: 0.9rem;
-        padding: 0.75rem;
+        font-size: 0.8rem;
+        padding: 0.5rem;
     }
     
     .gantt-date-cell {
-        font-size: 0.8rem;
-        padding: 0.75rem 0.25rem;
-        gap: 0.15rem;
+        font-size: 0.7rem;
+        padding: 0.5rem 0.2rem;
+        gap: 0.1rem;
     }
     
     .gantt-date-cell .week-number {
-        font-size: 0.8rem;
+        font-size: 0.7rem;
     }
     
     .gantt-date-cell .week-dates {
-        font-size: 0.65rem;
+        font-size: 0.6rem;
     }
     
     .gantt-current-date-line .current-date-marker {
-        font-size: 0.65rem;
+        font-size: 0.6rem;
         padding: 2px 4px;
-        left: -15px;
+        left: -12px;
     }
     
     .gantt-bar {
+        font-size: 0.6rem;
+        margin: 4px 1px;
+        min-height: 20px;
+    }
+    
+    /* モーダルの調整 */
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+    }
+    
+    .modal-header {
+        padding: 1rem;
+    }
+    
+    .modal-header h3 {
+        font-size: 1.1rem;
+    }
+    
+    .modal-body {
+        padding: 1rem;
+    }
+}
+
+/* より小さなスマホ画面用 (480px以下) */
+@media (max-width: 480px) {
+    body {
+        font-size: 13px;
+    }
+    
+    .header-content h1 {
+        font-size: 1.2rem;
+    }
+    
+    .user-info {
+        font-size: 0.8rem;
+    }
+    
+    .logout-button {
+        font-size: 11px !important;
+        padding: 5px 10px !important;
+    }
+    
+    .tab-button {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.8rem;
+    }
+    
+    .dashboard-main {
+        padding: 0.75rem;
+    }
+    
+    .project-overview h2 {
+        font-size: 1.1rem;
+    }
+    
+    .card {
+        padding: 0.75rem;
+    }
+    
+    .card-content h3 {
+        font-size: 1rem;
+    }
+    
+    .gantt-header {
+        grid-template-columns: 100px 1fr;
+    }
+    
+    .gantt-row {
+        grid-template-columns: 100px 1fr;
+    }
+    
+    .gantt-task-name {
         font-size: 0.7rem;
-        margin: 6px 2px;
+        padding: 0.4rem;
+    }
+    
+    .gantt-dates-header {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .gantt-task-timeline {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .gantt-date-cell {
+        font-size: 0.65rem;
+        padding: 0.4rem 0.1rem;
+    }
+    
+    .gantt-bar {
+        font-size: 0.55rem;
+        margin: 3px 1px;
+        min-height: 18px;
+    }
+    
+    .hearing-grid {
+        gap: 0.5rem;
+    }
+    
+    .hearing-item span {
+        padding: 0.3rem;
+        font-size: 0.85rem;
+    }
+    
+    .btn-primary, .btn-secondary, .btn-info {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* 極小スマホ画面用 (360px以下) */
+@media (max-width: 360px) {
+    body {
+        font-size: 12px;
+    }
+    
+    /* ヘッダーのさらなる調整 */
+    .header-content h1 {
+        font-size: 1.1rem;
+    }
+    
+    .header-content h1 i {
+        margin-right: 0.25rem;
+    }
+    
+    .user-info {
+        font-size: 0.75rem;
+    }
+    
+    .logout-button {
+        font-size: 10px !important;
+        padding: 4px 8px !important;
+        margin-left: 8px !important;
+    }
+    
+    /* タブボタンの最小化 */
+    .tab-button {
+        padding: 0.5rem 0.6rem;
+        font-size: 0.75rem;
+    }
+    
+    .tab-button i {
+        display: none; /* アイコンを非表示にしてスペース確保 */
+    }
+    
+    /* メインコンテンツの最小化 */
+    .dashboard-main {
+        padding: 0.5rem;
+    }
+    
+    .project-overview h2 {
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    /* カードの最小化 */
+    .card {
+        padding: 0.5rem;
+    }
+    
+    .card-content h3 {
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .card-content p {
+        font-size: 0.8rem;
+    }
+    
+    /* プログレスサークルの最小化 */
+    .progress-circle {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .progress-circle::before {
+        width: 38px;
+        height: 38px;
+    }
+    
+    .progress-text {
+        font-size: 0.9rem;
+    }
+    
+    /* ガントチャートの極小対応 */
+    .gantt-header {
+        grid-template-columns: 80px 1fr;
+    }
+    
+    .gantt-row {
+        grid-template-columns: 80px 1fr;
+    }
+    
+    .gantt-task-name {
+        font-size: 0.6rem;
+        padding: 0.3rem;
+        word-break: break-all;
+    }
+    
+    .gantt-dates-header {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .gantt-task-timeline {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .gantt-date-cell {
+        font-size: 0.6rem;
+        padding: 0.3rem 0.05rem;
+    }
+    
+    .gantt-bar {
+        font-size: 0.5rem;
+        margin: 2px 0.5px;
+        min-height: 16px;
+    }
+    
+    .gantt-current-date-line .current-date-marker {
+        font-size: 0.55rem;
+        padding: 1px 3px;
+        left: -10px;
+    }
+    
+    /* ボタンの最小化 */
+    .btn-primary, .btn-secondary, .btn-info {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+    }
+    
+    /* ヒヤリングシートの最小化 */
+    .hearing-sheet-section {
+        padding: 0.75rem;
+    }
+    
+    .hearing-sheet-section h3 {
+        font-size: 1rem;
+    }
+    
+    .hearing-item label {
+        font-size: 0.8rem;
+    }
+    
+    .hearing-item span {
+        padding: 0.25rem;
+        font-size: 0.8rem;
+    }
+    
+    /* モーダルの最小化 */
+    .modal-content {
+        width: 98%;
+        margin: 5% auto;
+    }
+    
+    .modal-header {
+        padding: 0.75rem;
+    }
+    
+    .modal-header h3 {
+        font-size: 1rem;
+    }
+    
+    .modal-body {
+        padding: 0.75rem;
+    }
+}
+
+/* 横向きスマホ対応 */
+@media (max-width: 768px) and (orientation: landscape) {
+    .header-content {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .header-content h1 {
+        font-size: 1.2rem;
+    }
+    
+    .project-tabs {
+        display: flex;
+        justify-content: center;
+    }
+    
+    .gantt-dates-header {
+        grid-template-columns: repeat(12, 1fr);
+    }
+    
+    .gantt-task-timeline {
+        grid-template-columns: repeat(12, 1fr);
+    }
+    
+    .gantt-header {
+        grid-template-columns: 120px 1fr;
+    }
+    
+    .gantt-row {
+        grid-template-columns: 120px 1fr;
+    }
+}
+
+/* タッチデバイス対応 */
+@media (pointer: coarse) {
+    /* タッチしやすいボタンサイズ */
+    .tab-button {
+        min-height: 44px; /* Appleの推奨最小サイズ */
+        touch-action: manipulation; /* ダブルタップズーム無効化 */
+    }
+    
+    .btn-primary, .btn-secondary, .btn-info {
+        min-height: 44px;
+        touch-action: manipulation;
+    }
+    
+    .logout-button {
+        min-height: 36px !important;
+        touch-action: manipulation !important;
+    }
+    
+    /* ガントチャートバーのタッチ対応 */
+    .gantt-bar {
+        min-height: 32px;
+        cursor: pointer;
+        touch-action: manipulation;
+    }
+    
+    /* スクロール可能エリアの改善 */
+    .gantt-chart-container {
+        -webkit-overflow-scrolling: touch; /* iOSのスムーズスクロール */
+        scroll-behavior: smooth;
+    }
+    
+    .project-tabs {
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+    }
+    
+    /* タップハイライトの調整 */
+    .tab-button, .btn-primary, .btn-secondary, .btn-info, .logout-button {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* ダークモードの基本対応 */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #1a1a1a;
+        color: #e0e0e0;
+    }
+    
+    .card {
+        background: #2d2d2d;
+        border-color: #404040;
+        color: #e0e0e0;
+    }
+    
+    .gantt-chart-container {
+        background: #2d2d2d;
+        border-color: #404040;
+    }
+    
+    .gantt-header {
+        background: #363636;
+    }
+    
+    .gantt-row {
+        border-color: #404040;
+    }
+    
+    .gantt-task-name {
+        background: #2d2d2d;
+        color: #e0e0e0;
+    }
+    
+    .gantt-task-timeline {
+        background: #2d2d2d;
+    }
+    
+    .gantt-cell {
+        border-color: #404040;
     }
 }
