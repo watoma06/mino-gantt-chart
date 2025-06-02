@@ -259,25 +259,25 @@ function getProjectTasks(projectType) {
     
     if (projectType === 'boxing') {
         return [
-            { name: 'ヒアリングシート提出', status: 'pending', startWeek: 1, duration: 1 },
-            { name: '要件定義・企画', status: 'pending', startWeek: 2, duration: 2 },
-            { name: 'デザイン設計', status: 'pending', startWeek: 4, duration: 3 },
-            { name: 'コーディング・開発', status: 'pending', startWeek: 7, duration: 4 },
-            { name: '機能実装・テスト', status: 'pending', startWeek: 11, duration: 2 },
-            { name: '最終調整', status: 'pending', startWeek: 13, duration: 1 },
-            { name: '納品・公開', status: 'pending', startWeek: 14, duration: 1 },
-            { name: '保守・運用開始', status: 'milestone', startWeek: 15, duration: 1 }
+            { name: 'ヒアリングシート提出', status: 'waiting', startWeek: 1, duration: 1, dependency: null },
+            { name: '要件定義・企画', status: 'blocked', startWeek: 2, duration: 2, dependency: 'ヒアリングシート提出' },
+            { name: 'デザイン設計', status: 'blocked', startWeek: 4, duration: 3, dependency: '要件定義・企画' },
+            { name: 'コーディング・開発', status: 'blocked', startWeek: 7, duration: 4, dependency: 'デザイン設計' },
+            { name: '機能実装・テスト', status: 'blocked', startWeek: 11, duration: 2, dependency: 'コーディング・開発' },
+            { name: '最終調整', status: 'blocked', startWeek: 13, duration: 1, dependency: '機能実装・テスト' },
+            { name: '納品・公開', status: 'blocked', startWeek: 14, duration: 1, dependency: '最終調整' },
+            { name: '保守・運用開始', status: 'milestone', startWeek: 15, duration: 1, dependency: '納品・公開' }
         ];
     } else if (projectType === 'architecture') {
         return [
-            { name: 'ヒアリングシート受領', status: 'completed', startWeek: 1, duration: 1 },
-            { name: '要件詰め・提案書作成', status: 'in-progress', startWeek: 2, duration: 2 },
-            { name: 'デザイン設計', status: 'pending', startWeek: 4, duration: 3 },
-            { name: 'コーディング・開発', status: 'pending', startWeek: 7, duration: 4 },
-            { name: '機能実装・テスト', status: 'pending', startWeek: 11, duration: 2 },
-            { name: '最終調整', status: 'pending', startWeek: 13, duration: 1 },
-            { name: '納品・公開', status: 'pending', startWeek: 14, duration: 1 },
-            { name: '保守・運用開始', status: 'milestone', startWeek: 15, duration: 1 }
+            { name: 'ヒアリングシート受領', status: 'completed', startWeek: 1, duration: 1, dependency: null },
+            { name: '要件詰め・提案書作成', status: 'in-progress', startWeek: 2, duration: 2, dependency: 'ヒアリングシート受領' },
+            { name: 'デザイン設計', status: 'ready', startWeek: 4, duration: 3, dependency: '要件詰め・提案書作成' },
+            { name: 'コーディング・開発', status: 'blocked', startWeek: 7, duration: 4, dependency: 'デザイン設計' },
+            { name: '機能実装・テスト', status: 'blocked', startWeek: 11, duration: 2, dependency: 'コーディング・開発' },
+            { name: '最終調整', status: 'blocked', startWeek: 13, duration: 1, dependency: '機能実装・テスト' },
+            { name: '納品・公開', status: 'blocked', startWeek: 14, duration: 1, dependency: '最終調整' },
+            { name: '保守・運用開始', status: 'milestone', startWeek: 15, duration: 1, dependency: '納品・公開' }
         ];
     }
     return [];
@@ -329,16 +329,21 @@ function createGanttHTML(tasks, projectType) {
                         if (isTaskWeek) {
                             const barClass = task.status === 'milestone' ? 'milestone' : task.status;
                             const progress = task.status === 'in-progress' ? '60%' : '100%';
+                            const statusColor = getStatusColor(task.status);
+                            const statusIcon = getStatusIcon(task.status);
                             
                             return `
                                 <div class="gantt-cell">
-                                    <div class="gantt-bar ${barClass}" data-task="${task.name}" style="animation-delay: ${index * 0.1}s;">
-                                        ${task.status === 'milestone' ? '🎯' : task.name.substring(0, 6)}
+                                    <div class="gantt-bar ${barClass}" 
+                                         data-task="${task.name}" 
+                                         style="animation-delay: ${index * 0.1}s; background-color: ${statusColor};">
+                                        ${statusIcon} ${task.name.substring(0, 6)}
                                         <div class="gantt-task-details">
                                             ${task.name}<br>
                                             状況: ${getStatusText(task.status)}<br>
                                             期間: ${task.duration}週間<br>
-                                            日程: ${week.dateRange}
+                                            日程: ${week.dateRange}<br>
+                                            ${task.dependency ? `依存: ${task.dependency}` : ''}
                                         </div>
                                         ${task.status === 'in-progress' ? `<div class="gantt-progress-indicator" style="width: ${progress};"></div>` : ''}
                                     </div>
@@ -369,11 +374,39 @@ function createGanttHTML(tasks, projectType) {
 // ステータステキストを取得
 function getStatusText(status) {
     switch(status) {
-        case 'completed': return '完了';
-        case 'in-progress': return '進行中';
-        case 'pending': return '待機中';
-        case 'milestone': return 'マイルストーン';
-        default: return '未定';
+        case 'completed': return '✅ 完了';
+        case 'in-progress': return '🔄 進行中';
+        case 'ready': return '📋 開始可能';
+        case 'waiting': return '⏳ 待機中';
+        case 'blocked': return '🚫 ブロック中';
+        case 'milestone': return '🎯 マイルストーン';
+        default: return '❓ 未定';
+    }
+}
+
+// ステータスの色を取得
+function getStatusColor(status) {
+    switch(status) {
+        case 'completed': return '#28a745'; // 緑色 - 完了
+        case 'in-progress': return '#ffc107'; // 黄色 - 進行中
+        case 'ready': return '#17a2b8'; // 青色 - 開始可能
+        case 'waiting': return '#fd7e14'; // オレンジ色 - 待機中
+        case 'blocked': return '#6c757d'; // グレー色 - ブロック中
+        case 'milestone': return '#dc3545'; // 赤色 - マイルストーン
+        default: return '#e9ecef'; // 薄いグレー - 未定
+    }
+}
+
+// ステータスアイコンを取得
+function getStatusIcon(status) {
+    switch(status) {
+        case 'completed': return '✅';
+        case 'in-progress': return '🔄';
+        case 'ready': return '📋';
+        case 'waiting': return '⏳';
+        case 'blocked': return '🚫';
+        case 'milestone': return '🎯';
+        default: return '❓';
     }
 }
 

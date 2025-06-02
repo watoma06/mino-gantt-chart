@@ -714,9 +714,11 @@ body {
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
+/* ステータス別のガントチャートバー色分け */
 .gantt-bar.completed {
     background: linear-gradient(135deg, #28a745, #20c997);
     animation: slideInCompleted 0.8s ease-out;
+    border-left: 4px solid #155724;
 }
 
 .gantt-bar.in-progress {
@@ -724,17 +726,33 @@ body {
     animation: slideInProgress 0.8s ease-out;
     position: relative;
     overflow: hidden;
+    border-left: 4px solid #856404;
 }
 
-.gantt-bar.pending {
+.gantt-bar.ready {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+    animation: slideInReady 0.8s ease-out;
+    border-left: 4px solid #0c5460;
+}
+
+.gantt-bar.waiting {
+    background: linear-gradient(135deg, #fd7e14, #e55a00);
+    animation: slideInWaiting 0.8s ease-out;
+    border-left: 4px solid #b84400;
+}
+
+.gantt-bar.blocked {
     background: linear-gradient(135deg, #6c757d, #495057);
-    animation: slideInPending 0.8s ease-out;
+    animation: slideInBlocked 0.8s ease-out;
+    border-left: 4px solid #343a40;
+    opacity: 0.7;
 }
 
 .gantt-bar.milestone {
     background: linear-gradient(135deg, #dc3545, #fd7e14);
     animation: pulseMilestone 2s infinite;
     font-size: 1.2rem;
+    border-left: 4px solid #721c24;
 }
 
 /* ガントチャート進捗インジケーター */
@@ -870,6 +888,41 @@ body {
     to {
         transform: translateY(0);
         opacity: 1;
+    }
+}
+
+@keyframes slideInReady {
+    from {
+        transform: translateX(-50%) scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInWaiting {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInBlocked {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+        filter: grayscale(100%);
+    }
+    to {
+        transform: translateX(0);
+        opacity: 0.7;
+        filter: grayscale(50%);
     }
 }
 
