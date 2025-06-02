@@ -43,7 +43,7 @@ function addLogoutFunctionality() {
     if (userInfo) {
         // ログアウトボタンを追加
         const logoutButton = document.createElement('button');
-        logoutButton.innerHTML = '<i class="fas fa-sign-out-alt"></i> ログアウト';
+        logoutButton.innerHTML = '<i class="fas fa-sign-out-alt"></i> Logout';
         logoutButton.className = 'logout-button';
         logoutButton.style.cssText = `
             background: linear-gradient(135deg, #dc3545, #c82333);
@@ -69,7 +69,7 @@ function addLogoutFunctionality() {
         
         logoutButton.addEventListener('click', function() {
             // 確認ダイアログ
-            if (confirm('ログアウトしますか？')) {
+            if (confirm('Are you sure you want to logout?')) {
                 // セッション情報をクリア
                 sessionStorage.removeItem('lexia_authenticated');
                 sessionStorage.removeItem('auth_timestamp');
@@ -243,9 +243,16 @@ function generateGanttChart(projectType) {
     if (!container) return;
 
     const tasks = getProjectTasks(projectType);
+    
+    // 凡例を追加
+    const legend = createStatusLegend();
+    
     const ganttHTML = createGanttHTML(tasks, projectType);
     
-    container.innerHTML = ganttHTML;
+    // 凡例とガントチャートを組み合わせ
+    container.innerHTML = '';
+    container.appendChild(legend);
+    container.insertAdjacentHTML('beforeend', ganttHTML);
     
     // アニメーション適用
     setTimeout(() => {
@@ -422,6 +429,38 @@ function animateGanttBars(projectType) {
             bar.style.transform = 'scale(1)';
         }, index * 100);
     });
+}
+
+// ステータス凡例を生成する関数
+function createStatusLegend() {
+    const legend = document.createElement('div');
+    legend.className = 'gantt-status-legend';
+    
+    const statusTypes = [
+        { key: 'completed', label: 'Completed', color: '#367410' },
+        { key: 'in-progress', label: 'In Progress', color: '#FF914D' },
+        { key: 'ready', label: 'Ready to Start', color: '#367410' },
+        { key: 'waiting', label: 'Waiting', color: '#FF914D' },
+        { key: 'blocked', label: 'Blocked', color: '#303030' },
+        { key: 'milestone', label: 'Milestone', color: '#FF914D' }
+    ];
+    
+    statusTypes.forEach(status => {
+        const item = document.createElement('div');
+        item.className = 'legend-item';
+        
+        const colorBox = document.createElement('div');
+        colorBox.className = `legend-color ${status.key}`;
+        
+        const label = document.createElement('span');
+        label.textContent = status.label;
+        
+        item.appendChild(colorBox);
+        item.appendChild(label);
+        legend.appendChild(item);
+    });
+    
+    return legend;
 }
 
 // =================

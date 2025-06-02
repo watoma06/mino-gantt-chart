@@ -7,8 +7,8 @@
 
 body {
     font-family: 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', 'Meiryo', 'メイリオ', sans-serif;
-    background-color: #f5f7fa;
-    color: #333;
+    background-color: #303030;
+    color: #FFFFFF;
     line-height: 1.6;
 }
 
@@ -18,8 +18,8 @@ body {
 
 /* ヘッダー */
 .dashboard-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: #367410;
+    color: #FFFFFF;
     padding: 1rem 0;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
@@ -40,7 +40,7 @@ body {
 
 .header-content h1 i {
     margin-right: 0.5rem;
-    color: #ffd700;
+    color: #FF914D;
 }
 
 .user-info {
@@ -52,8 +52,8 @@ body {
 
 /* ログアウトボタンのスタイル */
 .logout-button {
-    background: linear-gradient(135deg, #dc3545, #c82333) !important;
-    color: white !important;
+    background: #FF914D !important;
+    color: #FFFFFF !important;
     border: none !important;
     padding: 8px 16px !important;
     border-radius: 6px !important;
@@ -66,7 +66,8 @@ body {
 
 .logout-button:hover {
     transform: translateY(-2px) !important;
-    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3) !important;
+    background: #e8822d !important;
+    box-shadow: 0 4px 8px rgba(255, 145, 77, 0.3) !important;
 }
 
 .user-info i {
@@ -75,7 +76,7 @@ body {
 
 /* プロジェクトタブ */
 .project-tabs {
-    background: white;
+    background: #FFFFFF;
     border-bottom: 1px solid #e1e5e9;
     padding: 0 2rem;
     display: flex;
@@ -89,7 +90,7 @@ body {
     padding: 1rem 2rem;
     cursor: pointer;
     font-size: 1rem;
-    color: #666;
+    color: #303030;
     border-bottom: 3px solid transparent;
     transition: all 0.3s ease;
     display: flex;
@@ -98,13 +99,13 @@ body {
 }
 
 .tab-button:hover {
-    color: #667eea;
-    background-color: #f8f9fa;
+    color: #367410;
+    background-color: #f0f0f0;
 }
 
 .tab-button.active {
-    color: #667eea;
-    border-bottom-color: #667eea;
+    color: #367410;
+    border-bottom-color: #367410;
     font-weight: 600;
 }
 
@@ -131,7 +132,7 @@ body {
 .project-overview h2 {
     font-size: 1.5rem;
     margin-bottom: 1.5rem;
-    color: #333;
+    color: #FFFFFF;
 }
 
 .overview-cards {
@@ -142,10 +143,10 @@ body {
 }
 
 .card {
-    background: white;
+    background: #FFFFFF;
     border-radius: 12px;
     padding: 1.5rem;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     border: 1px solid #e1e5e9;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -161,21 +162,21 @@ body {
 }
 
 .progress-card .card-icon {
-    color: #4caf50;
+    color: #367410;
 }
 
 .next-action-card .card-icon {
-    color: #ff9800;
+    color: #FF914D;
 }
 
 .milestone-card .card-icon {
-    color: #2196f3;
+    color: #367410;
 }
 
 .card-content h3 {
     font-size: 1.2rem;
     margin-bottom: 1rem;
-    color: #333;
+    color: #303030;
 }
 
 /* 進捗サークル */
@@ -183,7 +184,7 @@ body {
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    background: conic-gradient(#4caf50 0deg 234deg, #e1e5e9 234deg 360deg);
+    background: conic-gradient(#367410 0deg 234deg, #e1e5e9 234deg 360deg);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -195,7 +196,7 @@ body {
     content: '';
     width: 60px;
     height: 60px;
-    background: white;
+    background: #FFFFFF;
     border-radius: 50%;
     position: absolute;
 }
@@ -301,16 +302,16 @@ body {
 
 /* ヒヤリングシートセクション */
 .hearing-sheet-section {
-    background: white;
+    background: #FFFFFF;
     border-radius: 12px;
     padding: 1.5rem;
     margin: 2rem 0;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    border-left: 4px solid #667eea;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    border-left: 4px solid #367410;
 }
 
 .hearing-sheet-section.waiting {
-    border-left-color: #f39c12;
+    border-left-color: #FF914D;
     background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%);
 }
 
@@ -319,7 +320,7 @@ body {
     align-items: center;
     justify-content: space-between;
     margin-bottom: 1rem;
-    color: #333;
+    color: #303030;
     font-size: 1.2rem;
 }
 
@@ -331,14 +332,14 @@ body {
 }
 
 .status-badge.waiting {
-    background: #f39c12;
-    color: white;
+    background: #FF914D;
+    color: #FFFFFF;
 }
 
 .toggle-btn {
     background: none;
     border: none;
-    color: #667eea;
+    color: #367410;
     cursor: pointer;
     font-size: 1rem;
     transition: transform 0.3s ease;
@@ -367,7 +368,7 @@ body {
 
 .hearing-item label {
     font-weight: 600;
-    color: #667eea;
+    color: #367410;
     font-size: 0.9rem;
 }
 
@@ -384,7 +385,7 @@ body {
 }
 
 .waiting-message p {
-    color: #856404;
+    color: #FF914D;
     font-size: 1.1rem;
     margin-bottom: 1.5rem;
 }
@@ -410,18 +411,18 @@ body {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: #367410;
+    color: #FFFFFF;
 }
 
 .btn-secondary {
-    background: #6c757d;
-    color: white;
+    background: #303030;
+    color: #FFFFFF;
 }
 
 .btn-info {
-    background: #17a2b8;
-    color: white;
+    background: #FF914D;
+    color: #FFFFFF;
 }
 
 .btn-primary:hover, .btn-secondary:hover, .btn-info:hover {
@@ -447,7 +448,7 @@ body {
 }
 
 .modal-content {
-    background-color: white;
+    background-color: #FFFFFF;
     margin: 5% auto;
     border-radius: 12px;
     width: 80%;
@@ -521,20 +522,20 @@ body {
     padding: 0.8rem;
     border: 2px solid #e9ecef;
     border-radius: 8px;
-    background: white;
+    background: #FFFFFF;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
 .time-slot:hover {
-    border-color: #667eea;
+    border-color: #367410;
     background: #f8f9ff;
 }
 
 .time-slot.selected {
-    border-color: #667eea;
-    background: #667eea;
-    color: white;
+    border-color: #367410;
+    background: #367410;
+    color: #FFFFFF;
 }
 
 /* 通知 */
@@ -546,12 +547,12 @@ body {
 }
 
 .notification {
-    background: white;
-    border-left: 4px solid #28a745;
+    background: #FFFFFF;
+    border-left: 4px solid #367410;
     padding: 1rem;
     margin-bottom: 0.5rem;
     border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     animation: slideInRight 0.3s ease-out;
 }
 
@@ -567,25 +568,25 @@ body {
 }
 
 .notification.error {
-    border-left-color: #dc3545;
+    border-left-color: #FF914D;
 }
 
 .notification.warning {
-    border-left-color: #ffc107;
+    border-left-color: #FF914D;
 }
 
 /* ガントチャート */
 .gantt-chart-section {
-    background: white;
+    background: #FFFFFF;
     border-radius: 12px;
     padding: 1.5rem;
     margin-bottom: 2rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
     border: 1px solid #e1e5e9;
 }
 
 .gantt-chart-section h3 {
-    color: #333;
+    color: #303030;
     margin-bottom: 1.5rem;
     font-size: 1.4rem;
     display: flex;
@@ -594,7 +595,7 @@ body {
 }
 
 .gantt-chart-section h3 i {
-    color: #667eea;
+    color: #367410;
 }
 
 /* ガントチャートコンテナ */
@@ -617,10 +618,10 @@ body {
 .gantt-header {
     display: grid;
     grid-template-columns: 200px 1fr;
-    background: #f8f9fa;
+    background: #f0f0f0;
     border-bottom: 2px solid #e1e5e9;
     font-weight: 600;
-    color: #495057;
+    color: #303030;
 }
 
 .gantt-tasks-header {
@@ -670,14 +671,15 @@ body {
     display: flex;
     align-items: center;
     font-weight: 500;
-    background: white;
+    background: #FFFFFF;
+    color: #303030;
 }
 
 .gantt-task-timeline {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     position: relative;
-    background: white;
+    background: #FFFFFF;
 }
 
 .gantt-task-timeline > div {
@@ -716,43 +718,45 @@ body {
 
 /* ステータス別のガントチャートバー色分け */
 .gantt-bar.completed {
-    background: linear-gradient(135deg, #28a745, #20c997);
+    background: #367410;
     animation: slideInCompleted 0.8s ease-out;
-    border-left: 4px solid #155724;
+    border-left: 4px solid #254D0A;
 }
 
 .gantt-bar.in-progress {
-    background: linear-gradient(135deg, #ffc107, #fd7e14);
+    background: #FF914D;
     animation: slideInProgress 0.8s ease-out;
     position: relative;
     overflow: hidden;
-    border-left: 4px solid #856404;
+    border-left: 4px solid #E67E36;
 }
 
 .gantt-bar.ready {
-    background: linear-gradient(135deg, #17a2b8, #138496);
+    background: #367410;
     animation: slideInReady 0.8s ease-out;
-    border-left: 4px solid #0c5460;
+    border-left: 4px solid #254D0A;
+    opacity: 0.8;
 }
 
 .gantt-bar.waiting {
-    background: linear-gradient(135deg, #fd7e14, #e55a00);
+    background: #FF914D;
     animation: slideInWaiting 0.8s ease-out;
-    border-left: 4px solid #b84400;
+    border-left: 4px solid #E67E36;
+    opacity: 0.6;
 }
 
 .gantt-bar.blocked {
-    background: linear-gradient(135deg, #6c757d, #495057);
+    background: #303030;
     animation: slideInBlocked 0.8s ease-out;
-    border-left: 4px solid #343a40;
+    border-left: 4px solid #1a1a1a;
     opacity: 0.7;
 }
 
 .gantt-bar.milestone {
-    background: linear-gradient(135deg, #dc3545, #fd7e14);
+    background: #FF914D;
     animation: pulseMilestone 2s infinite;
     font-size: 1.2rem;
-    border-left: 4px solid #721c24;
+    border-left: 4px solid #E67E36;
 }
 
 /* ガントチャート進捗インジケーター */
@@ -772,7 +776,7 @@ body {
     top: 0;
     width: 2px;
     height: 100%;
-    background: #dc3545;
+    background: #FF914D;
     z-index: 10;
     animation: pulse 2s infinite;
 }
@@ -782,8 +786,8 @@ body {
     position: absolute;
     top: -20px;
     left: -15px;
-    background: #dc3545;
-    color: white;
+    background: #FF914D;
+    color: #FFFFFF;
     padding: 2px 6px;
     border-radius: 4px;
     font-size: 0.7rem;
@@ -795,9 +799,9 @@ body {
     top: 0;
     height: 100%;
     width: 3px;
-    background: linear-gradient(to bottom, #dc3545, #fd7e14);
+    background: #FF914D;
     z-index: 50;
-    box-shadow: 0 0 8px rgba(220, 53, 69, 0.5);
+    box-shadow: 0 0 8px rgba(255, 145, 77, 0.5);
     animation: pulse 2s infinite;
     display: none;
     pointer-events: none;
@@ -1704,4 +1708,58 @@ body {
     .gantt-cell {
         border-color: #404040;
     }
+}
+
+/* ガントチャートステータス凡例 */
+.gantt-status-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: #f0f0f0;
+    border-radius: 8px;
+    border: 1px solid #e1e5e9;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #303030;
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+.legend-color.completed {
+    background: #367410;
+}
+
+.legend-color.in-progress {
+    background: #FF914D;
+}
+
+.legend-color.ready {
+    background: #367410;
+    opacity: 0.8;
+}
+
+.legend-color.waiting {
+    background: #FF914D;
+    opacity: 0.6;
+}
+
+.legend-color.blocked {
+    background: #303030;
+}
+
+.legend-color.milestone {
+    background: #FF914D;
+    border: 2px solid #E67E36;
 }
