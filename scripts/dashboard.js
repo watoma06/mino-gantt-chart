@@ -297,33 +297,55 @@ function updateCurrentDateIndicator() {
     // 両方のプロジェクトの現在日付インジケーターを更新
     ['boxing', 'architecture'].forEach(projectType => {
         const indicator = document.getElementById(`current-date-${projectType}`);
-        if (indicator) {
+        const ganttContainer = document.getElementById(`${projectType}GanttChart`);
+        
+        if (indicator && ganttContainer) {
             // 現在の週が表示範囲内の場合のみ表示
             if (currentWeek >= 1 && currentWeek <= 12) {
-                // グリッドレイアウトに基づく位置計算
-                // タスク名列（200px）+ 週列（各週 1/12 の幅）
-                const taskNameColumnWidth = 200; // px
-                const weekWidth = 100 / 12; // 各週のパーセンテージ幅
-                const dayOfWeek = getCurrentDayOfWeek();
+                // ガントチャートのタイムライン要素を取得
+                const timeline = ganttContainer.querySelector('.gantt-timeline');
+                const datesHeader = ganttContainer.querySelector('.gantt-dates-header');
                 
-                // 週の開始位置 + 週内の日の位置
-                const weekStartPosition = (currentWeek - 1) * weekWidth;
-                const dayPositionInWeek = (dayOfWeek / 7) * weekWidth;
-                const totalPosition = weekStartPosition + dayPositionInWeek;
-                
-                // タスク名列の後から開始するため、計算を調整
-                const adjustedPosition = 16.67 + totalPosition; // 16.67% = 200px / 1200px
-                
-                indicator.style.left = `${adjustedPosition}%`;
-                indicator.style.display = 'block';
-                
-                // 現在の日付をラベルに表示
-                const label = indicator.querySelector('.current-date-label');
-                if (label) {
-                    label.textContent = `今日 (${formatDateShort(today)})`;
+                if (timeline && datesHeader) {
+                    // 各週のセルサイズを実際のDOM要素から計算
+                    const dateCells = datesHeader.querySelectorAll('.gantt-date-cell');
+                    if (dateCells.length > 0) {
+                        const timelineRect = timeline.getBoundingClientRect();
+                        const firstCellRect = dateCells[0].getBoundingClientRect();
+                        const cellWidth = firstCellRect.width;
+                        
+                        // タスク名列の幅を実際のDOM要素から取得
+                        const taskHeader = ganttContainer.querySelector('.gantt-tasks-header');
+                        const taskColumnWidth = taskHeader ? taskHeader.getBoundingClientRect().width : 200;
+                        
+                        // 現在の週内での日の位置を計算（0-6の範囲）
+                        const dayOfWeek = getCurrentDayOfWeek();
+                        
+                        // 現在の週の開始位置を計算
+                        const weekStartOffset = taskColumnWidth + (currentWeek - 1) * cellWidth;
+                        
+                        // 週内での日の位置を計算
+                        const dayOffset = (dayOfWeek / 7) * cellWidth;
+                        
+                        // 最終的な位置
+                        const finalPosition = weekStartOffset + dayOffset;
+                        
+                        // タイムライン全体の幅に対する相対位置で計算
+                        const timelineWidth = timelineRect.width;
+                        const relativePosition = (finalPosition / timelineWidth) * 100;
+                        
+                        indicator.style.left = `${finalPosition}px`;
+                        indicator.style.display = 'block';
+                        
+                        // 現在の日付をラベルに表示
+                        const label = indicator.querySelector('.current-date-label');
+                        if (label) {
+                            label.textContent = `今日 (${formatDateShort(today)})`;
+                        }
+                        
+                        console.log(`今日の位置更新: 週${currentWeek}, 日${dayOfWeek}, 位置: ${finalPosition.toFixed(2)}px (${relativePosition.toFixed(2)}%)`);
+                    }
                 }
-                
-                console.log(`今日の位置更新: 週${currentWeek}, 日${dayOfWeek}, 位置: ${adjustedPosition.toFixed(2)}%`);
             } else {
                 indicator.style.display = 'none';
             }
@@ -346,14 +368,22 @@ function initializeGanttCharts() {
     generateGanttChart('architecture');
     
     // 初期表示時に現在日付インジケーターを設定
+    // DOM要素が完全に描画された後に実行するため遅延を追加
     setTimeout(() => {
         updateCurrentDateIndicator();
-    }, 500);
+    }, 1000);
     
     // リアルタイム更新のため、1分ごとに現在日付を更新
     setInterval(() => {
         updateCurrentDateIndicator();
     }, 60000); // 1分ごと
+    
+    // ウィンドウリサイズ時にも位置を再計算
+    window.addEventListener('resize', () => {
+        setTimeout(() => {
+            updateCurrentDateIndicator();
+        }, 100);
+    });
     
     console.log(`ガントチャートが初期化されました。プロジェクト開始日: ${formatDate(PROJECT_START_DATE)}`);
 }

@@ -585,6 +585,7 @@ body {
     border-radius: 8px;
     background: #fafbfc;
     min-height: 400px;
+    position: relative; /* 絶対位置の基準とする */
 }
 
 /* ガントチャートタイムライン */
@@ -755,7 +756,7 @@ body {
 .gantt-current-date-line {
     position: absolute;
     top: 0;
-    bottom: 0;
+    height: 100%;
     width: 3px;
     background: linear-gradient(to bottom, #dc3545, #fd7e14);
     z-index: 50;
@@ -763,6 +764,12 @@ body {
     animation: pulse 2s infinite;
     display: none;
     pointer-events: none;
+    /* ガントチャートタイムライン全体に対して絶対位置 */
+    left: 0;
+}
+
+.gantt-timeline {
+    position: relative; /* 子要素の絶対位置の基準とする */
 }
 
 .gantt-current-date-line .current-date-marker {
