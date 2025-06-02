@@ -427,3 +427,334 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
+// ============= 新機能: コラボレーション =============
+
+// 共有メモ機能
+let currentMemoProject = '';
+
+function openSharedMemo(projectType) {
+    currentMemoProject = projectType;
+    const modal = document.getElementById('sharedMemoModal');
+    const projectName = document.getElementById('memoProjectName');
+    const memoText = document.getElementById('sharedMemoText');
+    const lastUpdated = document.getElementById('memoLastUpdated');
+    
+    // プロジェクト名を設定
+    projectName.textContent = projectType === 'boxing' ? 'みのボクシングジム' : 'みの建築';
+    
+    // 保存されたメモを読み込み
+    const savedMemo = localStorage.getItem(`shared_memo_${projectType}`);
+    if (savedMemo) {
+        const memoData = JSON.parse(savedMemo);
+        memoText.value = memoData.content || '';
+        lastUpdated.textContent = new Date(memoData.lastUpdated).toLocaleString('ja-JP');
+    } else {
+        memoText.value = '';
+        lastUpdated.textContent = '-';
+    }
+    
+    // 文字数・行数カウンターを更新
+    updateMemoStats();
+    
+    // テキストエリアにイベントリスナーを追加
+    memoText.addEventListener('input', updateMemoStats);
+    
+    modal.style.display = 'block';
+}
+
+function updateMemoStats() {
+    const memoText = document.getElementById('sharedMemoText');
+    const charCount = document.getElementById('memoCharCount');
+    const lineCount = document.getElementById('memoLineCount');
+    
+    charCount.textContent = memoText.value.length;
+    lineCount.textContent = memoText.value.split('\n').length;
+}
+
+function saveMemo() {
+    const memoText = document.getElementById('sharedMemoText');
+    const memoData = {
+        content: memoText.value,
+        lastUpdated: new Date().toISOString(),
+        project: currentMemoProject
+    };
+    
+    localStorage.setItem(`shared_memo_${currentMemoProject}`, JSON.stringify(memoData));
+    
+    // 最終更新時刻を表示
+    const lastUpdated = document.getElementById('memoLastUpdated');
+    lastUpdated.textContent = new Date().toLocaleString('ja-JP');
+    
+    showNotification('共有メモを保存しました', 'success');
+}
+
+function clearMemo() {
+    if (confirm('共有メモをクリアしてもよろしいですか？')) {
+        document.getElementById('sharedMemoText').value = '';
+        updateMemoStats();
+        showNotification('共有メモをクリアしました', 'warning');
+    }
+}
+
+// タスク進捗共有機能
+let currentTaskProject = '';
+let taskIdCounter = 1;
+
+function showTaskProgress(projectType) {
+    currentTaskProject = projectType;
+    const modal = document.getElementById('taskProgressModal');
+    const projectName = document.getElementById('taskProjectName');
+    
+    // プロジェクト名を設定
+    projectName.textContent = projectType === 'boxing' ? 'みのボクシングジム' : 'みの建築';
+    
+    // タスクリストを読み込み
+    loadTaskList(projectType);
+    
+    // 全体進捗を更新
+    updateOverallProgress(projectType);
+    
+    modal.style.display = 'block';
+}
+
+function loadTaskList(projectType) {
+    const container = document.getElementById('taskListContainer');
+    const savedTasks = localStorage.getItem(`tasks_${projectType}`);
+    
+    if (savedTasks) {
+        const tasks = JSON.parse(savedTasks);
+        renderTaskList(tasks);
+    } else {
+        // デフォルトタスクを設定
+        const defaultTasks = getDefaultTasks(projectType);
+        localStorage.setItem(`tasks_${projectType}`, JSON.stringify(defaultTasks));
+        renderTaskList(defaultTasks);
+    }
+}
+
+function getDefaultTasks(projectType) {
+    if (projectType === 'boxing') {
+        return [
+            {
+                id: 1,
+                name: '初回ヒヤリングシート提出',
+                status: 'pending',
+                progress: 0,
+                assignee: 'クライアント',
+                dueDate: '2024-06-10',
+                description: 'プロジェクト要件の詳細把握'
+            },
+            {
+                id: 2,
+                name: '打ち合わせ日程調整',
+                status: 'pending',
+                progress: 0,
+                assignee: 'LEXIA',
+                dueDate: '2024-06-15',
+                description: 'ヒヤリングシート受領後の打ち合わせ'
+            }
+        ];
+    } else {
+        return [
+            {
+                id: 1,
+                name: 'ヒヤリングシート受け取り',
+                status: 'completed',
+                progress: 100,
+                assignee: 'LEXIA',
+                dueDate: '2024-06-01',
+                description: 'クライアント要件の把握完了'
+            },
+            {
+                id: 2,
+                name: '提案書・見積書作成',
+                status: 'in-progress',
+                progress: 30,
+                assignee: 'LEXIA',
+                dueDate: '2024-06-08',
+                description: '機能要件と予算感に基づく提案書作成'
+            },
+            {
+                id: 3,
+                name: '打ち合わせ日程調整',
+                status: 'pending',
+                progress: 0,
+                assignee: 'LEXIA',
+                dueDate: '2024-06-10',
+                description: 'みのボクシングジムと合わせた日程調整'
+            }
+        ];
+    }
+}
+
+function renderTaskList(tasks) {
+    const container = document.getElementById('taskListContainer');
+    container.innerHTML = '';
+    
+    tasks.forEach(task => {
+        const taskCard = createTaskCard(task);
+        container.appendChild(taskCard);
+    });
+}
+
+function createTaskCard(task) {
+    const card = document.createElement('div');
+    card.className = `task-card ${task.status}`;
+    card.innerHTML = `
+        <div class="task-card-header">
+            <div class="task-card-title">${task.name}</div>
+            <div class="task-card-status ${task.status}">
+                ${getStatusLabel(task.status)}
+            </div>
+        </div>
+        <div class="task-card-meta">
+            <span>担当: ${task.assignee}</span>
+            <span>期限: ${task.dueDate}</span>
+        </div>
+        <div class="task-card-progress">
+            <div class="progress-bar-horizontal">
+                <div class="progress-fill-horizontal" style="width: ${task.progress}%;">
+                    ${task.progress}%
+                </div>
+            </div>
+        </div>
+        <div class="task-card-description">
+            <small>${task.description}</small>
+        </div>
+        <div class="task-card-actions">
+            <button class="btn-edit" onclick="editTask(${task.id})">
+                <i class="fas fa-edit"></i> 編集
+            </button>
+            <button class="btn-delete" onclick="deleteTask(${task.id})">
+                <i class="fas fa-trash"></i> 削除
+            </button>
+        </div>
+    `;
+    return card;
+}
+
+function getStatusLabel(status) {
+    switch(status) {
+        case 'completed': return '完了';
+        case 'in-progress': return '進行中';
+        case 'pending': return '未着手';
+        default: return '不明';
+    }
+}
+
+function updateOverallProgress(projectType) {
+    const savedTasks = localStorage.getItem(`tasks_${projectType}`);
+    if (!savedTasks) return;
+    
+    const tasks = JSON.parse(savedTasks);
+    const totalProgress = tasks.reduce((sum, task) => sum + task.progress, 0);
+    const overallProgress = Math.round(totalProgress / tasks.length);
+    
+    const progressBar = document.getElementById('taskOverallProgress');
+    const progressPercentage = document.getElementById('taskProgressPercentage');
+    
+    progressBar.style.width = `${overallProgress}%`;
+    progressBar.textContent = `${overallProgress}%`;
+    progressPercentage.textContent = `${overallProgress}%`;
+}
+
+function addNewTask() {
+    document.getElementById('newTaskModal').style.display = 'block';
+    
+    // フォームをリセット
+    document.getElementById('newTaskForm').reset();
+    document.getElementById('progressDisplay').textContent = '0%';
+    
+    // フォーム送信処理
+    document.getElementById('newTaskForm').onsubmit = function(e) {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        
+        const newTask = {
+            id: taskIdCounter++,
+            name: formData.get('taskName'),
+            status: formData.get('status'),
+            progress: parseInt(formData.get('progress')),
+            assignee: formData.get('assignee'),
+            dueDate: formData.get('dueDate'),
+            description: formData.get('description')
+        };
+        
+        // タスクを保存
+        const savedTasks = localStorage.getItem(`tasks_${currentTaskProject}`);
+        const tasks = savedTasks ? JSON.parse(savedTasks) : [];
+        tasks.push(newTask);
+        localStorage.setItem(`tasks_${currentTaskProject}`, JSON.stringify(tasks));
+        
+        // 表示を更新
+        renderTaskList(tasks);
+        updateOverallProgress(currentTaskProject);
+        
+        closeModal('newTaskModal');
+        showNotification('新しいタスクを追加しました', 'success');
+    };
+}
+
+function updateProgressDisplay(value) {
+    document.getElementById('progressDisplay').textContent = `${value}%`;
+}
+
+function editTask(taskId) {
+    // 実装予定: タスク編集機能
+    showNotification('タスク編集機能は今後実装予定です', 'info');
+}
+
+function deleteTask(taskId) {
+    if (confirm('このタスクを削除してもよろしいですか？')) {
+        const savedTasks = localStorage.getItem(`tasks_${currentTaskProject}`);
+        if (savedTasks) {
+            let tasks = JSON.parse(savedTasks);
+            tasks = tasks.filter(task => task.id !== taskId);
+            localStorage.setItem(`tasks_${currentTaskProject}`, JSON.stringify(tasks));
+            
+            renderTaskList(tasks);
+            updateOverallProgress(currentTaskProject);
+            showNotification('タスクを削除しました', 'warning');
+        }
+    }
+}
+
+function exportTaskProgress() {
+    const savedTasks = localStorage.getItem(`tasks_${currentTaskProject}`);
+    if (savedTasks) {
+        const blob = new Blob([savedTasks], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `tasks_${currentTaskProject}_${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showNotification('タスク進捗をエクスポートしました', 'success');
+    }
+}
+
+// リアルタイム同期機能（ローカル）
+function initializeRealTimeSync() {
+    // ローカルストレージの変更を監視
+    window.addEventListener('storage', function(e) {
+        if (e.key && e.key.startsWith('shared_memo_') || e.key.startsWith('tasks_')) {
+            showNotification('データが更新されました', 'info');
+        }
+    });
+    
+    // 定期的なデータ同期（5秒ごと）
+    setInterval(() => {
+        syncLocalData();
+    }, 5000);
+}
+
+function syncLocalData() {
+    // 実装予定: WebRTCやWebSocketを使ったリアルタイム同期
+    // 現在はローカルストレージベース
+    const timestamp = new Date().toISOString();
+    localStorage.setItem('lastSync', timestamp);
+}
