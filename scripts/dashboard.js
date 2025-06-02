@@ -232,18 +232,41 @@ function initializeGanttCharts() {
         }, 250); // 250ms のデバウンス
     });
     
-    // スクロール中のアニメーション防止
+    // スクロール中のアニメーション防止（強化版）
     let scrollTimeout;
     let isScrolling = false;
     
+    // パッシブリスナーでスクロールを検出
     document.addEventListener('scroll', () => {
+        if (!isScrolling) {
+            console.log('スクロール開始: アニメーション一時停止');
+        }
         isScrolling = true;
+        document.body.classList.add('scrolling');
         clearTimeout(scrollTimeout);
         
-        // スクロール終了後0.5秒後にフラグをリセット
+        // スクロール終了後1秒後にフラグをリセット（従来の0.5秒から延長）
         scrollTimeout = setTimeout(() => {
             isScrolling = false;
-        }, 500);
+            document.body.classList.remove('scrolling');
+            console.log('スクロール終了: アニメーション再開可能');
+        }, 1000);
+    }, { passive: true });
+    
+    // タッチスクロール対応（モバイル）
+    document.addEventListener('touchmove', () => {
+        if (!isScrolling) {
+            console.log('タッチスクロール開始: アニメーション一時停止');
+        }
+        isScrolling = true;
+        document.body.classList.add('scrolling');
+        clearTimeout(scrollTimeout);
+        
+        scrollTimeout = setTimeout(() => {
+            isScrolling = false;
+            document.body.classList.remove('scrolling');
+            console.log('タッチスクロール終了: アニメーション再開可能');
+        }, 1000);
     }, { passive: true });
     
     // スクロール状態をグローバルで参照可能にする
@@ -262,7 +285,10 @@ function generateGanttChart(projectType) {
     // 既存のアニメーション状態をチェック
     const existingBars = container.querySelectorAll('.gantt-bar');
     const hasAnimatedBars = existingBars.length > 0 && 
-                           Array.from(existingBars).some(bar => bar.style.opacity === '1');
+                           Array.from(existingBars).some(bar => bar.classList.contains('animated'));
+    
+    // スクロール中はアニメーションを完全にスキップ
+    const isCurrentlyScrolling = typeof window.isScrolling === 'function' && window.isScrolling();
     
     // 凡例を追加
     const legend = createStatusLegend();
@@ -274,17 +300,29 @@ function generateGanttChart(projectType) {
     container.appendChild(legend);
     container.insertAdjacentHTML('beforeend', ganttHTML);
     
-    // 初回表示または明示的なアニメーション要求時のみアニメーション実行
-    if (!hasAnimatedBars) {
+    // アニメーション実行条件を厳格化
+    if (!hasAnimatedBars && !isCurrentlyScrolling) {
         setTimeout(() => {
-            animateGanttBars(projectType);
+            // アニメーション実行前に再度スクロール状態をチェック
+            if (typeof window.isScrolling === 'function' && !window.isScrolling()) {
+                animateGanttBars(projectType);
+            } else {
+                // スクロール中の場合は即座に表示状態にする
+                const bars = container.querySelectorAll('.gantt-bar');
+                bars.forEach(bar => {
+                    bar.style.opacity = '1';
+                    bar.style.transform = 'scale(1)';
+                    bar.classList.add('animated');
+                });
+            }
         }, 100);
     } else {
-        // 既に表示済みの場合は即座に可視状態にする
+        // 既に表示済みまたはスクロール中の場合は即座に可視状態にする
         const bars = container.querySelectorAll('.gantt-bar');
         bars.forEach(bar => {
             bar.style.opacity = '1';
             bar.style.transform = 'scale(1)';
+            bar.classList.add('animated');
         });
     }
 }
@@ -471,7 +509,7 @@ function animateGanttBars(projectType) {
     const container = document.getElementById(`${projectType}GanttChart`);
     if (!container) return;
     
-    // スクロール中はアニメーションをスキップ
+    // スクロール中は完全にアニメーションをスキップ
     if (typeof window.isScrolling === 'function' && window.isScrolling()) {
         console.log('スクロール中のため、アニメーションをスキップします');
         const bars = container.querySelectorAll('.gantt-bar');
@@ -491,19 +529,25 @@ function animateGanttBars(projectType) {
         }
         
         setTimeout(() => {
-            // アニメーション実行前に再度スクロール状態をチェック
+            // アニメーション実行前に再度スクロール状態を厳格にチェック
             if (typeof window.isScrolling === 'function' && window.isScrolling()) {
+                // スクロール中の場合は即座に表示状態にする
                 bar.style.opacity = '1';
                 bar.style.transform = 'scale(1)';
                 bar.classList.add('animated');
                 return;
             }
             
+            // アニメーション終了後の状態をマーク
             bar.style.opacity = '1';
             bar.style.transform = 'scale(1)';
             bar.classList.add('animated'); // アニメーション済みマーク
+            
+            console.log(`[${projectType}] バー ${index + 1} アニメーション完了`);
         }, index * 100);
     });
+    
+    console.log(`[${projectType}] ガントチャートアニメーション開始: ${bars.length}個のバー`);
 }
 
 // ステータス凡例を生成する関数

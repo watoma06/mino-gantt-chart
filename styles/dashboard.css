@@ -816,12 +816,22 @@ body {
     will-change: transform, opacity;
     /* スクロール中のアニメーション再実行を防ぐ */
     animation-fill-mode: forwards;
+    /* スクロール中はアニメーション無効化 */
+    animation-play-state: running;
+}
+
+/* スクロール中のアニメーション完全停止 */
+body.scrolling .gantt-bar {
+    animation-play-state: paused;
+    animation: none;
 }
 
 /* アニメーション済みのガントチャートバー */
 .gantt-bar.animated {
     opacity: 1;
     transform: scale(1);
+    /* アニメーション完了後は固定状態 */
+    animation: none;
 }
 
 .gantt-bar:hover {
