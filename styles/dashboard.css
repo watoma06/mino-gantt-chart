@@ -1839,47 +1839,6 @@ body {
     }
 }
 
-/* ダークモードの基本対応 */
-@media (prefers-color-scheme: dark) {
-    body {
-        background-color: #1a1a1a;
-        color: #e0e0e0;
-    }
-    
-    .card {
-        background: #ffffff; /* 背景を白に変更 */
-        border-color: #404040;
-        color: #e0e0e0;
-    }
-    
-    .gantt-chart-container {
-        background: #ffffff; /* 白背景に統一 */
-        border-color: #404040;
-    }
-    
-    .gantt-header {
-        background: #ffffff; /* 白背景に統一 */
-    }
-    
-    .gantt-row {
-        border-color: #404040;
-    }
-    
-    .gantt-task-name {
-        background: #ffffff; /* 白背景に統一 */
-        color: var(--color-dark); /* ダークテキストを使用 */
-    }
-    
-    .gantt-task-timeline {
-        background: #ffffff; /* 白背景に統一 */
-    }
-    
-    .gantt-cell {
-        background: #ffffff; /* 白背景に統一 */
-        border-color: #404040;
-    }
-}
-
 /* ガントチャートステータス凡例 */
 .gantt-status-legend {
     display: flex;
