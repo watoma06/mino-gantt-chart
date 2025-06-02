@@ -1181,7 +1181,7 @@ body {
     }
     
     .header-logo .logo-image {
-        height: 60px !important; /* 1.5倍のサイズ (40px → 60px) */
+        height: 60px !important; /* 1.5倍のサイズ */
         max-width: 200px !important;
     }
     
@@ -1204,6 +1204,21 @@ body {
         font-size: 12px !important;
         padding: 6px 12px !important;
         margin-left: 0 !important;
+    }
+    
+    /* モバイルではログアウトボタンのテキストを非表示 */
+    .logout-button span {
+        display: none;
+    }
+    
+    .logout-button {
+        padding: 8px !important;
+        border-radius: 50% !important;
+        width: 36px !important;
+        height: 36px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
     
     /* プロジェクトタブの調整 */
@@ -1553,19 +1568,15 @@ body {
         color: var(--color-primary); /* アイコンを緑色に */
     }
     
-    .user-info {
-        font-size: 0.75rem;
-        color: var(--color-text);
-    }
-    
-    .user-info i {
-        color: var(--color-primary); /* ユーザーアイコンも緑色に */
+    .header-actions {
+        display: flex;
+        align-items: center;
     }
     
     .logout-button {
         font-size: 10px !important;
         padding: 4px 8px !important;
-        margin-left: 8px !important;
+        margin-left: 0 !important;
     }
     
     /* タブボタンの最小化 */
