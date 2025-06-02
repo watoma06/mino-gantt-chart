@@ -28,8 +28,8 @@
 
 // ダッシュボードの初期化
 document.addEventListener('DOMContentLoaded', function() {
-    // ヘッダーにログアウト機能を追加
-    addLogoutFunctionality();
+    // ログアウト機能を設定
+    setupLogoutButton();
     
     initializeTabs();
     updateProgressCircles();
@@ -37,39 +37,15 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeGanttCharts();
 });
 
-// ログアウト機能の追加
-function addLogoutFunctionality() {
-    const userInfo = document.querySelector('.user-info');
-    if (userInfo) {
-        // ログアウトボタンを追加
-        const logoutButton = document.createElement('button');
-        logoutButton.innerHTML = '<i class="fas fa-sign-out-alt"></i> ログアウト';
-        logoutButton.className = 'logout-button';
-        logoutButton.style.cssText = `
-            background: linear-gradient(135deg, #dc3545, #c82333);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-left: 15px;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        `;
-        
-        logoutButton.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-2px)';
-            this.style.boxShadow = '0 4px 8px rgba(220, 53, 69, 0.3)';
-        });
-        
-        logoutButton.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-            this.style.boxShadow = 'none';
-        });
-        
-        logoutButton.addEventListener('click', function() {
-            // 確認ダイアログ
-            if (confirm('Are you sure you want to logout?')) {
+// ログアウト機能の設定
+function setupLogoutButton() {
+    const logoutButton = document.querySelector('.logout-button');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            
+            // 確認ダイアログを表示
+            if (confirm('ログアウトしますか？')) {
                 // セッション情報をクリア
                 sessionStorage.removeItem('lexia_authenticated');
                 sessionStorage.removeItem('auth_timestamp');
@@ -78,8 +54,6 @@ function addLogoutFunctionality() {
                 window.location.href = 'login.html';
             }
         });
-        
-        userInfo.appendChild(logoutButton);
     }
 }
 

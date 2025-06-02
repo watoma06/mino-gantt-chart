@@ -1923,15 +1923,18 @@ body {
     border: 2px solid #E67E36;
 }
 
-/* モバイル表示時のロゴ中央配置 */
+/* モバイル表示時のロゴとボタン配置 */
 @media (max-width: 768px) {
     .header-content {
-        justify-content: center;
+        justify-content: space-between !important;
         align-items: center;
+        width: 100%;
+        padding: 0 1rem;
     }
 
     .header-logo {
         min-width: auto;
+        flex-shrink: 0;
     }
 
     .header-logo .logo-image {
