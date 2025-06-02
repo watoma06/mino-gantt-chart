@@ -194,7 +194,7 @@ body {
 .project-overview h2 {
     font-size: 1.5rem;
     margin-bottom: 1.5rem;
-    color: var(--color-dark) !important; /* PC表示での視認性を改善 */
+    color: #ffffff;
 }
 
 .overview-cards {
