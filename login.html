@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEXIA クライアント管理システム - ログイン</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            min-width: 400px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .logo {
+            margin-bottom: 30px;
+        }
+
+        .logo i {
+            font-size: 60px;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .logo h1 {
+            color: #333;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .login-form {
+            margin-top: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .password-input-container {
+            position: relative;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+            font-size: 18px;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(231, 76, 60, 0.1);
+            border-radius: 8px;
+            display: none;
+        }
+
+        .success-message {
+            color: #27ae60;
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(39, 174, 96, 0.1);
+            border-radius: 8px;
+            display: none;
+        }
+
+        .footer {
+            margin-top: 30px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .loading {
+            display: none;
+            margin-left: 10px;
+        }
+
+        .loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+                min-width: auto;
+            }
+
+            .logo h1 {
+                font-size: 24px;
+            }
+
+            .logo i {
+                font-size: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <i class="fas fa-chart-gantt"></i>
+            <h1>LEXIA</h1>
+            <p>クライアント進捗管理システム</p>
+        </div>
+
+        <form class="login-form" id="loginForm">
+            <div class="form-group">
+                <label for="password">アクセスパスワード</label>
+                <div class="password-input-container">
+                    <input type="password" id="password" name="password" 
+                           placeholder="パスワードを入力してください" required>
+                    <i class="fas fa-eye password-toggle" id="passwordToggle"></i>
+                </div>
+            </div>
+
+            <button type="submit" class="login-button">
+                <i class="fas fa-sign-in-alt"></i>
+                ダッシュボードにアクセス
+                <span class="loading" id="loading">
+                    <i class="fas fa-spinner"></i>
+                </span>
+            </button>
+
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-exclamation-triangle"></i>
+                パスワードが正しくありません
+            </div>
+
+            <div class="success-message" id="successMessage">
+                <i class="fas fa-check-circle"></i>
+                認証成功！ダッシュボードに移動します...
+            </div>
+        </form>
+
+        <div class="footer">
+            <p>© 2025 LEXIA. セキュアなクライアント管理システム</p>
+        </div>
+    </div>
+
+    <script>
+        // パスワード設定（実際の運用では環境変数やより安全な方法で管理）
+        const VALID_PASSWORDS = {
+            'lexia2024': 'dashboard',
+            'client2024': 'dashboard',
+            'admin2024': 'dashboard'
+        };
+
+        // DOM要素
+        const loginForm = document.getElementById('loginForm');
+        const passwordInput = document.getElementById('password');
+        const passwordToggle = document.getElementById('passwordToggle');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+        const loading = document.getElementById('loading');
+
+        // パスワード表示/非表示切り替え
+        passwordToggle.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            // アイコン切り替え
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+
+        // フォーム送信処理
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const password = passwordInput.value.trim();
+            
+            // メッセージリセット
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            
+            // ローディング開始
+            loading.style.display = 'inline';
+            
+            // パスワード認証（少し遅延を入れてリアルな感じに）
+            setTimeout(() => {
+                if (VALID_PASSWORDS[password]) {
+                    // 認証成功
+                    successMessage.style.display = 'block';
+                    
+                    // セッションストレージに認証情報を保存
+                    sessionStorage.setItem('lexia_authenticated', 'true');
+                    sessionStorage.setItem('auth_timestamp', new Date().getTime());
+                    
+                    // ダッシュボードにリダイレクト
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
+                    
+                } else {
+                    // 認証失敗
+                    errorMessage.style.display = 'block';
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                }
+                
+                loading.style.display = 'none';
+            }, 1000);
+        });
+
+        // ページ読み込み時にパスワード入力欄にフォーカス
+        window.addEventListener('load', function() {
+            passwordInput.focus();
+        });
+
+        // Enterキーでフォーム送信
+        passwordInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                loginForm.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        // 既に認証済みの場合はダッシュボードにリダイレクト
+        if (sessionStorage.getItem('lexia_authenticated') === 'true') {
+            const authTime = sessionStorage.getItem('auth_timestamp');
+            const currentTime = new Date().getTime();
+            
+            // 24時間以内なら自動ログイン
+            if (authTime && (currentTime - authTime) < 24 * 60 * 60 * 1000) {
+                window.location.href = 'index.html';
+            } else {
+                // セッション期限切れ
+                sessionStorage.removeItem('lexia_authenticated');
+                sessionStorage.removeItem('auth_timestamp');
+            }
+        }
+    </script>
+</body>
+</html>
