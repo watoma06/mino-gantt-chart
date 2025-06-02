@@ -1902,33 +1902,6 @@ body.scrolling .gantt-bar {
     }
 }
 
-/* ガントチャートステータス凡例 */
-.gantt-status-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    padding: 1rem;
-    background: #f0f0f0;
-    border-radius: 8px;
-    border: 1px solid #e1e5e9;
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-    color: var(--color-dark);
-}
-
-.legend-color {
-    width: 16px;
-    height: 16px;
-    border-radius: 4px;
-    border: 1px solid rgba(0,0,0,0.1);
-}
-
 .legend-color.completed {
     background: #28a745;
 }

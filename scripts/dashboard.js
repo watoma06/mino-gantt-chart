@@ -290,14 +290,10 @@ function generateGanttChart(projectType) {
     // スクロール中はアニメーションを完全にスキップ
     const isCurrentlyScrolling = typeof window.isScrolling === 'function' && window.isScrolling();
     
-    // 凡例を追加
-    const legend = createStatusLegend();
-    
     const ganttHTML = createGanttHTML(tasks, projectType);
     
-    // 凡例とガントチャートを組み合わせ
+    // ガントチャートを設定
     container.innerHTML = '';
-    container.appendChild(legend);
     container.insertAdjacentHTML('beforeend', ganttHTML);
     
     // アニメーション実行条件を厳格化
@@ -548,38 +544,6 @@ function animateGanttBars(projectType) {
     });
     
     console.log(`[${projectType}] ガントチャートアニメーション開始: ${bars.length}個のバー`);
-}
-
-// ステータス凡例を生成する関数
-function createStatusLegend() {
-    const legend = document.createElement('div');
-    legend.className = 'gantt-status-legend';
-    
-    const statusTypes = [
-        { key: 'completed', label: '完了', color: '#28a745' },
-        { key: 'in-progress', label: '進行中', color: '#ffc107' },
-        { key: 'ready', label: '開始準備完了', color: '#17a2b8' },
-        { key: 'waiting', label: '待機中', color: '#fd7e14' },
-        { key: 'blocked', label: 'ブロック中', color: '#6c757d' },
-        { key: 'milestone', label: 'マイルストーン', color: '#dc3545' }
-    ];
-    
-    statusTypes.forEach(status => {
-        const item = document.createElement('div');
-        item.className = 'legend-item';
-        
-        const colorBox = document.createElement('div');
-        colorBox.className = `legend-color ${status.key}`;
-        
-        const label = document.createElement('span');
-        label.textContent = status.label;
-        
-        item.appendChild(colorBox);
-        item.appendChild(label);
-        legend.appendChild(item);
-    });
-    
-    return legend;
 }
 
 // =================
