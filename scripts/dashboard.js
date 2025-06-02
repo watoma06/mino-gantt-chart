@@ -299,23 +299,21 @@ function getProjectTasks(projectType) {
         tasks = [
             { name: 'ヒアリングシート提出', status: 'waiting', startWeek: 1, duration: 1, dependency: null },
             { name: '要件定義・企画', status: 'blocked', startWeek: 2, duration: 2, dependency: 'ヒアリングシート提出' },
-            { name: 'デザイン設計', status: 'blocked', startWeek: 4, duration: 3, dependency: '要件定義・企画' },
-            { name: 'コーディング・開発', status: 'blocked', startWeek: 7, duration: 4, dependency: 'デザイン設計' },
-            { name: '機能実装・テスト', status: 'blocked', startWeek: 11, duration: 2, dependency: 'コーディング・開発' },
-            { name: '最終調整', status: 'blocked', startWeek: 13, duration: 1, dependency: '機能実装・テスト' },
-            { name: '納品・公開', status: 'blocked', startWeek: 14, duration: 1, dependency: '最終調整' },
-            { name: '保守・運用開始', status: 'milestone', startWeek: 15, duration: 1, dependency: '納品・公開' }
+            { name: 'デザイン設計', status: 'blocked', startWeek: 4, duration: 2, dependency: '要件定義・企画' },
+            { name: 'コーディング・開発', status: 'blocked', startWeek: 6, duration: 3, dependency: 'デザイン設計' },
+            { name: '機能実装・テスト', status: 'blocked', startWeek: 9, duration: 2, dependency: 'コーディング・開発' },
+            { name: '最終調整・納品', status: 'blocked', startWeek: 11, duration: 1, dependency: '機能実装・テスト' },
+            { name: '保守・運用開始', status: 'milestone', startWeek: 12, duration: 1, dependency: '最終調整・納品' }
         ];
     } else if (projectType === 'architecture') {
         tasks = [
             { name: 'ヒアリングシート受領', status: 'completed', startWeek: 1, duration: 1, dependency: null },
             { name: '要件詰め・提案書作成', status: 'in-progress', startWeek: 2, duration: 2, dependency: 'ヒアリングシート受領' },
-            { name: 'デザイン設計', status: 'ready', startWeek: 4, duration: 3, dependency: '要件詰め・提案書作成' },
-            { name: 'コーディング・開発', status: 'blocked', startWeek: 7, duration: 4, dependency: 'デザイン設計' },
-            { name: '機能実装・テスト', status: 'blocked', startWeek: 11, duration: 2, dependency: 'コーディング・開発' },
-            { name: '最終調整', status: 'blocked', startWeek: 13, duration: 1, dependency: '機能実装・テスト' },
-            { name: '納品・公開', status: 'blocked', startWeek: 14, duration: 1, dependency: '最終調整' },
-            { name: '保守・運用開始', status: 'milestone', startWeek: 15, duration: 1, dependency: '納品・公開' }
+            { name: 'デザイン設計', status: 'ready', startWeek: 4, duration: 2, dependency: '要件詰め・提案書作成' },
+            { name: 'コーディング・開発', status: 'blocked', startWeek: 6, duration: 3, dependency: 'デザイン設計' },
+            { name: '機能実装・テスト', status: 'blocked', startWeek: 9, duration: 2, dependency: 'コーディング・開発' },
+            { name: '最終調整・納品', status: 'blocked', startWeek: 11, duration: 1, dependency: '機能実装・テスト' },
+            { name: '保守・運用開始', status: 'milestone', startWeek: 12, duration: 1, dependency: '最終調整・納品' }
         ];
     }
     
@@ -330,9 +328,8 @@ function getProjectTasks(projectType) {
                     return false; // デザイン設計は完全に削除
                 }
                 if (task.name === 'コーディング・開発') {
-                    // コーディング・開発は11週から開始に変更
-                    task.startWeek = 11;
-                    task.duration = 2; // 期間も短縮
+                    // コーディング・開発は削除（新しいスケジュールでは11週目以降に該当タスクなし）
+                    return false;
                 }
             }
             return true;
