@@ -90,9 +90,9 @@
                     <div class="waiting-message">
                         <p><i class="fas fa-info-circle"></i> クライアント様にヒヤリングシートの提出をお待ちいただいております</p>
                         <div class="action-buttons">
-                            <button class="btn-primary" onclick="sendReminder('boxing')">
-                                <i class="fas fa-paper-plane"></i>
-                                リマインダー送信
+                            <button class="btn-primary" onclick="openHearingForm('boxing')">
+                                <i class="fas fa-edit"></i>
+                                ヒヤリングシート入力
                             </button>
                             <button class="btn-secondary" onclick="showTemplate('boxing')">
                                 <i class="fas fa-file-alt"></i>
@@ -247,17 +247,13 @@
                         </div>
                         
                         <div class="action-buttons">
-                            <button class="btn-primary" onclick="openProposalModal('architecture')">
-                                <i class="fas fa-lightbulb"></i>
-                                提案書作成
+                            <button class="btn-primary" onclick="exportHearingData('architecture')">
+                                <i class="fas fa-download"></i>
+                                データエクスポート
                             </button>
-                            <button class="btn-secondary" onclick="scheduleMedia('architecture')">
-                                <i class="fas fa-calendar-plus"></i>
-                                打ち合わせ予約
-                            </button>
-                            <button class="btn-info" onclick="showProgressPrediction('architecture')">
-                                <i class="fas fa-chart-line"></i>
-                                進捗予測
+                            <button class="btn-secondary" onclick="printHearingSheet('architecture')">
+                                <i class="fas fa-print"></i>
+                                印刷用表示
                             </button>
                         </div>
                     </div>
@@ -303,73 +299,79 @@
     </div>
 
     <!-- モーダル群 -->
-    <!-- 提案書作成モーダル -->
-    <div class="modal" id="proposalModal">
+    <!-- ヒヤリングシート入力モーダル -->
+    <div class="modal" id="hearingFormModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3><i class="fas fa-lightbulb"></i> AI自動提案書生成</h3>
-                <span class="close" onclick="closeModal('proposalModal')">&times;</span>
+                <h3><i class="fas fa-edit"></i> ヒヤリングシート入力</h3>
+                <span class="close" onclick="closeModal('hearingFormModal')">&times;</span>
             </div>
             <div class="modal-body">
-                <p>ヒヤリングシート内容を基に、AI が最適な提案書を自動生成します。</p>
-                <div class="proposal-options">
-                    <label><input type="checkbox" checked> デザイン提案</label>
-                    <label><input type="checkbox" checked> 機能仕様書</label>
-                    <label><input type="checkbox" checked> 見積書</label>
-                    <label><input type="checkbox" checked> スケジュール案</label>
-                </div>
-                <button class="btn-primary full-width" onclick="generateProposal()">
-                    <i class="fas fa-magic"></i> 提案書を生成
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 打ち合わせ予約モーダル -->
-    <div class="modal" id="scheduleModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-calendar-plus"></i> 打ち合わせ予約</h3>
-                <span class="close" onclick="closeModal('scheduleModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="calendar-integration">
-                    <p>両プロジェクトの打ち合わせを同時予約できます</p>
-                    <div class="time-slots">
-                        <button class="time-slot">6月10日 14:00-16:00</button>
-                        <button class="time-slot">6月12日 10:00-12:00</button>
-                        <button class="time-slot">6月15日 15:00-17:00</button>
+                <form id="hearingSheetForm">
+                    <div class="form-group">
+                        <label>会社名・団体名</label>
+                        <input type="text" name="companyName" required>
                     </div>
-                    <button class="btn-primary full-width">
-                        <i class="fas fa-check"></i> 予約確定
+                    <div class="form-group">
+                        <label>担当者様</label>
+                        <input type="text" name="contactPerson" required>
+                    </div>
+                    <div class="form-group">
+                        <label>メールアドレス</label>
+                        <input type="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>電話番号</label>
+                        <input type="tel" name="phone">
+                    </div>
+                    <div class="form-group">
+                        <label>ホームページの目的・ゴール</label>
+                        <textarea name="purpose" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>予算感</label>
+                        <select name="budget">
+                            <option value="10万円未満">10万円未満</option>
+                            <option value="10-30万円">10-30万円</option>
+                            <option value="30-50万円">30-50万円</option>
+                            <option value="50万円以上">50万円以上</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary full-width">
+                        <i class="fas fa-save"></i> ローカル保存
                     </button>
-                </div>
+                </form>
             </div>
         </div>
     </div>
 
-    <!-- 進捗予測モーダル -->
-    <div class="modal" id="progressModal">
+    <!-- 進捗比較モーダル -->
+    <div class="modal" id="comparisonModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3><i class="fas fa-chart-line"></i> AI進捗予測</h3>
-                <span class="close" onclick="closeModal('progressModal')">&times;</span>
+                <h3><i class="fas fa-chart-bar"></i> 両プロジェクト比較</h3>
+                <span class="close" onclick="closeModal('comparisonModal')">&times;</span>
             </div>
             <div class="modal-body">
-                <div class="prediction-chart">
-                    <canvas id="progressChart"></canvas>
-                </div>
-                <div class="milestones-prediction">
-                    <h4>予測スケジュール</h4>
-                    <div class="milestone">デザイン完了: 6月25日</div>
-                    <div class="milestone">開発完了: 7月20日</div>
-                    <div class="milestone">リリース: 8月5日</div>
+                <div class="comparison-chart">
+                    <div class="comparison-item">
+                        <h4>みのボクシングジム</h4>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 10%;">10%</div>
+                        </div>
+                    </div>
+                    <div class="comparison-item">
+                        <h4>みの建築</h4>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 20%;">20%</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- リアルタイム通知 -->
+    <!-- ローカル通知 -->
     <div class="notification-container" id="notifications"></div>
 
     <script src="scripts/dashboard.js"></script>

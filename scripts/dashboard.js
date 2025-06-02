@@ -181,68 +181,137 @@ function toggleHearingSheet(projectType) {
     }
 }
 
+// ヒヤリングシート入力フォーム
+function openHearingForm(projectType) {
+    document.getElementById('hearingFormModal').style.display = 'block';
+    
+    // フォーム送信処理
+    document.getElementById('hearingSheetForm').onsubmit = function(e) {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+        
+        // ローカルストレージに保存
+        saveHearingSheetLocally(projectType, data);
+        showNotification('ヒヤリングシートが保存されました', 'success');
+        closeModal('hearingFormModal');
+        
+        // 進捗を更新
+        updateProjectStatus(projectType, 'hearing_received');
+    };
+}
+
+// ローカルストレージにヒヤリングシート保存
+function saveHearingSheetLocally(projectType, data) {
+    const key = `hearing_sheet_${projectType}`;
+    const hearingData = {
+        ...data,
+        projectType: projectType,
+        submittedAt: new Date().toISOString()
+    };
+    localStorage.setItem(key, JSON.stringify(hearingData));
+}
+
+// データエクスポート機能
+function exportHearingData(projectType) {
+    const key = `hearing_sheet_${projectType}`;
+    const data = localStorage.getItem(key);
+    
+    if (data) {
+        const blob = new Blob([data], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `hearing_sheet_${projectType}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showNotification('データをエクスポートしました', 'success');
+    } else {
+        showNotification('エクスポートするデータがありません', 'warning');
+    }
+}
+
+// 印刷用表示
+function printHearingSheet(projectType) {
+    const hearingContent = document.getElementById(`${projectType}-hearing-sheet`);
+    const printWindow = window.open('', '_blank');
+    
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>${projectType} ヒヤリングシート</title>
+                <style>
+                    body { font-family: 'MS Gothic', monospace; padding: 20px; }
+                    .hearing-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+                    .hearing-item { margin-bottom: 15px; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
+                    .hearing-item label { font-weight: bold; display: block; margin-bottom: 5px; }
+                    .hearing-item span { display: block; padding: 5px; background: #f9f9f9; }
+                </style>
+            </head>
+            <body>
+                <h1>${projectType} プロジェクト ヒヤリングシート</h1>
+                <p>印刷日: ${new Date().toLocaleDateString('ja-JP')}</p>
+                ${hearingContent.innerHTML}
+            </body>
+        </html>
+    `);
+    
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+    }, 250);
+}
+
+// プロジェクト比較機能
+function showProjectComparison() {
+    document.getElementById('comparisonModal').style.display = 'block';
+    generateComparisonChart();
+}
+
+function generateComparisonChart() {
+    const canvas = document.getElementById('comparisonChart');
+    const ctx = canvas.getContext('2d');
+    
+    // 簡単な比較チャートの描画
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // みのボクシングジム
+    ctx.fillStyle = '#667eea';
+    ctx.fillRect(50, 50, 100, 30);
+    ctx.fillStyle = '#333';
+    ctx.font = '14px Arial';
+    ctx.fillText('みのボクシングジム: 10%', 50, 45);
+    
+    // みの建築
+    ctx.fillStyle = '#764ba2';
+    ctx.fillRect(50, 100, 150, 30);
+    ctx.fillText('みの建築: 20%', 50, 95);
+}
+
+// プロジェクト状況更新
+function updateProjectStatus(projectType, status) {
+    const statusKey = `project_status_${projectType}`;
+    const currentStatus = JSON.parse(localStorage.getItem(statusKey) || '{}');
+    
+    currentStatus[status] = {
+        completed: true,
+        timestamp: new Date().toISOString()
+    };
+    
+    localStorage.setItem(statusKey, JSON.stringify(currentStatus));
+}
+
 // モーダル機能
-function openProposalModal(projectType) {
-    document.getElementById('proposalModal').style.display = 'block';
-    // プロジェクト情報を設定
-    console.log(`提案書作成 for ${projectType}`);
-}
-
-function scheduleMedia(projectType) {
-    document.getElementById('scheduleModal').style.display = 'block';
-    loadAvailableTimeSlots(projectType);
-}
-
-function showProgressPrediction(projectType) {
-    document.getElementById('progressModal').style.display = 'block';
-    generateProgressChart(projectType);
-}
-
 function closeModal(modalId) {
     document.getElementById(modalId).style.display = 'none';
 }
 
-// 時間枠選択機能
-function loadAvailableTimeSlots(projectType) {
-    const timeSlots = document.querySelectorAll('.time-slot');
-    timeSlots.forEach(slot => {
-        slot.addEventListener('click', function() {
-            timeSlots.forEach(s => s.classList.remove('selected'));
-            this.classList.add('selected');
-        });
-    });
-}
-
-// AI提案書生成（模擬）
-function generateProposal() {
-    showNotification('AI提案書の生成を開始しています...', 'info');
-    
-    setTimeout(() => {
-        showNotification('提案書が正常に生成されました！', 'success');
-        closeModal('proposalModal');
-        
-        // 進捗を更新
-        updateTaskProgress('architecture', 'proposal', 80);
-    }, 3000);
-}
-
-// 進捗更新機能
-function updateTaskProgress(projectType, taskType, percentage) {
-    // リアルタイム進捗更新の実装
-    const progressElements = document.querySelectorAll(`#${projectType}-project .progress-text`);
-    
-    // WebSocket接続でリアルタイム更新（実装時）
-    if (typeof io !== 'undefined') {
-        const socket = io();
-        socket.emit('progressUpdate', {
-            project: projectType,
-            task: taskType,
-            progress: percentage
-        });
-    }
-}
-
-// 通知システム
+// 通知システム（ローカル）
 function showNotification(message, type = 'info') {
     const container = document.getElementById('notifications');
     const notification = document.createElement('div');
@@ -271,58 +340,44 @@ function getNotificationIcon(type) {
     }
 }
 
-// リマインダー送信機能
-function sendReminder(projectType) {
-    showNotification('ヒヤリングシートのリマインダーを送信しました', 'success');
-    
-    // 実際の実装では API 呼び出し
-    console.log(`Reminder sent for ${projectType}`);
-}
-
 // テンプレート表示機能
 function showTemplate(projectType) {
-    // 新しいウィンドウでテンプレートを表示
     const templateWindow = window.open('', '_blank');
     templateWindow.document.write(`
         <html>
-            <head><title>ヒヤリングシートテンプレート</title></head>
+            <head>
+                <title>ヒヤリングシートテンプレート</title>
+                <style>
+                    body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
+                    .section { margin-bottom: 20px; border: 1px solid #ddd; padding: 15px; }
+                    .required { color: red; }
+                </style>
+            </head>
             <body>
                 <h1>${projectType} ヒヤリングシートテンプレート</h1>
-                <p>テンプレートの内容がここに表示されます...</p>
+                <div class="section">
+                    <h3>基本情報 <span class="required">*必須</span></h3>
+                    <p>• 会社名・団体名</p>
+                    <p>• 担当者様</p>
+                    <p>• メールアドレス</p>
+                    <p>• 電話番号</p>
+                </div>
+                <div class="section">
+                    <h3>プロジェクト詳細</h3>
+                    <p>• ホームページの目的・ゴール</p>
+                    <p>• ターゲット層</p>
+                    <p>• 現在の課題</p>
+                    <p>• 必要な機能</p>
+                </div>
+                <div class="section">
+                    <h3>デザイン・予算</h3>
+                    <p>• デザインイメージ</p>
+                    <p>• 参考サイト</p>
+                    <p>• 予算感</p>
+                </div>
             </body>
         </html>
     `);
-}
-
-// 進捗チャート生成（Chart.js使用想定）
-function generateProgressChart(projectType) {
-    // Chart.js での実装例
-    const canvas = document.getElementById('progressChart');
-    const ctx = canvas.getContext('2d');
-    
-    // 簡単な進捗グラフの描画
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#667eea';
-    ctx.fillRect(20, 20, 200, 30);
-    ctx.fillStyle = '#333';
-    ctx.font = '14px Arial';
-    ctx.fillText('進捗予測グラフ', 20, 15);
-}
-
-// リアルタイム同期機能（WebSocket使用想定）
-function initializeRealTimeSync() {
-    if (typeof io !== 'undefined') {
-        const socket = io();
-        
-        socket.on('progressUpdate', (data) => {
-            updateProgressDisplay(data);
-            showNotification(`${data.project} の進捗が更新されました`, 'info');
-        });
-        
-        socket.on('newMessage', (data) => {
-            showNotification(data.message, 'info');
-        });
-    }
 }
 
 // キーボードナビゲーション対応

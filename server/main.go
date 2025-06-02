@@ -1,16 +1,4 @@
-package main
-
-import (
-	"encoding/json"
-	"fmt"
-	"log"
-	"net/http"
-	"time"
-
-	"github.com/gorilla/mux"
-	"github.com/gorilla/websocket"
-	"github.com/rs/cors"
-)
+// このファイルは削除予定です
 
 // ヒヤリングシートのデータ構造
 type HearingSheet struct {
