@@ -694,6 +694,12 @@ body {
     min-height: 400px;
     position: relative;
     color-scheme: light; /* ガントチャートエリアでのダークモード無効化 */
+    /* スクロール最適化 */
+    -webkit-overflow-scrolling: touch;
+    /* 不要なレイアウト再計算を防ぐ */
+    contain: layout style paint;
+    /* スクロール中のアニメーション防止 */
+    scroll-behavior: smooth;
 }
 
 /* ガントチャートタイムライン */
@@ -803,14 +809,23 @@ body {
     color: white;
     position: relative;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     opacity: 0;
     transform: scale(0.8);
+    will-change: transform, opacity;
+    /* スクロール中のアニメーション再実行を防ぐ */
+    animation-fill-mode: forwards;
+}
+
+/* アニメーション済みのガントチャートバー */
+.gantt-bar.animated {
+    opacity: 1;
+    transform: scale(1);
 }
 
 .gantt-bar:hover {
-    transform: translateY(-2px);
+    transform: translateY(-2px) scale(1);
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
@@ -1189,6 +1204,29 @@ body {
     body {
         font-size: 14px;
         line-height: 1.5;
+    }
+    
+    /* スクロール中のアニメーション無効化 */
+    .gantt-chart-container {
+        /* モバイルでのスクロール最適化 */
+        -webkit-overflow-scrolling: touch;
+        contain: strict;
+        /* GPU加速でスムーズなスクロール */
+        transform: translateZ(0);
+        -webkit-transform: translateZ(0);
+    }
+    
+    /* モバイルでのアニメーション制御 */
+    .gantt-bar {
+        /* アニメーション遅延を短縮 */
+        animation-duration: 0.3s;
+        /* スクロール中の再描画を最小化 */
+        will-change: auto;
+    }
+    
+    /* スクロール中のアニメーション無効化 */
+    .gantt-chart-container:hover .gantt-bar {
+        animation-play-state: paused;
     }
     
     /* ヘッダーの調整 */

@@ -211,16 +211,43 @@ function initializeGanttCharts() {
         updateCurrentDateIndicator();
     }, 60000); // 1分ごと
     
-    // ウィンドウリサイズ時にも位置を再計算とガントチャート再生成
+    // リサイズ時の再生成を制御（デバウンス処理）
+    let resizeTimeout;
+    let lastWidth = window.innerWidth;
+    
     window.addEventListener('resize', () => {
-        // 画面サイズ変更でタスクフィルタが変わる可能性があるため再生成
-        generateGanttChart('boxing');
-        generateGanttChart('architecture');
-        
-        setTimeout(() => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            const currentWidth = window.innerWidth;
+            // 画面幅が768pxを境界にクロスした場合のみ再生成
+            if ((lastWidth <= 768 && currentWidth > 768) || 
+                (lastWidth > 768 && currentWidth <= 768)) {
+                generateGanttChart('boxing');
+                generateGanttChart('architecture');
+                lastWidth = currentWidth;
+            }
+            
+            // 位置調整は常に実行
             updateCurrentDateIndicator();
-        }, 100);
+        }, 250); // 250ms のデバウンス
     });
+    
+    // スクロール中のアニメーション防止
+    let scrollTimeout;
+    let isScrolling = false;
+    
+    document.addEventListener('scroll', () => {
+        isScrolling = true;
+        clearTimeout(scrollTimeout);
+        
+        // スクロール終了後0.5秒後にフラグをリセット
+        scrollTimeout = setTimeout(() => {
+            isScrolling = false;
+        }, 500);
+    }, { passive: true });
+    
+    // スクロール状態をグローバルで参照可能にする
+    window.isScrolling = () => isScrolling;
     
     console.log(`ガントチャートが初期化されました。プロジェクト開始日: ${formatDate(PROJECT_START_DATE)}`);
 }
@@ -232,6 +259,11 @@ function generateGanttChart(projectType) {
 
     const tasks = getProjectTasks(projectType);
     
+    // 既存のアニメーション状態をチェック
+    const existingBars = container.querySelectorAll('.gantt-bar');
+    const hasAnimatedBars = existingBars.length > 0 && 
+                           Array.from(existingBars).some(bar => bar.style.opacity === '1');
+    
     // 凡例を追加
     const legend = createStatusLegend();
     
@@ -242,10 +274,19 @@ function generateGanttChart(projectType) {
     container.appendChild(legend);
     container.insertAdjacentHTML('beforeend', ganttHTML);
     
-    // アニメーション適用
-    setTimeout(() => {
-        animateGanttBars(projectType);
-    }, 100);
+    // 初回表示または明示的なアニメーション要求時のみアニメーション実行
+    if (!hasAnimatedBars) {
+        setTimeout(() => {
+            animateGanttBars(projectType);
+        }, 100);
+    } else {
+        // 既に表示済みの場合は即座に可視状態にする
+        const bars = container.querySelectorAll('.gantt-bar');
+        bars.forEach(bar => {
+            bar.style.opacity = '1';
+            bar.style.transform = 'scale(1)';
+        });
+    }
 }
 
 // プロジェクトタスクデータを取得
@@ -433,11 +474,37 @@ function animateGanttBars(projectType) {
     const container = document.getElementById(`${projectType}GanttChart`);
     if (!container) return;
     
-    const bars = container.querySelectorAll('.gantt-bar');
-    bars.forEach((bar, index) => {
-        setTimeout(() => {
+    // スクロール中はアニメーションをスキップ
+    if (typeof window.isScrolling === 'function' && window.isScrolling()) {
+        console.log('スクロール中のため、アニメーションをスキップします');
+        const bars = container.querySelectorAll('.gantt-bar');
+        bars.forEach(bar => {
             bar.style.opacity = '1';
             bar.style.transform = 'scale(1)';
+            bar.classList.add('animated');
+        });
+        return;
+    }
+    
+    const bars = container.querySelectorAll('.gantt-bar');
+    bars.forEach((bar, index) => {
+        // 既にアニメーション済みの場合はスキップ
+        if (bar.classList.contains('animated')) {
+            return;
+        }
+        
+        setTimeout(() => {
+            // アニメーション実行前に再度スクロール状態をチェック
+            if (typeof window.isScrolling === 'function' && window.isScrolling()) {
+                bar.style.opacity = '1';
+                bar.style.transform = 'scale(1)';
+                bar.classList.add('animated');
+                return;
+            }
+            
+            bar.style.opacity = '1';
+            bar.style.transform = 'scale(1)';
+            bar.classList.add('animated'); // アニメーション済みマーク
         }, index * 100);
     });
 }
