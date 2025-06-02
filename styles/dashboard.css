@@ -52,8 +52,8 @@ body {
     min-width: 200px;
 }
 
-.logo-image {
-    height: 60px;
+.header-logo .logo-image {
+    height: 80px;
     width: auto;
     max-width: 200px;
     object-fit: contain;
