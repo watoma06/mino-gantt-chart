@@ -91,58 +91,6 @@
                     </div>
                 </div>
 
-                <!-- ヒヤリングシート待ち -->
-                <div class="hearing-sheet-section waiting">
-                    <h3>
-                        <i class="fas fa-clock"></i>
-                        ヒヤリングシート
-                        <span class="status-badge waiting">提出待ち</span>
-                    </h3>
-                    <div class="waiting-message">
-                        <p><i class="fas fa-info-circle"></i> クライアント様にヒヤリングシートの提出をお待ちいただいております</p>
-                        <div class="action-buttons">
-                            <button class="btn-primary" onclick="window.open('https://lexia-hp.com/new', '_blank')">
-                                <i class="fas fa-edit"></i>
-                                ヒヤリングシート入力
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ヒヤリングシート内容（受領後表示用） -->
-                <div class="hearing-sheet-section" id="boxing-hearing-section" style="display: none;">
-                    <h3>
-                        <i class="fas fa-clipboard-list"></i>
-                        ヒヤリングシート内容
-                        <button class="toggle-btn" onclick="toggleHearingSheet('boxing')">
-                            <i class="fas fa-chevron-down"></i>
-                        </button>
-                    </h3>
-                    
-                    <!-- パスワード認証フォーム -->
-                    <div class="hearing-auth-form" id="boxing-auth-form">
-                        <h4>
-                            <i class="fas fa-lock"></i>
-                            閲覧にはパスワードが必要です
-                        </h4>
-                        <p>クライアント情報保護のため、パスワードを入力してください。</p>
-                        <div class="password-input-group">
-                            <input type="password" id="boxing-password" placeholder="パスワードを入力">
-                            <button class="auth-button" onclick="authenticateHearingSheet('boxing')">
-                                <i class="fas fa-unlock"></i>
-                                認証
-                            </button>
-                        </div>
-                        <div class="auth-error" id="boxing-auth-error">
-                            パスワードが正しくありません。再度お試しください。
-                        </div>
-                    </div>
-                    
-                    <div class="hearing-sheet-content" id="boxing-hearing-sheet">
-                        <!-- ヒヤリングシート受領後にここに内容が表示されます -->
-                    </div>
-                </div>
-
                 <!-- 進捗詳細 -->
                 <div class="progress-details">
                     <h3>進捗詳細</h3>
@@ -234,40 +182,6 @@
                     </h3>
                     <div class="gantt-chart-container" id="architectureGanttChart">
                         <!-- ガントチャートが動的に生成されます -->
-                    </div>
-                </div>
-
-                <!-- ヒヤリングシート内容 -->
-                <div class="hearing-sheet-section">
-                    <h3>
-                        <i class="fas fa-clipboard-list"></i>
-                        ヒヤリングシート内容
-                        <button class="toggle-btn" onclick="toggleHearingSheet('architecture')">
-                            <i class="fas fa-chevron-down"></i>
-                        </button>
-                    </h3>
-                    
-                    <!-- パスワード認証フォーム -->
-                    <div class="hearing-auth-form" id="architecture-auth-form">
-                        <h4>
-                            <i class="fas fa-lock"></i>
-                            閲覧にはパスワードが必要です
-                        </h4>
-                        <p>クライアント情報保護のため、パスワードを入力してください。</p>
-                        <div class="password-input-group">
-                            <input type="password" id="architecture-password" placeholder="パスワードを入力">
-                            <button class="auth-button" onclick="authenticateHearingSheet('architecture')">
-                                <i class="fas fa-unlock"></i>
-                                認証
-                            </button>
-                        </div>
-                        <div class="auth-error" id="architecture-auth-error">
-                            パスワードが正しくありません。再度お試しください。
-                        </div>
-                    </div>
-                    
-                    <div class="hearing-sheet-content" id="architecture-hearing-sheet">
-                        <!-- 認証後にデータが動的に読み込まれます -->
                     </div>
                 </div>
 
