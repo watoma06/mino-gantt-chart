@@ -41,19 +41,29 @@ document.addEventListener('DOMContentLoaded', function() {
 function setupLogoutButton() {
     const logoutButton = document.querySelector('.logout-button');
     if (logoutButton) {
-        logoutButton.addEventListener('click', function(event) {
+        // クリックイベント（PCとモバイル両対応）
+        logoutButton.addEventListener('click', handleLogout);
+        
+        // タッチイベント（モバイル専用）
+        logoutButton.addEventListener('touchend', function(event) {
             event.preventDefault();
-            
-            // 確認ダイアログを表示
-            if (confirm('ログアウトしますか？')) {
-                // セッション情報をクリア
-                sessionStorage.removeItem('lexia_authenticated');
-                sessionStorage.removeItem('auth_timestamp');
-                
-                // ログインページにリダイレクト
-                window.location.href = 'login.html';
-            }
+            handleLogout(event);
         });
+    }
+}
+
+// ログアウト処理関数
+function handleLogout(event) {
+    event.preventDefault();
+    
+    // 確認ダイアログを表示
+    if (confirm('ログアウトしますか？')) {
+        // セッション情報をクリア
+        sessionStorage.removeItem('lexia_authenticated');
+        sessionStorage.removeItem('auth_timestamp');
+        
+        // ログインページにリダイレクト
+        window.location.href = 'login.html';
     }
 }
 

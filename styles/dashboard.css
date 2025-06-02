@@ -1185,7 +1185,7 @@ body {
     
     /* ヘッダーの調整 */
     .dashboard-header {
-        padding: 0.75rem 0;
+        padding: 1rem 0; /* 上下のパディングを増加 */
         background: #FFFFFF;
         color: var(--color-text);
         border-bottom: 2px solid var(--color-primary);
@@ -1197,10 +1197,13 @@ body {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
+        width: 100%;
+        gap: 1rem; /* ロゴとボタンの間隔を確保 */
     }
     
     .header-logo {
         min-width: auto;
+        flex-shrink: 0; /* ロゴが縮小されないように */
     }
     
     .header-logo .logo-image {
@@ -1221,12 +1224,16 @@ body {
     .header-actions {
         display: flex;
         align-items: center;
+        flex-shrink: 0; /* ボタンが縮小されないように */
     }
     
     .logout-button {
         font-size: 12px !important;
         padding: 6px 12px !important;
         margin-left: 0 !important;
+        cursor: pointer;
+        touch-action: manipulation; /* タッチ操作最適化 */
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1); /* タップハイライト */
     }
     
     /* モバイルではログアウトボタンのテキストを非表示 */
@@ -1237,11 +1244,13 @@ body {
     .logout-button {
         padding: 8px !important;
         border-radius: 50% !important;
-        width: 36px !important;
-        height: 36px !important;
+        width: 44px !important; /* Apple/Google推奨の最小タッチサイズ */
+        height: 44px !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
+        min-width: 44px !important;
+        min-height: 44px !important;
     }
     
     /* プロジェクトタブの調整 */
