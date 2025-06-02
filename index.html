@@ -80,6 +80,28 @@
                     </div>
                 </div>
 
+                <!-- ヒヤリングシート待ち -->
+                <div class="hearing-sheet-section waiting">
+                    <h3>
+                        <i class="fas fa-clock"></i>
+                        ヒヤリングシート
+                        <span class="status-badge waiting">提出待ち</span>
+                    </h3>
+                    <div class="waiting-message">
+                        <p><i class="fas fa-info-circle"></i> クライアント様にヒヤリングシートの提出をお待ちいただいております</p>
+                        <div class="action-buttons">
+                            <button class="btn-primary" onclick="sendReminder('boxing')">
+                                <i class="fas fa-paper-plane"></i>
+                                リマインダー送信
+                            </button>
+                            <button class="btn-secondary" onclick="showTemplate('boxing')">
+                                <i class="fas fa-file-alt"></i>
+                                シートテンプレート確認
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 進捗詳細 -->
                 <div class="progress-details">
                     <h3>進捗詳細</h3>
@@ -163,6 +185,84 @@
                     </div>
                 </div>
 
+                <!-- ヒヤリングシート内容 -->
+                <div class="hearing-sheet-section">
+                    <h3>
+                        <i class="fas fa-clipboard-list"></i>
+                        ヒヤリングシート内容
+                        <button class="toggle-btn" onclick="toggleHearingSheet('architecture')">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </h3>
+                    <div class="hearing-sheet-content" id="architecture-hearing-sheet">
+                        <div class="hearing-grid">
+                            <div class="hearing-item">
+                                <label>担当者様</label>
+                                <span>美濃巧人（みのたくと）</span>
+                            </div>
+                            <div class="hearing-item">
+                                <label>会社名</label>
+                                <span>みの建築</span>
+                            </div>
+                            <div class="hearing-item">
+                                <label>連絡先</label>
+                                <span>minokenchiku314@gmail.com / 080-2630-6355</span>
+                            </div>
+                            <div class="hearing-item">
+                                <label>目的・ゴール</label>
+                                <span>集客・見込み顧客獲得、ブランディング・認知度向上</span>
+                            </div>
+                            <div class="hearing-item full-width">
+                                <label>ビジョン</label>
+                                <span>お客様が「ホームページに自分の家乗ってるから見てよ！」と宣伝してくれて、そこでお客様がビビッとくるようなホームページにしたい</span>
+                            </div>
+                            <div class="hearing-item full-width">
+                                <label>ターゲット</label>
+                                <span>これから家を建てたい子持ち世代から年配の方まで。家や店舗のリフォームをしたいけどどこに頼んだらいいかわからない方々。</span>
+                            </div>
+                            <div class="hearing-item full-width">
+                                <label>現在の課題</label>
+                                <span>個人の大工さんならではの技術力、自由な発想の強みをうまく伝えることができていない</span>
+                            </div>
+                            <div class="hearing-item full-width">
+                                <label>必要機能</label>
+                                <span>会社概要、事業・サービス紹介、商品一覧、お客様の声、実績紹介、ブログ・お知らせ、お問い合わせフォーム</span>
+                            </div>
+                            <div class="hearing-item">
+                                <label>デザインイメージ</label>
+                                <span>職人らしさよりもポップで親しみやすい雰囲気</span>
+                            </div>
+                            <div class="hearing-item">
+                                <label>参考サイト</label>
+                                <span>一条工務店、大和ハウス工業</span>
+                            </div>
+                            <div class="hearing-item">
+                                <label>予算感</label>
+                                <span>15〜30万円</span>
+                            </div>
+                            <div class="hearing-item">
+                                <label>素材準備状況</label>
+                                <span>ロゴや写真素材を一部準備済み</span>
+                            </div>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="btn-primary" onclick="openProposalModal('architecture')">
+                                <i class="fas fa-lightbulb"></i>
+                                提案書作成
+                            </button>
+                            <button class="btn-secondary" onclick="scheduleMedia('architecture')">
+                                <i class="fas fa-calendar-plus"></i>
+                                打ち合わせ予約
+                            </button>
+                            <button class="btn-info" onclick="showProgressPrediction('architecture')">
+                                <i class="fas fa-chart-line"></i>
+                                進捗予測
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 進捗詳細 -->
                 <div class="progress-details">
                     <h3>進捗詳細</h3>
@@ -173,7 +273,17 @@
                             </div>
                             <div class="task-info">
                                 <h4>初回ヒヤリングシート受け取り</h4>
-                                <p>完了日: 6月2日 | 担当者内容把握済み</p>
+                                <p>完了日: 6月1日 | 担当者内容把握済み</p>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item in-progress">
+                            <div class="task-status">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="task-info">
+                                <h4>提案書・見積書作成</h4>
+                                <p>進捗: 30% | 予算感・機能要件確認済み</p>
                             </div>
                         </div>
                         
@@ -186,21 +296,81 @@
                                 <p>状況: みのボクシングジムと合わせて調整中</p>
                             </div>
                         </div>
-                        
-                        <div class="task-item pending">
-                            <div class="task-status">
-                                <i class="fas fa-hourglass-start"></i>
-                            </div>
-                            <div class="task-info">
-                                <h4>要件詰め打ち合わせ</h4>
-                                <p>開始予定: 日程決定後</p>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
         </main>
     </div>
+
+    <!-- モーダル群 -->
+    <!-- 提案書作成モーダル -->
+    <div class="modal" id="proposalModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-lightbulb"></i> AI自動提案書生成</h3>
+                <span class="close" onclick="closeModal('proposalModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>ヒヤリングシート内容を基に、AI が最適な提案書を自動生成します。</p>
+                <div class="proposal-options">
+                    <label><input type="checkbox" checked> デザイン提案</label>
+                    <label><input type="checkbox" checked> 機能仕様書</label>
+                    <label><input type="checkbox" checked> 見積書</label>
+                    <label><input type="checkbox" checked> スケジュール案</label>
+                </div>
+                <button class="btn-primary full-width" onclick="generateProposal()">
+                    <i class="fas fa-magic"></i> 提案書を生成
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 打ち合わせ予約モーダル -->
+    <div class="modal" id="scheduleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-calendar-plus"></i> 打ち合わせ予約</h3>
+                <span class="close" onclick="closeModal('scheduleModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="calendar-integration">
+                    <p>両プロジェクトの打ち合わせを同時予約できます</p>
+                    <div class="time-slots">
+                        <button class="time-slot">6月10日 14:00-16:00</button>
+                        <button class="time-slot">6月12日 10:00-12:00</button>
+                        <button class="time-slot">6月15日 15:00-17:00</button>
+                    </div>
+                    <button class="btn-primary full-width">
+                        <i class="fas fa-check"></i> 予約確定
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 進捗予測モーダル -->
+    <div class="modal" id="progressModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-chart-line"></i> AI進捗予測</h3>
+                <span class="close" onclick="closeModal('progressModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="prediction-chart">
+                    <canvas id="progressChart"></canvas>
+                </div>
+                <div class="milestones-prediction">
+                    <h4>予測スケジュール</h4>
+                    <div class="milestone">デザイン完了: 6月25日</div>
+                    <div class="milestone">開発完了: 7月20日</div>
+                    <div class="milestone">リリース: 8月5日</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- リアルタイム通知 -->
+    <div class="notification-container" id="notifications"></div>
 
     <script src="scripts/dashboard.js"></script>
 </body>

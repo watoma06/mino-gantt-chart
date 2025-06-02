@@ -167,6 +167,164 @@ const demoData = {
     }
 };
 
+// ヒヤリングシート関連機能
+function toggleHearingSheet(projectType) {
+    const hearingSheet = document.getElementById(`${projectType}-hearing-sheet`);
+    const toggleBtn = hearingSheet.previousElementSibling.querySelector('.toggle-btn i');
+    
+    if (hearingSheet.style.display === 'none' || !hearingSheet.style.display) {
+        hearingSheet.style.display = 'block';
+        toggleBtn.style.transform = 'rotate(180deg)';
+    } else {
+        hearingSheet.style.display = 'none';
+        toggleBtn.style.transform = 'rotate(0deg)';
+    }
+}
+
+// モーダル機能
+function openProposalModal(projectType) {
+    document.getElementById('proposalModal').style.display = 'block';
+    // プロジェクト情報を設定
+    console.log(`提案書作成 for ${projectType}`);
+}
+
+function scheduleMedia(projectType) {
+    document.getElementById('scheduleModal').style.display = 'block';
+    loadAvailableTimeSlots(projectType);
+}
+
+function showProgressPrediction(projectType) {
+    document.getElementById('progressModal').style.display = 'block';
+    generateProgressChart(projectType);
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+// 時間枠選択機能
+function loadAvailableTimeSlots(projectType) {
+    const timeSlots = document.querySelectorAll('.time-slot');
+    timeSlots.forEach(slot => {
+        slot.addEventListener('click', function() {
+            timeSlots.forEach(s => s.classList.remove('selected'));
+            this.classList.add('selected');
+        });
+    });
+}
+
+// AI提案書生成（模擬）
+function generateProposal() {
+    showNotification('AI提案書の生成を開始しています...', 'info');
+    
+    setTimeout(() => {
+        showNotification('提案書が正常に生成されました！', 'success');
+        closeModal('proposalModal');
+        
+        // 進捗を更新
+        updateTaskProgress('architecture', 'proposal', 80);
+    }, 3000);
+}
+
+// 進捗更新機能
+function updateTaskProgress(projectType, taskType, percentage) {
+    // リアルタイム進捗更新の実装
+    const progressElements = document.querySelectorAll(`#${projectType}-project .progress-text`);
+    
+    // WebSocket接続でリアルタイム更新（実装時）
+    if (typeof io !== 'undefined') {
+        const socket = io();
+        socket.emit('progressUpdate', {
+            project: projectType,
+            task: taskType,
+            progress: percentage
+        });
+    }
+}
+
+// 通知システム
+function showNotification(message, type = 'info') {
+    const container = document.getElementById('notifications');
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-${getNotificationIcon(type)}"></i>
+            <span>${message}</span>
+        </div>
+    `;
+    
+    container.appendChild(notification);
+    
+    // 5秒後に自動削除
+    setTimeout(() => {
+        notification.remove();
+    }, 5000);
+}
+
+function getNotificationIcon(type) {
+    switch(type) {
+        case 'success': return 'check-circle';
+        case 'error': return 'exclamation-triangle';
+        case 'warning': return 'exclamation-circle';
+        default: return 'info-circle';
+    }
+}
+
+// リマインダー送信機能
+function sendReminder(projectType) {
+    showNotification('ヒヤリングシートのリマインダーを送信しました', 'success');
+    
+    // 実際の実装では API 呼び出し
+    console.log(`Reminder sent for ${projectType}`);
+}
+
+// テンプレート表示機能
+function showTemplate(projectType) {
+    // 新しいウィンドウでテンプレートを表示
+    const templateWindow = window.open('', '_blank');
+    templateWindow.document.write(`
+        <html>
+            <head><title>ヒヤリングシートテンプレート</title></head>
+            <body>
+                <h1>${projectType} ヒヤリングシートテンプレート</h1>
+                <p>テンプレートの内容がここに表示されます...</p>
+            </body>
+        </html>
+    `);
+}
+
+// 進捗チャート生成（Chart.js使用想定）
+function generateProgressChart(projectType) {
+    // Chart.js での実装例
+    const canvas = document.getElementById('progressChart');
+    const ctx = canvas.getContext('2d');
+    
+    // 簡単な進捗グラフの描画
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#667eea';
+    ctx.fillRect(20, 20, 200, 30);
+    ctx.fillStyle = '#333';
+    ctx.font = '14px Arial';
+    ctx.fillText('進捗予測グラフ', 20, 15);
+}
+
+// リアルタイム同期機能（WebSocket使用想定）
+function initializeRealTimeSync() {
+    if (typeof io !== 'undefined') {
+        const socket = io();
+        
+        socket.on('progressUpdate', (data) => {
+            updateProgressDisplay(data);
+            showNotification(`${data.project} の進捗が更新されました`, 'info');
+        });
+        
+        socket.on('newMessage', (data) => {
+            showNotification(data.message, 'info');
+        });
+    }
+}
+
 // キーボードナビゲーション対応
 document.addEventListener('keydown', function(event) {
     if (event.key === 'Tab') {
@@ -182,6 +340,35 @@ document.addEventListener('keydown', function(event) {
         if (focusedElement.classList.contains('tab-button')) {
             event.preventDefault();
             focusedElement.click();
+        }
+    }
+});
+
+// オートセーブ機能
+function enableAutoSave() {
+    setInterval(() => {
+        const currentState = {
+            activeTab: document.querySelector('.tab-button.active')?.getAttribute('data-project'),
+            timestamp: new Date().toISOString()
+        };
+        
+        localStorage.setItem('dashboardState', JSON.stringify(currentState));
+    }, 30000); // 30秒ごとに保存
+}
+
+// 初期化時にオートセーブ機能を開始
+document.addEventListener('DOMContentLoaded', function() {
+    // ...existing initialization...
+    enableAutoSave();
+    initializeRealTimeSync();
+    
+    // 保存された状態を復元
+    const savedState = localStorage.getItem('dashboardState');
+    if (savedState) {
+        const state = JSON.parse(savedState);
+        const tabButton = document.querySelector(`[data-project="${state.activeTab}"]`);
+        if (tabButton) {
+            tabButton.click();
         }
     }
 });
