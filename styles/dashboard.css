@@ -194,7 +194,7 @@ body {
 .project-overview h2 {
     font-size: 1.5rem;
     margin-bottom: 1.5rem;
-    color: var(--color-bg);
+    color: var(--color-dark) !important; /* PC表示での視認性を改善 */
 }
 
 .overview-cards {
@@ -211,6 +211,11 @@ body {
     box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     border: 1px solid #e1e5e9;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: var(--color-dark) !important; /* 明示的に文字色を設定 */
+}
+
+.card h3, .card p, .card span, .card small {
+    color: var(--color-dark) !important; /* すべての子要素の文字色を明示 */
 }
 
 .card:hover {
@@ -238,6 +243,15 @@ body {
 .card-content h3 {
     font-size: 1.2rem;
     margin-bottom: 1rem;
+    color: var(--color-dark);
+}
+
+.card-content p {
+    color: var(--color-dark);
+}
+
+.card-content .action-item,
+.card-content .milestone-item {
     color: var(--color-dark);
 }
 
@@ -314,9 +328,13 @@ body {
 .progress-details h3 {
     font-size: 1.3rem;
     margin-bottom: 1.5rem;
-    color: var(--color-dark);
+    color: var(--color-dark) !important; /* 文字色を明示的に設定 */
     border-bottom: 2px solid #667eea;
     padding-bottom: 0.5rem;
+}
+
+.progress-details * {
+    color: var(--color-dark) !important; /* すべての子要素の文字色を強制設定 */
 }
 
 .task-list {
@@ -358,11 +376,11 @@ body {
 .task-info h4 {
     font-size: 1.1rem;
     margin-bottom: 0.25rem;
-    color: var(--color-dark);
+    color: var(--color-dark) !important; /* 文字色を明示的に設定 */
 }
 
 .task-info p {
-    color: var(--color-text-light);
+    color: var(--color-text-light) !important; /* 文字色を明示的に設定 */
     font-size: 0.9rem;
 }
 
@@ -652,7 +670,7 @@ body {
 }
 
 .gantt-chart-section h3 {
-    color: var(--color-dark);
+    color: var(--color-dark) !important; /* 文字色を明示的に設定 */
     margin-bottom: 1.5rem;
     font-size: 1.4rem;
     display: flex;
@@ -684,10 +702,14 @@ body {
 .gantt-header {
     display: grid;
     grid-template-columns: 200px 1fr;
-    background: #f0f0f0;
+    background: #ffffff; /* 白背景に変更 */
     border-bottom: 2px solid #e1e5e9;
     font-weight: 600;
-    color: var(--color-dark);
+    color: var(--color-dark); /* ダークテキストを明示 */
+}
+
+.gantt-tasks-header {
+    color: var(--color-dark) !important; /* ヘッダータスク名の文字色を明示 */
 }
 
 .gantt-tasks-header {
@@ -710,16 +732,17 @@ body {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+    background: #ffffff; /* 白背景を明示 */
 }
 
 .gantt-date-cell .week-number {
     font-weight: 600;
-    color: #495057;
+    color: var(--color-dark) !important; /* より濃い色に変更 */
 }
 
 .gantt-date-cell .week-dates {
     font-size: 0.75rem;
-    color: #6c757d;
+    color: var(--color-text-light) !important; /* より読みやすい色に変更 */
     font-weight: normal;
 }
 
@@ -738,7 +761,7 @@ body {
     align-items: center;
     font-weight: 500;
     background: var(--color-bg);
-    color: var(--color-dark);
+    color: var(--color-dark) !important; /* タスク名の文字色を明示的に設定 */
 }
 
 .gantt-task-timeline {
