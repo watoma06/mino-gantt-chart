@@ -37,13 +37,33 @@
         .logo {
             margin-bottom: 30px;
         }
-        
-        .logo .logo-image {
+          .logo .logo-image {
             height: 80px;
             width: auto;
             max-width: 250px;
             object-fit: contain;
             margin-bottom: 20px;
+            display: block;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            background: rgba(54, 116, 16, 0.05);
+            padding: 10px;
+        }
+
+        /* ロゴが読み込めない場合のフォールバック */
+        .logo .logo-image:not([src]), .logo .logo-image[src=""] {
+            background-color: #367410;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 24px;
+            height: 80px;
+        }
+
+        .logo .logo-image:not([src])::after, .logo .logo-image[src=""]::after {
+            content: "LEXIA";
         }
 
         .logo i {
@@ -195,10 +215,13 @@
 
             .logo i {
                 font-size: 50px;
+            }            .logo .logo-image {
+                height: 60px;
+                padding: 8px;
             }
 
-            .logo .logo-image {
-                height: 60px;
+            .logo .logo-image:not([src])::after, .logo .logo-image[src=""]::after {
+                font-size: 18px;
             }
 
             .remember-checkbox {
@@ -275,9 +298,7 @@
         const rememberCheckbox = document.getElementById('rememberPassword');
         const errorMessage = document.getElementById('errorMessage');
         const successMessage = document.getElementById('successMessage');
-        const loading = document.getElementById('loading');
-
-        // ページ読み込み時に保存されたパスワードを復元
+        const loading = document.getElementById('loading');        // ページ読み込み時に保存されたパスワードを復元
         window.addEventListener('load', function() {
             const savedPassword = localStorage.getItem('lexia_saved_password');
             if (savedPassword) {
@@ -285,7 +306,33 @@
                 rememberCheckbox.checked = true;
             }
             passwordInput.focus();
+            
+            // ロゴの読み込み状況をチェック
+            checkLogoLoad();
         });
+
+        // ロゴの読み込みをチェックする関数
+        function checkLogoLoad() {
+            const logoImage = document.querySelector('.logo-image');
+            if (logoImage) {
+                logoImage.onerror = function() {
+                    console.log('ロゴファイルの読み込みに失敗しました。フォールバックテキストを表示します。');
+                    this.style.display = 'flex';
+                    this.style.alignItems = 'center';
+                    this.style.justifyContent = 'center';
+                    this.style.backgroundColor = '#367410';
+                    this.style.color = '#FFFFFF';
+                    this.style.fontWeight = 'bold';
+                    this.style.fontSize = '24px';
+                    this.textContent = 'LEXIA';
+                    this.removeAttribute('src');
+                };
+                
+                logoImage.onload = function() {
+                    console.log('ロゴファイルが正常に読み込まれました。');
+                };
+            }
+        }
 
         // パスワード表示/非表示切り替え
         passwordToggle.addEventListener('click', function() {
