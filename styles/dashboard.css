@@ -764,8 +764,9 @@ body {
     animation: pulse 2s infinite;
     display: none;
     pointer-events: none;
-    /* ガントチャートタイムライン全体に対して絶対位置 */
+    /* タイムライン内での絶対位置 */
     left: 0;
+    transform: translateX(0); /* 位置調整用 */
 }
 
 .gantt-timeline {

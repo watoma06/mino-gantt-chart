@@ -321,14 +321,18 @@ function updateCurrentDateIndicator() {
                         // 現在の週内での日の位置を計算（0-6の範囲）
                         const dayOfWeek = getCurrentDayOfWeek();
                         
-                        // 現在の週の開始位置を計算
-                        const weekStartOffset = taskColumnWidth + (currentWeek - 1) * cellWidth;
+                        // ガントチャートコンテナの左端からの距離を考慮
+                        const containerRect = ganttContainer.getBoundingClientRect();
+                        const timelineOffsetLeft = timeline.getBoundingClientRect().left - containerRect.left;
+                        
+                        // 現在の週の開始位置を計算（タイムラインの左端からの相対位置）
+                        const weekStartOffset = (currentWeek - 1) * cellWidth;
                         
                         // 週内での日の位置を計算
                         const dayOffset = (dayOfWeek / 7) * cellWidth;
                         
-                        // 最終的な位置
-                        const finalPosition = weekStartOffset + dayOffset;
+                        // 最終的な位置（タスク名列の幅を加算）
+                        const finalPosition = taskColumnWidth + weekStartOffset + dayOffset;
                         
                         // タイムライン全体の幅に対する相対位置で計算
                         const timelineWidth = timelineRect.width;
@@ -348,11 +352,14 @@ function updateCurrentDateIndicator() {
                             日: dayOfWeek,
                             タスク列幅: taskColumnWidth,
                             セル幅: cellWidth,
-                            週開始位置: weekStartOffset,
+                            週開始オフセット: weekStartOffset,
                             日オフセット: dayOffset,
                             最終位置: `${finalPosition.toFixed(2)}px`,
                             相対位置: `${relativePosition.toFixed(2)}%`,
-                            タイムライン幅: timelineWidth
+                            タイムライン幅: timelineWidth,
+                            コンテナ左端: containerRect.left,
+                            タイムライン左端: timeline.getBoundingClientRect().left,
+                            タイムラインオフセット: timelineOffsetLeft
                         });
                     }
                 }
