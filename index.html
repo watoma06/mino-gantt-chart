@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEXIA クライアント進捗管理システム</title>
+    <link rel="stylesheet" href="styles/dashboard.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- ヘッダー -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <h1><i class="fas fa-chart-gantt"></i> LEXIA 進捗管理</h1>
+                <div class="user-info">
+                    <span>オーナー様</span>
+                    <i class="fas fa-user-circle"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- プロジェクトタブ -->
+        <div class="project-tabs">
+            <button class="tab-button active" data-project="boxing">
+                <i class="fas fa-fist-raised"></i>
+                みのボクシングジム
+            </button>
+            <button class="tab-button" data-project="architecture">
+                <i class="fas fa-building"></i>
+                みの建築
+            </button>
+        </div>
+
+        <!-- ダッシュボードコンテンツ -->
+        <main class="dashboard-main">
+            <!-- みのボクシングジムプロジェクト -->
+            <div class="project-content active" id="boxing-project">
+                <div class="project-overview">
+                    <h2>みのボクシングジム プロジェクト概要</h2>
+                    <div class="overview-cards">
+                        <div class="card progress-card">
+                            <div class="card-icon">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>全体進捗</h3>
+                                <div class="progress-circle">
+                                    <span class="progress-text">65%</span>
+                                </div>
+                                <p>予定通り進行中</p>
+                            </div>
+                        </div>
+                        
+                        <div class="card next-action-card">
+                            <div class="card-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>次のアクション</h3>
+                                <div class="action-item urgent">
+                                    <span>会員管理画面デザイン確認</span>
+                                    <small>期限: 6月5日</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card milestone-card">
+                            <div class="card-icon">
+                                <i class="fas fa-flag"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>次のマイルストーン</h3>
+                                <div class="milestone-item">
+                                    <span>β版リリース</span>
+                                    <small>予定: 6月15日</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 進捗詳細 -->
+                <div class="progress-details">
+                    <h3>進捗詳細</h3>
+                    <div class="task-list">
+                        <div class="task-item completed">
+                            <div class="task-status">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="task-info">
+                                <h4>トップページデザイン</h4>
+                                <p>完了日: 5月28日</p>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item in-progress">
+                            <div class="task-status">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="task-info">
+                                <h4>会員管理システム開発</h4>
+                                <p>進捗: 70% | 担当: 開発チーム</p>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item pending">
+                            <div class="task-status">
+                                <i class="fas fa-hourglass-start"></i>
+                            </div>
+                            <div class="task-info">
+                                <h4>決済システム連携</h4>
+                                <p>開始予定: 6月10日</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- みの建築プロジェクト -->
+            <div class="project-content" id="architecture-project">
+                <div class="project-overview">
+                    <h2>みの建築 プロジェクト概要</h2>
+                    <div class="overview-cards">
+                        <div class="card progress-card">
+                            <div class="card-icon">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>全体進捗</h3>
+                                <div class="progress-circle">
+                                    <span class="progress-text">45%</span>
+                                </div>
+                                <p>順調に進行中</p>
+                            </div>
+                        </div>
+                        
+                        <div class="card next-action-card">
+                            <div class="card-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>次のアクション</h3>
+                                <div class="action-item">
+                                    <span>施工事例写真の提供</span>
+                                    <small>期限: 6月7日</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card milestone-card">
+                            <div class="card-icon">
+                                <i class="fas fa-flag"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>次のマイルストーン</h3>
+                                <div class="milestone-item">
+                                    <span>デザイン最終確認</span>
+                                    <small>予定: 6月20日</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 進捗詳細 -->
+                <div class="progress-details">
+                    <h3>進捗詳細</h3>
+                    <div class="task-list">
+                        <div class="task-item completed">
+                            <div class="task-status">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="task-info">
+                                <h4>サイト構成設計</h4>
+                                <p>完了日: 5月25日</p>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item in-progress">
+                            <div class="task-status">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="task-info">
+                                <h4>ポートフォリオページ制作</h4>
+                                <p>進捗: 60% | 担当: デザイナー</p>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item pending">
+                            <div class="task-status">
+                                <i class="fas fa-hourglass-start"></i>
+                            </div>
+                            <div class="task-info">
+                                <h4>問い合わせフォーム実装</h4>
+                                <p>開始予定: 6月15日</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="scripts/dashboard.js"></script>
+</body>
+</html>
