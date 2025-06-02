@@ -1226,6 +1226,8 @@ body.scrolling .gantt-bar {
         /* GPU加速でスムーズなスクロール */
         transform: translateZ(0);
         -webkit-transform: translateZ(0);
+        /* スマホでの表示領域確保 */
+        min-height: 350px;
     }
     
     /* モバイルでのアニメーション制御 */
@@ -1464,6 +1466,7 @@ body.scrolling .gantt-bar {
     .gantt-chart-section {
         padding: 1rem;
         margin-bottom: 1.5rem;
+        min-height: 400px; /* スマホでの最小高さを設定 */
     }
     
     .gantt-chart-section h3 {
@@ -1485,11 +1488,15 @@ body.scrolling .gantt-bar {
     
     .gantt-row {
         grid-template-columns: 120px 1fr;
+        min-height: 50px; /* スマホでの行の最小高さを設定 */
     }
     
     .gantt-task-name {
         font-size: 0.8rem;
-        padding: 0.5rem;
+        padding: 0.8rem 0.5rem; /* 上下のパディングを増やして見やすく */
+        min-height: 50px; /* タスク名エリアの最小高さを設定 */
+        display: flex;
+        align-items: center; /* テキストを垂直中央揃え */
     }
     
     .gantt-date-cell {
