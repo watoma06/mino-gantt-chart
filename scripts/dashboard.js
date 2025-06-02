@@ -181,24 +181,10 @@ function toggleHearingSheet(projectType) {
     }
 }
 
-// ヒヤリングシート入力フォーム
+// ヒヤリングシート入力フォーム（外部リンク）
 function openHearingForm(projectType) {
-    document.getElementById('hearingFormModal').style.display = 'block';
-    
-    // フォーム送信処理
-    document.getElementById('hearingSheetForm').onsubmit = function(e) {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        const data = Object.fromEntries(formData.entries());
-        
-        // ローカルストレージに保存
-        saveHearingSheetLocally(projectType, data);
-        showNotification('ヒヤリングシートが保存されました', 'success');
-        closeModal('hearingFormModal');
-        
-        // 進捗を更新
-        updateProjectStatus(projectType, 'hearing_received');
-    };
+    // 外部サイトを開く
+    window.open('https://lexia-hp.com/new', '_blank');
 }
 
 // ローカルストレージにヒヤリングシート保存
@@ -411,11 +397,10 @@ function enableAutoSave() {
     }, 30000); // 30秒ごとに保存
 }
 
-// 初期化時にオートセーブ機能を開始
+// 初期化時に分析機能を準備
 document.addEventListener('DOMContentLoaded', function() {
     // ...existing initialization...
     enableAutoSave();
-    initializeRealTimeSync();
     
     // 保存された状態を復元
     const savedState = localStorage.getItem('dashboardState');
@@ -428,313 +413,259 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// ============= 新機能: コラボレーション =============
+// ============= 新機能: 分析機能 =============
 
-// 共有メモ機能
-let currentMemoProject = '';
-
-function openSharedMemo(projectType) {
-    currentMemoProject = projectType;
-    const modal = document.getElementById('sharedMemoModal');
-    const projectName = document.getElementById('memoProjectName');
-    const memoText = document.getElementById('sharedMemoText');
-    const lastUpdated = document.getElementById('memoLastUpdated');
+// 進捗予測機能
+function showProgressPrediction(projectType) {
+    const modal = document.getElementById('progressPredictionModal');
+    const projectName = document.getElementById('predictionProjectName');
+    const currentProgress = document.getElementById('currentProgressValue');
     
     // プロジェクト名を設定
     projectName.textContent = projectType === 'boxing' ? 'みのボクシングジム' : 'みの建築';
     
-    // 保存されたメモを読み込み
-    const savedMemo = localStorage.getItem(`shared_memo_${projectType}`);
-    if (savedMemo) {
-        const memoData = JSON.parse(savedMemo);
-        memoText.value = memoData.content || '';
-        lastUpdated.textContent = new Date(memoData.lastUpdated).toLocaleString('ja-JP');
-    } else {
-        memoText.value = '';
-        lastUpdated.textContent = '-';
-    }
+    // 現在の進捗を設定
+    const progressValue = projectType === 'boxing' ? '10%' : '20%';
+    currentProgress.textContent = progressValue;
     
-    // 文字数・行数カウンターを更新
-    updateMemoStats();
-    
-    // テキストエリアにイベントリスナーを追加
-    memoText.addEventListener('input', updateMemoStats);
+    // 予測データを生成・表示
+    generateProgressPrediction(projectType);
     
     modal.style.display = 'block';
 }
 
-function updateMemoStats() {
-    const memoText = document.getElementById('sharedMemoText');
-    const charCount = document.getElementById('memoCharCount');
-    const lineCount = document.getElementById('memoLineCount');
+function generateProgressPrediction(projectType) {
+    const canvas = document.getElementById('predictionChart');
+    const ctx = canvas.getContext('2d');
     
-    charCount.textContent = memoText.value.length;
-    lineCount.textContent = memoText.value.split('\n').length;
+    // キャンバスをクリア
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // 予測データ（プロジェクトタイプに基づく）
+    const predictionData = getPredictionData(projectType);
+    
+    // チャートを描画
+    drawPredictionChart(ctx, predictionData);
+    
+    // 予測詳細を更新
+    updatePredictionDetails(predictionData);
 }
 
-function saveMemo() {
-    const memoText = document.getElementById('sharedMemoText');
-    const memoData = {
-        content: memoText.value,
-        lastUpdated: new Date().toISOString(),
-        project: currentMemoProject
-    };
-    
-    localStorage.setItem(`shared_memo_${currentMemoProject}`, JSON.stringify(memoData));
-    
-    // 最終更新時刻を表示
-    const lastUpdated = document.getElementById('memoLastUpdated');
-    lastUpdated.textContent = new Date().toLocaleString('ja-JP');
-    
-    showNotification('共有メモを保存しました', 'success');
-}
-
-function clearMemo() {
-    if (confirm('共有メモをクリアしてもよろしいですか？')) {
-        document.getElementById('sharedMemoText').value = '';
-        updateMemoStats();
-        showNotification('共有メモをクリアしました', 'warning');
-    }
-}
-
-// タスク進捗共有機能
-let currentTaskProject = '';
-let taskIdCounter = 1;
-
-function showTaskProgress(projectType) {
-    currentTaskProject = projectType;
-    const modal = document.getElementById('taskProgressModal');
-    const projectName = document.getElementById('taskProjectName');
-    
-    // プロジェクト名を設定
-    projectName.textContent = projectType === 'boxing' ? 'みのボクシングジム' : 'みの建築';
-    
-    // タスクリストを読み込み
-    loadTaskList(projectType);
-    
-    // 全体進捗を更新
-    updateOverallProgress(projectType);
-    
-    modal.style.display = 'block';
-}
-
-function loadTaskList(projectType) {
-    const container = document.getElementById('taskListContainer');
-    const savedTasks = localStorage.getItem(`tasks_${projectType}`);
-    
-    if (savedTasks) {
-        const tasks = JSON.parse(savedTasks);
-        renderTaskList(tasks);
-    } else {
-        // デフォルトタスクを設定
-        const defaultTasks = getDefaultTasks(projectType);
-        localStorage.setItem(`tasks_${projectType}`, JSON.stringify(defaultTasks));
-        renderTaskList(defaultTasks);
-    }
-}
-
-function getDefaultTasks(projectType) {
+function getPredictionData(projectType) {
     if (projectType === 'boxing') {
-        return [
-            {
-                id: 1,
-                name: '初回ヒヤリングシート提出',
-                status: 'pending',
-                progress: 0,
-                assignee: 'クライアント',
-                dueDate: '2024-06-10',
-                description: 'プロジェクト要件の詳細把握'
-            },
-            {
-                id: 2,
-                name: '打ち合わせ日程調整',
-                status: 'pending',
-                progress: 0,
-                assignee: 'LEXIA',
-                dueDate: '2024-06-15',
-                description: 'ヒヤリングシート受領後の打ち合わせ'
-            }
-        ];
+        return {
+            currentProgress: 10,
+            predictedCompletionDate: '2024年8月15日',
+            remainingWorkTime: '約8週間',
+            confidence: '75%',
+            milestones: [
+                { name: 'ヒヤリング完了', date: '6月15日', progress: 20 },
+                { name: '設計完了', date: '7月1日', progress: 40 },
+                { name: '開発完了', date: '7月30日', progress: 80 },
+                { name: 'テスト・公開', date: '8月15日', progress: 100 }
+            ]
+        };
     } else {
-        return [
-            {
-                id: 1,
-                name: 'ヒヤリングシート受け取り',
-                status: 'completed',
-                progress: 100,
-                assignee: 'LEXIA',
-                dueDate: '2024-06-01',
-                description: 'クライアント要件の把握完了'
-            },
-            {
-                id: 2,
-                name: '提案書・見積書作成',
-                status: 'in-progress',
-                progress: 30,
-                assignee: 'LEXIA',
-                dueDate: '2024-06-08',
-                description: '機能要件と予算感に基づく提案書作成'
-            },
-            {
-                id: 3,
-                name: '打ち合わせ日程調整',
-                status: 'pending',
-                progress: 0,
-                assignee: 'LEXIA',
-                dueDate: '2024-06-10',
-                description: 'みのボクシングジムと合わせた日程調整'
-            }
-        ];
+        return {
+            currentProgress: 20,
+            predictedCompletionDate: '2024年7月30日',
+            remainingWorkTime: '約6週間',
+            confidence: '85%',
+            milestones: [
+                { name: '要件定義完了', date: '6月20日', progress: 35 },
+                { name: '設計完了', date: '7月5日', progress: 55 },
+                { name: '開発完了', date: '7月25日', progress: 90 },
+                { name: 'テスト・公開', date: '7月30日', progress: 100 }
+            ]
+        };
     }
 }
 
-function renderTaskList(tasks) {
-    const container = document.getElementById('taskListContainer');
+function drawPredictionChart(ctx, data) {
+    const width = ctx.canvas.width;
+    const height = ctx.canvas.height;
+    const padding = 40;
+    
+    // 背景
+    ctx.fillStyle = '#f8f9fa';
+    ctx.fillRect(0, 0, width, height);
+    
+    // グリッド線
+    ctx.strokeStyle = '#e9ecef';
+    ctx.lineWidth = 1;
+    
+    // 縦線
+    for (let i = 0; i <= 4; i++) {
+        const x = padding + (i * (width - 2 * padding) / 4);
+        ctx.beginPath();
+        ctx.moveTo(x, padding);
+        ctx.lineTo(x, height - padding);
+        ctx.stroke();
+    }
+    
+    // 横線
+    for (let i = 0; i <= 4; i++) {
+        const y = padding + (i * (height - 2 * padding) / 4);
+        ctx.beginPath();
+        ctx.moveTo(padding, y);
+        ctx.lineTo(width - padding, y);
+        ctx.stroke();
+    }
+    
+    // 進捗線を描画
+    ctx.strokeStyle = '#667eea';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    
+    data.milestones.forEach((milestone, index) => {
+        const x = padding + (index * (width - 2 * padding) / (data.milestones.length - 1));
+        const y = height - padding - (milestone.progress * (height - 2 * padding) / 100);
+        
+        if (index === 0) {
+            ctx.moveTo(x, y);
+        } else {
+            ctx.lineTo(x, y);
+        }
+        
+        // マイルストーンポイント
+        ctx.fillStyle = '#667eea';
+        ctx.fillRect(x - 3, y - 3, 6, 6);
+    });
+    
+    ctx.stroke();
+    
+    // ラベル
+    ctx.fillStyle = '#333';
+    ctx.font = '12px sans-serif';
+    ctx.fillText('進捗予測チャート', 10, 20);
+    ctx.fillText('0%', 10, height - 10);
+    ctx.fillText('100%', 10, 30);
+}
+
+function updatePredictionDetails(data) {
+    document.getElementById('predictedCompletionDate').textContent = data.predictedCompletionDate;
+    document.getElementById('remainingWorkTime').textContent = data.remainingWorkTime;
+    document.getElementById('predictionConfidence').textContent = data.confidence;
+}
+
+// ボトルネック検出機能
+function showBottleneckAnalysis(projectType) {
+    const modal = document.getElementById('bottleneckModal');
+    const projectName = document.getElementById('bottleneckProjectName');
+    const analysisDate = document.getElementById('analysisDate');
+    
+    // プロジェクト名を設定
+    projectName.textContent = projectType === 'boxing' ? 'みのボクシングジム' : 'みの建築';
+    
+    // 分析日時を設定
+    analysisDate.textContent = new Date().toLocaleString('ja-JP');
+    
+    // ボトルネック分析を実行・表示
+    generateBottleneckAnalysis(projectType);
+    
+    modal.style.display = 'block';
+}
+
+function generateBottleneckAnalysis(projectType) {
+    const bottleneckData = getBottleneckData(projectType);
+    
+    // ボトルネックリストを表示
+    displayBottlenecks(bottleneckData.bottlenecks);
+    
+    // 改善提案を表示
+    displayRecommendations(bottleneckData.recommendations);
+}
+
+function getBottleneckData(projectType) {
+    if (projectType === 'boxing') {
+        return {
+            bottlenecks: [
+                {
+                    title: 'ヒヤリングシート提出遅延',
+                    description: 'クライアント側のヒヤリングシート提出が予定より遅れています。',
+                    impact: '全体スケジュールに2週間の遅延リスク',
+                    severity: 'high'
+                },
+                {
+                    title: 'リソース競合',
+                    description: 'みの建築プロジェクトとの同時進行によるリソース競合が発生する可能性があります。',
+                    impact: '開発フェーズで作業効率低下の可能性',
+                    severity: 'warning'
+                }
+            ],
+            recommendations: [
+                {
+                    title: 'ヒヤリングシート催促',
+                    description: 'クライアントに対して丁寧な催促とサポートを提供し、シート提出を促進する。'
+                },
+                {
+                    title: 'スケジュール調整',
+                    description: '両プロジェクトのタイムラインを調整し、リソース競合を最小化する。'
+                }
+            ]
+        };
+    } else {
+        return {
+            bottlenecks: [
+                {
+                    title: '素材提供待ち',
+                    description: 'クライアントからの追加素材（施工事例写真等）の提供が必要です。',
+                    impact: 'デザイン作業の進行に影響',
+                    severity: 'warning'
+                },
+                {
+                    title: '要件詳細化不足',
+                    description: '一部機能要件の詳細が不明確で、設計段階での判断が困難です。',
+                    impact: '設計・開発フェーズでの手戻りリスク',
+                    severity: 'info'
+                }
+            ],
+            recommendations: [
+                {
+                    title: '素材収集サポート',
+                    description: '素材提供のガイドラインを作成し、クライアントの素材準備をサポートする。'
+                },
+                {
+                    title: '要件詳細化ミーティング',
+                    description: '追加のヒヤリングミーティングを設定し、不明確な要件を詳細化する。'
+                }
+            ]
+        };
+    }
+}
+
+function displayBottlenecks(bottlenecks) {
+    const container = document.getElementById('bottleneckList');
     container.innerHTML = '';
     
-    tasks.forEach(task => {
-        const taskCard = createTaskCard(task);
-        container.appendChild(taskCard);
+    bottlenecks.forEach(bottleneck => {
+        const item = document.createElement('div');
+        item.className = `bottleneck-item ${bottleneck.severity}`;
+        item.innerHTML = `
+            <div class="bottleneck-title">${bottleneck.title}</div>
+            <div class="bottleneck-description">${bottleneck.description}</div>
+            <div class="bottleneck-impact">影響: ${bottleneck.impact}</div>
+        `;
+        container.appendChild(item);
     });
 }
 
-function createTaskCard(task) {
-    const card = document.createElement('div');
-    card.className = `task-card ${task.status}`;
-    card.innerHTML = `
-        <div class="task-card-header">
-            <div class="task-card-title">${task.name}</div>
-            <div class="task-card-status ${task.status}">
-                ${getStatusLabel(task.status)}
+function displayRecommendations(recommendations) {
+    const container = document.getElementById('recommendationsList');
+    container.innerHTML = '';
+    
+    recommendations.forEach(recommendation => {
+        const item = document.createElement('div');
+        item.className = 'recommendation-item';
+        item.innerHTML = `
+            <i class="fas fa-lightbulb"></i>
+            <div class="recommendation-content">
+                <div class="recommendation-title">${recommendation.title}</div>
+                <div class="recommendation-description">${recommendation.description}</div>
             </div>
-        </div>
-        <div class="task-card-meta">
-            <span>担当: ${task.assignee}</span>
-            <span>期限: ${task.dueDate}</span>
-        </div>
-        <div class="task-card-progress">
-            <div class="progress-bar-horizontal">
-                <div class="progress-fill-horizontal" style="width: ${task.progress}%;">
-                    ${task.progress}%
-                </div>
-            </div>
-        </div>
-        <div class="task-card-description">
-            <small>${task.description}</small>
-        </div>
-        <div class="task-card-actions">
-            <button class="btn-edit" onclick="editTask(${task.id})">
-                <i class="fas fa-edit"></i> 編集
-            </button>
-            <button class="btn-delete" onclick="deleteTask(${task.id})">
-                <i class="fas fa-trash"></i> 削除
-            </button>
-        </div>
-    `;
-    return card;
-}
-
-function getStatusLabel(status) {
-    switch(status) {
-        case 'completed': return '完了';
-        case 'in-progress': return '進行中';
-        case 'pending': return '未着手';
-        default: return '不明';
-    }
-}
-
-function updateOverallProgress(projectType) {
-    const savedTasks = localStorage.getItem(`tasks_${projectType}`);
-    if (!savedTasks) return;
-    
-    const tasks = JSON.parse(savedTasks);
-    const totalProgress = tasks.reduce((sum, task) => sum + task.progress, 0);
-    const overallProgress = Math.round(totalProgress / tasks.length);
-    
-    const progressBar = document.getElementById('taskOverallProgress');
-    const progressPercentage = document.getElementById('taskProgressPercentage');
-    
-    progressBar.style.width = `${overallProgress}%`;
-    progressBar.textContent = `${overallProgress}%`;
-    progressPercentage.textContent = `${overallProgress}%`;
-}
-
-function addNewTask() {
-    document.getElementById('newTaskModal').style.display = 'block';
-    
-    // フォームをリセット
-    document.getElementById('newTaskForm').reset();
-    document.getElementById('progressDisplay').textContent = '0%';
-    
-    // フォーム送信処理
-    document.getElementById('newTaskForm').onsubmit = function(e) {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        
-        const newTask = {
-            id: taskIdCounter++,
-            name: formData.get('taskName'),
-            status: formData.get('status'),
-            progress: parseInt(formData.get('progress')),
-            assignee: formData.get('assignee'),
-            dueDate: formData.get('dueDate'),
-            description: formData.get('description')
-        };
-        
-        // タスクを保存
-        const savedTasks = localStorage.getItem(`tasks_${currentTaskProject}`);
-        const tasks = savedTasks ? JSON.parse(savedTasks) : [];
-        tasks.push(newTask);
-        localStorage.setItem(`tasks_${currentTaskProject}`, JSON.stringify(tasks));
-        
-        // 表示を更新
-        renderTaskList(tasks);
-        updateOverallProgress(currentTaskProject);
-        
-        closeModal('newTaskModal');
-        showNotification('新しいタスクを追加しました', 'success');
-    };
-}
-
-function updateProgressDisplay(value) {
-    document.getElementById('progressDisplay').textContent = `${value}%`;
-}
-
-function editTask(taskId) {
-    // 実装予定: タスク編集機能
-    showNotification('タスク編集機能は今後実装予定です', 'info');
-}
-
-function deleteTask(taskId) {
-    if (confirm('このタスクを削除してもよろしいですか？')) {
-        const savedTasks = localStorage.getItem(`tasks_${currentTaskProject}`);
-        if (savedTasks) {
-            let tasks = JSON.parse(savedTasks);
-            tasks = tasks.filter(task => task.id !== taskId);
-            localStorage.setItem(`tasks_${currentTaskProject}`, JSON.stringify(tasks));
-            
-            renderTaskList(tasks);
-            updateOverallProgress(currentTaskProject);
-            showNotification('タスクを削除しました', 'warning');
-        }
-    }
-}
-
-function exportTaskProgress() {
-    const savedTasks = localStorage.getItem(`tasks_${currentTaskProject}`);
-    if (savedTasks) {
-        const blob = new Blob([savedTasks], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `tasks_${currentTaskProject}_${new Date().toISOString().split('T')[0]}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        
-        showNotification('タスク進捗をエクスポートしました', 'success');
-    }
+        `;
+        container.appendChild(item);
+    });
 }
 
 // リアルタイム同期機能（ローカル）

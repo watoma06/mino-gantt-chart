@@ -80,16 +80,16 @@
                     </div>
                 </div>
 
-                <!-- コラボレーション機能 -->
-                <div class="collaboration-section">
-                    <div class="collaboration-buttons">
-                        <button class="btn-info" onclick="openSharedMemo('boxing')">
-                            <i class="fas fa-sticky-note"></i>
-                            共有メモ
+                <!-- 分析・予測機能 -->
+                <div class="analysis-section">
+                    <div class="analysis-buttons">
+                        <button class="btn-info" onclick="showProgressPrediction('boxing')">
+                            <i class="fas fa-chart-line"></i>
+                            進捗予測
                         </button>
-                        <button class="btn-info" onclick="showTaskProgress('boxing')">
-                            <i class="fas fa-tasks"></i>
-                            タスク進捗共有
+                        <button class="btn-info" onclick="showBottleneckAnalysis('boxing')">
+                            <i class="fas fa-exclamation-circle"></i>
+                            ボトルネック検出
                         </button>
                     </div>
                 </div>
@@ -104,13 +104,9 @@
                     <div class="waiting-message">
                         <p><i class="fas fa-info-circle"></i> クライアント様にヒヤリングシートの提出をお待ちいただいております</p>
                         <div class="action-buttons">
-                            <button class="btn-primary" onclick="openHearingForm('boxing')">
+                            <button class="btn-primary" onclick="window.open('https://lexia-hp.com/new', '_blank')">
                                 <i class="fas fa-edit"></i>
                                 ヒヤリングシート入力
-                            </button>
-                            <button class="btn-secondary" onclick="showTemplate('boxing')">
-                                <i class="fas fa-file-alt"></i>
-                                シートテンプレート確認
                             </button>
                         </div>
                     </div>
@@ -199,16 +195,16 @@
                     </div>
                 </div>
 
-                <!-- コラボレーション機能 -->
-                <div class="collaboration-section">
-                    <div class="collaboration-buttons">
-                        <button class="btn-info" onclick="openSharedMemo('architecture')">
-                            <i class="fas fa-sticky-note"></i>
-                            共有メモ
+                <!-- 分析・予測機能 -->
+                <div class="analysis-section">
+                    <div class="analysis-buttons">
+                        <button class="btn-info" onclick="showProgressPrediction('architecture')">
+                            <i class="fas fa-chart-line"></i>
+                            進捗予測
                         </button>
-                        <button class="btn-info" onclick="showTaskProgress('architecture')">
-                            <i class="fas fa-tasks"></i>
-                            タスク進捗共有
+                        <button class="btn-info" onclick="showBottleneckAnalysis('architecture')">
+                            <i class="fas fa-exclamation-circle"></i>
+                            ボトルネック検出
                         </button>
                     </div>
                 </div>
@@ -403,133 +399,74 @@
         </div>
     </div>
 
-    <!-- 共有メモモーダル -->
-    <div class="modal" id="sharedMemoModal">
+    <!-- 進捗予測モーダル -->
+    <div class="modal" id="progressPredictionModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3><i class="fas fa-sticky-note"></i> 共有メモ</h3>
-                <span class="close" onclick="closeModal('sharedMemoModal')">&times;</span>
+                <h3><i class="fas fa-chart-line"></i> 進捗予測</h3>
+                <span class="close" onclick="closeModal('progressPredictionModal')">&times;</span>
             </div>
             <div class="modal-body">
-                <div class="memo-header">
-                    <div class="memo-info">
-                        <span id="memoProjectName"></span>
-                        <small>最終更新: <span id="memoLastUpdated">-</span></small>
-                    </div>
-                    <div class="memo-actions">
-                        <button class="btn-secondary" onclick="clearMemo()">
-                            <i class="fas fa-trash"></i>
-                            クリア
-                        </button>
-                        <button class="btn-primary" onclick="saveMemo()">
-                            <i class="fas fa-save"></i>
-                            保存
-                        </button>
-                    </div>
-                </div>
-                <div class="memo-content">
-                    <textarea id="sharedMemoText" placeholder="プロジェクトに関する共有メモを入力してください...
-                    
-• 打ち合わせの議事録
-• 重要な決定事項
-• クライアントからの要望
-• 技術的な検討事項
-• その他の重要な情報" rows="12"></textarea>
-                </div>
-                <div class="memo-footer">
-                    <div class="memo-stats">
-                        <span>文字数: <span id="memoCharCount">0</span></span>
-                        <span>行数: <span id="memoLineCount">1</span></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- タスク進捗共有モーダル -->
-    <div class="modal" id="taskProgressModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-tasks"></i> タスク進捗共有</h3>
-                <span class="close" onclick="closeModal('taskProgressModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="task-progress-header">
+                <div class="prediction-header">
                     <div class="project-info">
-                        <h4 id="taskProjectName"></h4>
-                        <div class="overall-progress">
-                            <span>全体進捗:</span>
-                            <div class="progress-bar-horizontal">
-                                <div class="progress-fill-horizontal" id="taskOverallProgress"></div>
-                            </div>
-                            <span id="taskProgressPercentage">0%</span>
+                        <h4 id="predictionProjectName"></h4>
+                        <div class="current-progress">
+                            <span>現在の進捗:</span>
+                            <span id="currentProgressValue">0%</span>
                         </div>
                     </div>
-                    <div class="task-actions">
-                        <button class="btn-secondary" onclick="addNewTask()">
-                            <i class="fas fa-plus"></i>
-                            タスク追加
-                        </button>
-                        <button class="btn-info" onclick="exportTaskProgress()">
-                            <i class="fas fa-download"></i>
-                            エクスポート
-                        </button>
-                    </div>
                 </div>
-                <div class="task-list-container" id="taskListContainer">
-                    <!-- タスクリストが動的に生成されます -->
+                <div class="prediction-content">
+                    <div class="prediction-chart">
+                        <canvas id="predictionChart" width="400" height="200"></canvas>
+                    </div>
+                    <div class="prediction-details">
+                        <div class="prediction-item">
+                            <label>予測完了日:</label>
+                            <span id="predictedCompletionDate">-</span>
+                        </div>
+                        <div class="prediction-item">
+                            <label>残り作業時間:</label>
+                            <span id="remainingWorkTime">-</span>
+                        </div>
+                        <div class="prediction-item">
+                            <label>信頼度:</label>
+                            <span id="predictionConfidence">-</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 新規タスク追加モーダル -->
-    <div class="modal" id="newTaskModal">
+    <!-- ボトルネック検出モーダル -->
+    <div class="modal" id="bottleneckModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3><i class="fas fa-plus"></i> 新規タスク追加</h3>
-                <span class="close" onclick="closeModal('newTaskModal')">&times;</span>
+                <h3><i class="fas fa-exclamation-circle"></i> ボトルネック検出</h3>
+                <span class="close" onclick="closeModal('bottleneckModal')">&times;</span>
             </div>
             <div class="modal-body">
-                <form id="newTaskForm">
-                    <div class="form-group">
-                        <label>タスク名</label>
-                        <input type="text" name="taskName" required placeholder="例: ワイヤーフレーム作成">
+                <div class="bottleneck-header">
+                    <div class="project-info">
+                        <h4 id="bottleneckProjectName"></h4>
+                        <div class="analysis-date">
+                            <span>分析日時:</span>
+                            <span id="analysisDate"></span>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>担当者</label>
-                        <select name="assignee">
-                            <option value="LEXIA">LEXIA</option>
-                            <option value="クライアント">クライアント</option>
-                            <option value="両者">両者</option>
-                        </select>
+                </div>
+                <div class="bottleneck-content">
+                    <div class="bottleneck-list" id="bottleneckList">
+                        <!-- ボトルネック項目が動的に生成されます -->
                     </div>
-                    <div class="form-group">
-                        <label>ステータス</label>
-                        <select name="status">
-                            <option value="pending">未着手</option>
-                            <option value="in-progress">進行中</option>
-                            <option value="completed">完了</option>
-                        </select>
+                    <div class="recommendations">
+                        <h5>改善提案</h5>
+                        <div id="recommendationsList">
+                            <!-- 改善提案が動的に生成されます -->
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>進捗率</label>
-                        <input type="range" name="progress" min="0" max="100" value="0" oninput="updateProgressDisplay(this.value)">
-                        <span id="progressDisplay">0%</span>
-                    </div>
-                    <div class="form-group">
-                        <label>期限</label>
-                        <input type="date" name="dueDate">
-                    </div>
-                    <div class="form-group">
-                        <label>詳細</label>
-                        <textarea name="description" rows="3" placeholder="タスクの詳細説明"></textarea>
-                    </div>
-                    <button type="submit" class="btn-primary full-width">
-                        <i class="fas fa-plus"></i>
-                        タスクを追加
-                    </button>
-                </form>
+                </div>
             </div>
         </div>
     </div>
