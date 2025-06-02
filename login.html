@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <meta name="format-detection" content="telephone=no">    <meta name="theme-color" content="#367410">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#367410">
     <title>LEXIA Client Management System - Login</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
             margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }        body {
+            padding: 0;            box-sizing: border-box;
+        }
+
+        body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #303030;
             min-height: 100vh;
@@ -34,7 +36,17 @@
 
         .logo {
             margin-bottom: 30px;
-        }        .logo i {
+        }
+        
+        .logo .logo-image {
+            height: 80px;
+            width: auto;
+            max-width: 250px;
+            object-fit: contain;
+            margin-bottom: 20px;
+        }
+
+        .logo i {
             font-size: 60px;
             color: #367410;
             margin-bottom: 20px;
@@ -57,13 +69,29 @@
         }
 
         .form-group {
-            margin-bottom: 25px;
-            text-align: left;
-        }        .form-group label {
+            margin-bottom: 25px;            text-align: left;
+        }
+
+        .form-group label {
             display: block;
             margin-bottom: 8px;
             color: #303030;
             font-weight: 500;
+        }
+
+        .remember-label {
+            display: flex !important;
+            align-items: center;
+            gap: 8px;
+            color: #303030;
+            cursor: pointer;
+        }
+
+        .remember-checkbox {
+            width: 16px !important;
+            height: 16px;
+            margin: 0;
+            cursor: pointer;
         }
 
         .password-input-container {
@@ -76,9 +104,10 @@
             border: 2px solid #e1e5e9;
             border-radius: 10px;
             font-size: 16px;
-            transition: all 0.3s ease;
-            background: #f8f9fa;
-        }        .form-group input:focus {
+            transition: all 0.3s ease;            background: #f8f9fa;
+        }
+
+        .form-group input:focus {
             outline: none;
             border-color: #367410;
             background: white;
@@ -91,9 +120,10 @@
             top: 50%;
             transform: translateY(-50%);
             cursor: pointer;
-            color: #666;
-            font-size: 18px;
-        }        .login-button {
+            color: #666;            font-size: 18px;
+        }
+
+        .login-button {
             width: 100%;
             padding: 15px;
             background: #367410;
@@ -113,9 +143,10 @@
             box-shadow: 0 10px 20px rgba(54, 116, 16, 0.3);
         }
 
-        .login-button:active {
-            transform: translateY(0);
-        }        .error-message {
+        .login-button:active {            transform: translateY(0);
+        }
+
+        .error-message {
             color: #FF914D;
             margin-top: 15px;
             padding: 10px;
@@ -149,8 +180,7 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% { transform: rotate(0deg); }            100% { transform: rotate(360deg); }
         }
 
         @media (max-width: 480px) {
@@ -166,34 +196,49 @@
             .logo i {
                 font-size: 50px;
             }
-        }
-    </style>
+
+            .logo .logo-image {
+                height: 60px;
+            }
+
+            .remember-checkbox {
+                width: 14px !important;
+                height: 14px !important;
+            }
+
+            .remember-label {
+                font-size: 14px;
+            }
+        }    </style>
 </head>
 <body>
-    <div class="login-container">        <div class="logo">
-            <i class="fas fa-chart-gantt"></i>
-            <h1>LEXIA</h1>
+
+    <div class="login-container">
+        <div class="logo">
+            <img src="LEXIAロゴ単体2025.png" alt="LEXIA Logo" class="logo-image">
             <p>Secure Client Management System</p>
-        </div>        <form class="login-form" id="loginForm">
+        </div>        
+        <form class="login-form" id="loginForm">
+
             <div class="form-group">
-                <label for="password">Access Password</label>
+                <label for="password">アクセスパスワード</label>
                 <div class="password-input-container">
                     <input type="password" id="password" name="password" 
-                           placeholder="Enter your password" required>
+                           placeholder="パスワードを入力してください" required>
                     <i class="fas fa-eye password-toggle" id="passwordToggle"></i>
                 </div>
             </div>
 
             <div class="form-group">
-                <label style="display: flex; align-items: center; gap: 8px; color: #303030;">
-                    <input type="checkbox" id="rememberPassword" style="width: auto;">
-                    Remember password
+                <label class="remember-label">
+                    <input type="checkbox" id="rememberPassword" class="remember-checkbox">
+                    パスワードを記憶する
                 </label>
             </div>
 
             <button type="submit" class="login-button">
                 <i class="fas fa-sign-in-alt"></i>
-                Access Dashboard
+                ダッシュボードにアクセス
                 <span class="loading" id="loading">
                     <i class="fas fa-spinner"></i>
                 </span>
@@ -201,14 +246,16 @@
 
             <div class="error-message" id="errorMessage">
                 <i class="fas fa-exclamation-triangle"></i>
-                Invalid password
+                パスワードが正しくありません
             </div>
 
             <div class="success-message" id="successMessage">
                 <i class="fas fa-check-circle"></i>
-                Authentication successful! Redirecting to dashboard...
+                認証に成功しました！ダッシュボードにリダイレクトしています...
             </div>
-        </form>        <div class="footer">
+        </form>
+
+        <div class="footer">
             <p>© 2025 LEXIA. Secure Client Management System</p>
         </div>
     </div>
@@ -219,7 +266,9 @@
             'lexia2024': 'dashboard',
             'client2024': 'dashboard',
             'admin2024': 'dashboard'
-        };        // DOM要素
+        };
+
+        // DOM要素
         const loginForm = document.getElementById('loginForm');
         const passwordInput = document.getElementById('password');
         const passwordToggle = document.getElementById('passwordToggle');
@@ -261,7 +310,8 @@
             // ローディング開始
             loading.style.display = 'inline';
             
-            // パスワード認証（少し遅延を入れてリアルな感じに）            setTimeout(() => {
+            // パスワード認証（少し遅延を入れてリアルな感じに）
+            setTimeout(() => {
                 if (VALID_PASSWORDS[password]) {
                     // 認証成功
                     successMessage.style.display = 'block';
@@ -288,13 +338,9 @@
                     passwordInput.value = '';
                     passwordInput.focus();
                 }
-                
-                loading.style.display = 'none';
+                  loading.style.display = 'none';
             }, 1000);
-        });        // ページ読み込み時にパスワード入力欄にフォーカス
-        // window.addEventListener('load', function() {
-        //     passwordInput.focus();
-        // });
+        });
 
         // Enterキーでフォーム送信
         passwordInput.addEventListener('keypress', function(e) {
