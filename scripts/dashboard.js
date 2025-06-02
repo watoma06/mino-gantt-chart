@@ -343,7 +343,17 @@ function updateCurrentDateIndicator() {
                             label.textContent = `今日 (${formatDateShort(today)})`;
                         }
                         
-                        console.log(`今日の位置更新: 週${currentWeek}, 日${dayOfWeek}, 位置: ${finalPosition.toFixed(2)}px (${relativePosition.toFixed(2)}%)`);
+                        console.log(`[${projectType}] 今日の位置更新:`, {
+                            週: currentWeek,
+                            日: dayOfWeek,
+                            タスク列幅: taskColumnWidth,
+                            セル幅: cellWidth,
+                            週開始位置: weekStartOffset,
+                            日オフセット: dayOffset,
+                            最終位置: `${finalPosition.toFixed(2)}px`,
+                            相対位置: `${relativePosition.toFixed(2)}%`,
+                            タイムライン幅: timelineWidth
+                        });
                     }
                 }
             } else {
