@@ -1853,12 +1853,12 @@ body {
     }
     
     .gantt-chart-container {
-        background: #2d2d2d;
+        background: #ffffff; /* 白背景に統一 */
         border-color: #404040;
     }
     
     .gantt-header {
-        background: #363636;
+        background: #ffffff; /* 白背景に統一 */
     }
     
     .gantt-row {
@@ -1866,15 +1866,16 @@ body {
     }
     
     .gantt-task-name {
-        background: #2d2d2d;
-        color: #e0e0e0;
+        background: #ffffff; /* 白背景に統一 */
+        color: var(--color-dark); /* ダークテキストを使用 */
     }
     
     .gantt-task-timeline {
-        background: #2d2d2d;
+        background: #ffffff; /* 白背景に統一 */
     }
     
     .gantt-cell {
+        background: #ffffff; /* 白背景に統一 */
         border-color: #404040;
     }
 }
