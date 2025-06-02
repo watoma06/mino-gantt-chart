@@ -889,7 +889,7 @@ body.scrolling .gantt-bar {
     height: 100%;
     background: rgba(255,255,255,0.3);
     border-radius: 6px;
-    animation: shimmer 2s infinite;
+    animation: scaleProgress 2s ease-in-out infinite;
 }
 
 /* ガントチャート現在日付インジケーター */
@@ -1063,12 +1063,14 @@ body.scrolling .gantt-bar {
     }
 }
 
-@keyframes shimmer {
-    0% {
-        transform: translateX(-100%);
+@keyframes scaleProgress {
+    0%, 100% {
+        transform: scaleX(1);
+        opacity: 0.3;
     }
-    100% {
-        transform: translateX(100%);
+    50% {
+        transform: scaleX(1.1);
+        opacity: 0.6;
     }
 }
 
