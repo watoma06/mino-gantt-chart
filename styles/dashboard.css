@@ -687,7 +687,8 @@ body {
     overflow-x: auto;
     border: 1px solid #e1e5e9;
     border-radius: 8px;
-    background: #ffffff; /* 白背景に変更 */
+    background: #ffffff !important; /* 強制的に白背景 */
+    color: var(--color-dark) !important; /* 強制的にダークテキスト */
     min-height: 400px;
     position: relative; /* 絶対位置の基準とする */
 }
@@ -697,19 +698,21 @@ body {
     display: grid;
     min-width: 800px;
     position: relative;
+    background: #ffffff !important; /* 強制的に白背景 */
 }
 
 .gantt-header {
     display: grid;
     grid-template-columns: 200px 1fr;
-    background: #ffffff; /* 白背景に変更 */
+    background: #ffffff !important; /* 強制的に白背景 */
     border-bottom: 2px solid #e1e5e9;
     font-weight: 600;
-    color: var(--color-dark); /* ダークテキストを明示 */
+    color: var(--color-dark) !important; /* 強制的にダークテキスト */
 }
 
 .gantt-tasks-header {
-    color: var(--color-dark) !important; /* ヘッダータスク名の文字色を明示 */
+    color: var(--color-dark) !important; /* ヘッダータスク名の文字色を強制的に設定 */
+    background: #ffffff !important; /* 強制的に白背景 */
 }
 
 .gantt-tasks-header {
@@ -722,6 +725,7 @@ body {
 .gantt-dates-header {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
+    background: #ffffff !important; /* 強制的に白背景 */
 }
 
 .gantt-date-cell {
@@ -732,17 +736,17 @@ body {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    background: #ffffff; /* 白背景を明示 */
+    background: #ffffff !important; /* 強制的に白背景 */
 }
 
 .gantt-date-cell .week-number {
     font-weight: 600;
-    color: var(--color-dark); /* 濃い色でより読みやすく */
+    color: var(--color-dark) !important; /* 強制的にダークテキスト */
 }
 
 .gantt-date-cell .week-dates {
     font-size: 0.75rem;
-    color: var(--color-text-light); /* 読みやすい色に */
+    color: var(--color-text-light) !important; /* 強制的に読みやすい色 */
     font-weight: normal;
 }
 
@@ -752,6 +756,7 @@ body {
     grid-template-columns: 200px 1fr;
     border-bottom: 1px solid #e1e5e9;
     min-height: 60px;
+    background: #ffffff !important; /* 強制的に白背景 */
 }
 
 .gantt-task-name {
@@ -760,15 +765,15 @@ body {
     display: flex;
     align-items: center;
     font-weight: 500;
-    background: #ffffff; /* 白背景に変更 */
-    color: var(--color-dark); /* タスク名の文字色を明示的に設定 */
+    background: #ffffff !important; /* 強制的に白背景 */
+    color: var(--color-dark) !important; /* 強制的にダークテキスト */
 }
 
 .gantt-task-timeline {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     position: relative;
-    background: #ffffff; /* 白背景に変更 */
+    background: #ffffff !important; /* 強制的に白背景 */
 }
 
 .gantt-task-timeline > div {
@@ -780,7 +785,7 @@ body {
     border-right: 1px solid #e1e5e9;
     min-height: 60px;
     position: relative;
-    background: #ffffff; /* 白背景を追加 */
+    background: #ffffff !important; /* 強制的に白背景 */
 }
 
 /* ガントチャートバー */
@@ -1914,4 +1919,55 @@ body {
         padding: 0;
         background: none;
     }
+}
+
+/* ガントチャート全体の強制スタイル（ダークモード対策） */
+.gantt-chart-container,
+.gantt-chart-container *,
+.gantt-timeline,
+.gantt-timeline *,
+.gantt-header,
+.gantt-header *,
+.gantt-row,
+.gantt-row *,
+.gantt-task-name,
+.gantt-task-timeline,
+.gantt-cell,
+.gantt-date-cell,
+.gantt-dates-header,
+.gantt-tasks-header {
+    background-color: #ffffff !important;
+    color: var(--color-dark) !important;
+}
+
+/* ガントチャートバーは例外（色付きのまま） */
+.gantt-bar {
+    background-color: var(--color-primary) !important;
+    color: #ffffff !important;
+}
+
+.gantt-bar.in-progress {
+    background-color: var(--color-accent) !important;
+    color: #ffffff !important;
+}
+
+.gantt-bar.waiting {
+    background-color: var(--color-accent) !important;
+    opacity: 0.6;
+    color: #ffffff !important;
+}
+
+.gantt-bar.completed {
+    background-color: var(--color-primary) !important;
+    color: #ffffff !important;
+}
+
+.gantt-bar.milestone {
+    background-color: var(--color-accent) !important;
+    color: #ffffff !important;
+}
+
+.gantt-bar.blocked {
+    background-color: #303030 !important;
+    color: #ffffff !important;
 }
