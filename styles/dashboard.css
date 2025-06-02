@@ -591,6 +591,7 @@ body {
 .gantt-timeline {
     display: grid;
     min-width: 800px;
+    position: relative;
 }
 
 .gantt-header {
@@ -754,19 +755,20 @@ body {
 .gantt-current-date-line {
     position: absolute;
     top: 0;
+    bottom: 0;
     width: 3px;
-    height: 100%;
     background: linear-gradient(to bottom, #dc3545, #fd7e14);
-    z-index: 15;
+    z-index: 50;
     box-shadow: 0 0 8px rgba(220, 53, 69, 0.5);
     animation: pulse 2s infinite;
     display: none;
+    pointer-events: none;
 }
 
 .gantt-current-date-line .current-date-marker {
     position: absolute;
-    top: -30px;
-    left: -20px;
+    top: -35px;
+    left: -25px;
     background: linear-gradient(135deg, #dc3545, #fd7e14);
     color: white;
     padding: 4px 8px;
@@ -775,6 +777,7 @@ body {
     font-weight: 600;
     white-space: nowrap;
     box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    z-index: 51;
 }
 
 .gantt-current-date-line .current-date-marker::after {
