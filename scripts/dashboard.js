@@ -300,8 +300,21 @@ function updateCurrentDateIndicator() {
         if (indicator) {
             // 現在の週が表示範囲内の場合のみ表示
             if (currentWeek >= 1 && currentWeek <= 12) {
-                const leftPosition = ((currentWeek - 1) * (100 / 12)) + (getCurrentDayOfWeek() * (100 / 12 / 7));
-                indicator.style.left = `${leftPosition}%`;
+                // グリッドレイアウトに基づく位置計算
+                // タスク名列（200px）+ 週列（各週 1/12 の幅）
+                const taskNameColumnWidth = 200; // px
+                const weekWidth = 100 / 12; // 各週のパーセンテージ幅
+                const dayOfWeek = getCurrentDayOfWeek();
+                
+                // 週の開始位置 + 週内の日の位置
+                const weekStartPosition = (currentWeek - 1) * weekWidth;
+                const dayPositionInWeek = (dayOfWeek / 7) * weekWidth;
+                const totalPosition = weekStartPosition + dayPositionInWeek;
+                
+                // タスク名列の後から開始するため、計算を調整
+                const adjustedPosition = 16.67 + totalPosition; // 16.67% = 200px / 1200px
+                
+                indicator.style.left = `${adjustedPosition}%`;
                 indicator.style.display = 'block';
                 
                 // 現在の日付をラベルに表示
@@ -309,6 +322,8 @@ function updateCurrentDateIndicator() {
                 if (label) {
                     label.textContent = `今日 (${formatDateShort(today)})`;
                 }
+                
+                console.log(`今日の位置更新: 週${currentWeek}, 日${dayOfWeek}, 位置: ${adjustedPosition.toFixed(2)}%`);
             } else {
                 indicator.style.display = 'none';
             }
@@ -459,7 +474,7 @@ function createGanttHTML(tasks, projectType) {
         `;
     });
     
-    // 現在日付インジケーターを追加
+    // 現在日付インジケーターを追加（タイムライン内に配置）
     html += `
         <div class="gantt-current-date-line" id="current-date-${projectType}">
             <div class="current-date-marker">

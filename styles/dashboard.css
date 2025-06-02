@@ -768,7 +768,7 @@ body {
 .gantt-current-date-line .current-date-marker {
     position: absolute;
     top: -35px;
-    left: -25px;
+    left: -30px;
     background: linear-gradient(135deg, #dc3545, #fd7e14);
     color: white;
     padding: 4px 8px;
