@@ -211,8 +211,12 @@ function initializeGanttCharts() {
         updateCurrentDateIndicator();
     }, 60000); // 1分ごと
     
-    // ウィンドウリサイズ時にも位置を再計算
+    // ウィンドウリサイズ時にも位置を再計算とガントチャート再生成
     window.addEventListener('resize', () => {
+        // 画面サイズ変更でタスクフィルタが変わる可能性があるため再生成
+        generateGanttChart('boxing');
+        generateGanttChart('architecture');
+        
         setTimeout(() => {
             updateCurrentDateIndicator();
         }, 100);
@@ -248,8 +252,10 @@ function generateGanttChart(projectType) {
 function getProjectTasks(projectType) {
     const currentWeek = getCurrentWeek();
     
+    let tasks = [];
+    
     if (projectType === 'boxing') {
-        return [
+        tasks = [
             { name: 'ヒアリングシート提出', status: 'waiting', startWeek: 1, duration: 1, dependency: null },
             { name: '要件定義・企画', status: 'blocked', startWeek: 2, duration: 2, dependency: 'ヒアリングシート提出' },
             { name: 'デザイン設計', status: 'blocked', startWeek: 4, duration: 3, dependency: '要件定義・企画' },
@@ -260,7 +266,7 @@ function getProjectTasks(projectType) {
             { name: '保守・運用開始', status: 'milestone', startWeek: 15, duration: 1, dependency: '納品・公開' }
         ];
     } else if (projectType === 'architecture') {
-        return [
+        tasks = [
             { name: 'ヒアリングシート受領', status: 'completed', startWeek: 1, duration: 1, dependency: null },
             { name: '要件詰め・提案書作成', status: 'in-progress', startWeek: 2, duration: 2, dependency: 'ヒアリングシート受領' },
             { name: 'デザイン設計', status: 'ready', startWeek: 4, duration: 3, dependency: '要件詰め・提案書作成' },
@@ -271,7 +277,28 @@ function getProjectTasks(projectType) {
             { name: '保守・運用開始', status: 'milestone', startWeek: 15, duration: 1, dependency: '納品・公開' }
         ];
     }
-    return [];
+    
+    // スマホ環境での1-10週のデザイン設計・コーディングセルの削除
+    if (window.innerWidth <= 768) {
+        tasks = tasks.filter(task => {
+            // デザイン設計とコーディング・開発のタスクで、1-10週の範囲のセルを削除
+            if ((task.name === 'デザイン設計' || task.name === 'コーディング・開発') && 
+                task.startWeek <= 10) {
+                // スマホでは11週以降に表示を調整
+                if (task.name === 'デザイン設計') {
+                    return false; // デザイン設計は完全に削除
+                }
+                if (task.name === 'コーディング・開発') {
+                    // コーディング・開発は11週から開始に変更
+                    task.startWeek = 11;
+                    task.duration = 2; // 期間も短縮
+                }
+            }
+            return true;
+        });
+    }
+    
+    return tasks;
 }
 
 // ガントチャートHTMLを作成
@@ -421,12 +448,12 @@ function createStatusLegend() {
     legend.className = 'gantt-status-legend';
     
     const statusTypes = [
-        { key: 'completed', label: '完了', color: '#367410' },
-        { key: 'in-progress', label: '進行中', color: '#FF914D' },
-        { key: 'ready', label: '開始準備完了', color: '#367410' },
-        { key: 'waiting', label: '待機中', color: '#FF914D' },
-        { key: 'blocked', label: 'ブロック中', color: '#303030' },
-        { key: 'milestone', label: 'マイルストーン', color: '#FF914D' }
+        { key: 'completed', label: '完了', color: '#28a745' },
+        { key: 'in-progress', label: '進行中', color: '#ffc107' },
+        { key: 'ready', label: '開始準備完了', color: '#17a2b8' },
+        { key: 'waiting', label: '待機中', color: '#fd7e14' },
+        { key: 'blocked', label: 'ブロック中', color: '#6c757d' },
+        { key: 'milestone', label: 'マイルストーン', color: '#dc3545' }
     ];
     
     statusTypes.forEach(status => {

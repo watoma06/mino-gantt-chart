@@ -816,45 +816,44 @@ body {
 
 /* ステータス別のガントチャートバー色分け */
 .gantt-bar.completed {
-    background: var(--color-primary);
+    background: #28a745;
     animation: slideInCompleted 0.8s ease-out;
-    border-left: 4px solid #254D0A;
+    border-left: 4px solid #1e7e34;
 }
 
 .gantt-bar.in-progress {
-    background: var(--color-accent);
+    background: #ffc107;
+    color: #212529;
     animation: slideInProgress 0.8s ease-out;
     position: relative;
     overflow: hidden;
-    border-left: 4px solid #E67E36;
+    border-left: 4px solid #e0a800;
 }
 
 .gantt-bar.ready {
-    background: var(--color-primary);
+    background: #17a2b8;
     animation: slideInReady 0.8s ease-out;
-    border-left: 4px solid #254D0A;
-    opacity: 0.8;
+    border-left: 4px solid #138496;
 }
 
 .gantt-bar.waiting {
-    background: var(--color-accent);
+    background: #fd7e14;
     animation: slideInWaiting 0.8s ease-out;
-    border-left: 4px solid #E67E36;
-    opacity: 0.6;
+    border-left: 4px solid #e55a0a;
 }
 
 .gantt-bar.blocked {
-    background: #303030;
+    background: #6c757d;
     animation: slideInBlocked 0.8s ease-out;
-    border-left: 4px solid #1a1a1a;
-    opacity: 0.7;
+    border-left: 4px solid #545b62;
+    opacity: 0.8;
 }
 
 .gantt-bar.milestone {
-    background: var(--color-accent);
+    background: #dc3545;
     animation: pulseMilestone 2s infinite;
     font-size: 1.2rem;
-    border-left: 4px solid #E67E36;
+    border-left: 4px solid #a71e2a;
 }
 
 /* ガントチャート進捗インジケーター */
@@ -1874,30 +1873,28 @@ body {
 }
 
 .legend-color.completed {
-    background: var(--color-primary);
+    background: #28a745;
 }
 
 .legend-color.in-progress {
-    background: var(--color-accent);
+    background: #ffc107;
 }
 
 .legend-color.ready {
-    background: var(--color-primary);
-    opacity: 0.8;
+    background: #17a2b8;
 }
 
 .legend-color.waiting {
-    background: var(--color-accent);
-    opacity: 0.6;
+    background: #fd7e14;
 }
 
 .legend-color.blocked {
-    background: #303030;
+    background: #6c757d;
 }
 
 .legend-color.milestone {
-    background: var(--color-accent);
-    border: 2px solid #E67E36;
+    background: #dc3545;
+    border: 2px solid #a71e2a;
 }
 
 /* モバイル表示時のロゴとボタン配置 */
@@ -1944,32 +1941,36 @@ body {
 
 /* ガントチャートバーは例外（色付きのまま） */
 .dashboard-container .gantt-bar {
-    background-color: var(--color-primary);
+    background-color: #28a745;
     color: #ffffff;
 }
 
 .dashboard-container .gantt-bar.in-progress {
-    background-color: var(--color-accent);
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.dashboard-container .gantt-bar.ready {
+    background-color: #17a2b8;
     color: #ffffff;
 }
 
 .dashboard-container .gantt-bar.waiting {
-    background-color: var(--color-accent);
-    opacity: 0.6;
+    background-color: #fd7e14;
     color: #ffffff;
 }
 
 .dashboard-container .gantt-bar.completed {
-    background-color: var(--color-primary);
+    background-color: #28a745;
     color: #ffffff;
 }
 
 .dashboard-container .gantt-bar.milestone {
-    background-color: var(--color-accent);
+    background-color: #dc3545;
     color: #ffffff;
 }
 
 .dashboard-container .gantt-bar.blocked {
-    background-color: #303030;
+    background-color: #6c757d;
     color: #ffffff;
 }
