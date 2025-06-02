@@ -60,7 +60,6 @@ body {
     display: block;
     border: 2px solid transparent;
     border-radius: 4px;
-    background: rgba(255, 255, 255, 0.1);
     padding: 5px;
 }
 
@@ -1154,6 +1153,12 @@ body {
         flex-direction: column;
         gap: 0.5rem;
         text-align: center;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .header-logo {
+        min-width: auto;
     }
     
     .header-content h1 {
@@ -1815,4 +1820,22 @@ body {
 .legend-color.milestone {
     background: var(--color-accent);
     border: 2px solid #E67E36;
+}
+
+/* モバイル表示時のロゴ中央配置 */
+@media (max-width: 768px) {
+    .header-content {
+        justify-content: center;
+        align-items: center;
+    }
+
+    .header-logo {
+        min-width: auto;
+    }
+
+    .logo-image {
+        height: 80px;
+        max-width: 200px;
+        background: var(--color-bg-light);
+    }
 }
