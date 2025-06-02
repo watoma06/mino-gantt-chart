@@ -103,6 +103,7 @@ cd mino-gantt-chart
 ```
 mino-gantt-chart/
 ├── index.html              # メインダッシュボード
+├── login.html              # パスワード認証ページ
 ├── scripts/
 │   └── dashboard.js        # ガントチャート・認証機能
 ├── styles/
@@ -118,7 +119,7 @@ mino-gantt-chart/
 #### 1. 基本セットアップ
 ```bash
 # プロジェクトを任意のディレクトリに配置
-# ブラウザでindex.htmlを開く
+# ブラウザでlogin.htmlを開いてアクセス
 ```
 
 #### 2. 開発サーバー使用（推奨）
@@ -126,7 +127,18 @@ mino-gantt-chart/
 # Live Server拡張機能を使用（VS Code）
 # または任意の静的サーバーで起動
 python -m http.server 8000  # Python使用の場合
+# ブラウザで http://localhost:8000/login.html にアクセス
 ```
+
+### 🔐 アクセス方法
+
+#### パスワード認証
+- **アクセスページ**: `login.html`
+- **有効なパスワード**: 
+  - `lexia2024`
+  - `client2024` 
+  - `admin2024`
+- **セッション有効期限**: 24時間
 
 ### 📊 機能説明
 

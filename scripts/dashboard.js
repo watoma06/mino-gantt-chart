@@ -1,10 +1,87 @@
+// =================
+// 認証チェック機能
+// =================
+
+// ページ読み込み時の認証チェック
+(function() {
+    // 認証状態をチェック
+    const isAuthenticated = sessionStorage.getItem('lexia_authenticated');
+    const authTimestamp = sessionStorage.getItem('auth_timestamp');
+    const currentTime = new Date().getTime();
+    
+    // 認証されていない、または24時間以上経過している場合
+    if (isAuthenticated !== 'true' || !authTimestamp || 
+        (currentTime - parseInt(authTimestamp)) > 24 * 60 * 60 * 1000) {
+        
+        // セッション情報をクリア
+        sessionStorage.removeItem('lexia_authenticated');
+        sessionStorage.removeItem('auth_timestamp');
+        
+        // ログインページにリダイレクト
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    // 認証済みの場合は通常の初期化を実行
+    console.log('認証済みユーザーでアクセス中');
+})();
+
 // ダッシュボードの初期化
 document.addEventListener('DOMContentLoaded', function() {
+    // ヘッダーにログアウト機能を追加
+    addLogoutFunctionality();
+    
     initializeTabs();
     updateProgressCircles();
     initializeTooltips();
     initializeGanttCharts();
 });
+
+// ログアウト機能の追加
+function addLogoutFunctionality() {
+    const userInfo = document.querySelector('.user-info');
+    if (userInfo) {
+        // ログアウトボタンを追加
+        const logoutButton = document.createElement('button');
+        logoutButton.innerHTML = '<i class="fas fa-sign-out-alt"></i> ログアウト';
+        logoutButton.className = 'logout-button';
+        logoutButton.style.cssText = `
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: 15px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        `;
+        
+        logoutButton.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 4px 8px rgba(220, 53, 69, 0.3)';
+        });
+        
+        logoutButton.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = 'none';
+        });
+        
+        logoutButton.addEventListener('click', function() {
+            // 確認ダイアログ
+            if (confirm('ログアウトしますか？')) {
+                // セッション情報をクリア
+                sessionStorage.removeItem('lexia_authenticated');
+                sessionStorage.removeItem('auth_timestamp');
+                
+                // ログインページにリダイレクト
+                window.location.href = 'login.html';
+            }
+        });
+        
+        userInfo.appendChild(logoutButton);
+    }
+}
 
 // =================
 // ガントチャート機能

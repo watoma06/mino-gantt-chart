@@ -50,6 +50,25 @@ body {
     font-size: 1.1rem;
 }
 
+/* ログアウトボタンのスタイル */
+.logout-button {
+    background: linear-gradient(135deg, #dc3545, #c82333) !important;
+    color: white !important;
+    border: none !important;
+    padding: 8px 16px !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    margin-left: 15px !important;
+    font-size: 14px !important;
+    transition: all 0.3s ease !important;
+    font-family: inherit !important;
+}
+
+.logout-button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3) !important;
+}
+
 .user-info i {
     font-size: 1.5rem;
 }
