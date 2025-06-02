@@ -43,7 +43,7 @@ function addLogoutFunctionality() {
     if (userInfo) {
         // ログアウトボタンを追加
         const logoutButton = document.createElement('button');
-        logoutButton.innerHTML = '<i class="fas fa-sign-out-alt"></i> Logout';
+        logoutButton.innerHTML = '<i class="fas fa-sign-out-alt"></i> ログアウト';
         logoutButton.className = 'logout-button';
         logoutButton.style.cssText = `
             background: linear-gradient(135deg, #dc3545, #c82333);
@@ -437,12 +437,12 @@ function createStatusLegend() {
     legend.className = 'gantt-status-legend';
     
     const statusTypes = [
-        { key: 'completed', label: 'Completed', color: '#367410' },
-        { key: 'in-progress', label: 'In Progress', color: '#FF914D' },
-        { key: 'ready', label: 'Ready to Start', color: '#367410' },
-        { key: 'waiting', label: 'Waiting', color: '#FF914D' },
-        { key: 'blocked', label: 'Blocked', color: '#303030' },
-        { key: 'milestone', label: 'Milestone', color: '#FF914D' }
+        { key: 'completed', label: '完了', color: '#367410' },
+        { key: 'in-progress', label: '進行中', color: '#FF914D' },
+        { key: 'ready', label: '開始準備完了', color: '#367410' },
+        { key: 'waiting', label: '待機中', color: '#FF914D' },
+        { key: 'blocked', label: 'ブロック中', color: '#303030' },
+        { key: 'milestone', label: 'マイルストーン', color: '#FF914D' }
     ];
     
     statusTypes.forEach(status => {

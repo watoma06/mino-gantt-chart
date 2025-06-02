@@ -36,6 +36,7 @@ body {
 .header-logo {
     display: flex;
     align-items: center;
+    min-width: 200px;
 }
 
 .logo-image {
@@ -43,6 +44,26 @@ body {
     width: auto;
     max-width: 200px;
     object-fit: contain;
+    display: block;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 5px;
+}
+
+/* ロゴが読み込めない場合のフォールバック */
+.logo-image:not([src]), .logo-image[src=""] {
+    background-color: #FFFFFF;
+    color: #367410;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.logo-image:not([src])::after, .logo-image[src=""]::after {
+    content: "LEXIA";
 }
 
 .header-content h1 {
@@ -222,25 +243,29 @@ body {
 
 /* アクションアイテム */
 .action-item, .milestone-item {
-    background: #f8f9fa;
+    background: #FFFFFF;
+    color: #303030;
     padding: 0.75rem;
     border-radius: 8px;
-    border-left: 4px solid #ff9800;
+    border-left: 4px solid #FF914D;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .milestone-item {
-    border-left-color: #2196f3;
+    border-left-color: #367410;
 }
 
 .action-item.urgent {
-    border-left-color: #f44336;
-    background: #fff5f5;
+    border-left-color: #FF914D;
+    background: #fff8f0;
+    color: #303030;
 }
 
 .action-item span, .milestone-item span {
     font-weight: 600;
     display: block;
     margin-bottom: 0.25rem;
+    color: #303030;
 }
 
 .action-item small, .milestone-item small {
