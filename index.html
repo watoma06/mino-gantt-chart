@@ -80,17 +80,14 @@
                     </div>
                 </div>
 
-                <!-- 分析・予測機能 -->
-                <div class="analysis-section">
-                    <div class="analysis-buttons">
-                        <button class="btn-info" onclick="showProgressPrediction('boxing')">
-                            <i class="fas fa-chart-line"></i>
-                            進捗予測
-                        </button>
-                        <button class="btn-info" onclick="showBottleneckAnalysis('boxing')">
-                            <i class="fas fa-exclamation-circle"></i>
-                            ボトルネック検出
-                        </button>
+                <!-- ガントチャート -->
+                <div class="gantt-chart-section">
+                    <h3>
+                        <i class="fas fa-chart-gantt"></i>
+                        制作工程ガントチャート
+                    </h3>
+                    <div class="gantt-chart-container" id="boxingGanttChart">
+                        <!-- ガントチャートが動的に生成されます -->
                     </div>
                 </div>
 
@@ -109,6 +106,40 @@
                                 ヒヤリングシート入力
                             </button>
                         </div>
+                    </div>
+                </div>
+
+                <!-- ヒヤリングシート内容（受領後表示用） -->
+                <div class="hearing-sheet-section" id="boxing-hearing-section" style="display: none;">
+                    <h3>
+                        <i class="fas fa-clipboard-list"></i>
+                        ヒヤリングシート内容
+                        <button class="toggle-btn" onclick="toggleHearingSheet('boxing')">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </h3>
+                    
+                    <!-- パスワード認証フォーム -->
+                    <div class="hearing-auth-form" id="boxing-auth-form">
+                        <h4>
+                            <i class="fas fa-lock"></i>
+                            閲覧にはパスワードが必要です
+                        </h4>
+                        <p>クライアント情報保護のため、パスワードを入力してください。</p>
+                        <div class="password-input-group">
+                            <input type="password" id="boxing-password" placeholder="パスワードを入力">
+                            <button class="auth-button" onclick="authenticateHearingSheet('boxing')">
+                                <i class="fas fa-unlock"></i>
+                                認証
+                            </button>
+                        </div>
+                        <div class="auth-error" id="boxing-auth-error">
+                            パスワードが正しくありません。再度お試しください。
+                        </div>
+                    </div>
+                    
+                    <div class="hearing-sheet-content" id="boxing-hearing-sheet">
+                        <!-- ヒヤリングシート受領後にここに内容が表示されます -->
                     </div>
                 </div>
 
@@ -195,17 +226,14 @@
                     </div>
                 </div>
 
-                <!-- 分析・予測機能 -->
-                <div class="analysis-section">
-                    <div class="analysis-buttons">
-                        <button class="btn-info" onclick="showProgressPrediction('architecture')">
-                            <i class="fas fa-chart-line"></i>
-                            進捗予測
-                        </button>
-                        <button class="btn-info" onclick="showBottleneckAnalysis('architecture')">
-                            <i class="fas fa-exclamation-circle"></i>
-                            ボトルネック検出
-                        </button>
+                <!-- ガントチャート -->
+                <div class="gantt-chart-section">
+                    <h3>
+                        <i class="fas fa-chart-gantt"></i>
+                        制作工程ガントチャート
+                    </h3>
+                    <div class="gantt-chart-container" id="architectureGanttChart">
+                        <!-- ガントチャートが動的に生成されます -->
                     </div>
                 </div>
 
@@ -218,6 +246,26 @@
                             <i class="fas fa-chevron-down"></i>
                         </button>
                     </h3>
+                    
+                    <!-- パスワード認証フォーム -->
+                    <div class="hearing-auth-form" id="architecture-auth-form">
+                        <h4>
+                            <i class="fas fa-lock"></i>
+                            閲覧にはパスワードが必要です
+                        </h4>
+                        <p>クライアント情報保護のため、パスワードを入力してください。</p>
+                        <div class="password-input-group">
+                            <input type="password" id="architecture-password" placeholder="パスワードを入力">
+                            <button class="auth-button" onclick="authenticateHearingSheet('architecture')">
+                                <i class="fas fa-unlock"></i>
+                                認証
+                            </button>
+                        </div>
+                        <div class="auth-error" id="architecture-auth-error">
+                            パスワードが正しくありません。再度お試しください。
+                        </div>
+                    </div>
+                    
                     <div class="hearing-sheet-content" id="architecture-hearing-sheet">
                         <div class="hearing-grid">
                             <div class="hearing-item">
@@ -392,78 +440,6 @@
                         <h4>みの建築</h4>
                         <div class="progress-bar">
                             <div class="progress-fill" style="width: 20%;">20%</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 進捗予測モーダル -->
-    <div class="modal" id="progressPredictionModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-chart-line"></i> 進捗予測</h3>
-                <span class="close" onclick="closeModal('progressPredictionModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="prediction-header">
-                    <div class="project-info">
-                        <h4 id="predictionProjectName"></h4>
-                        <div class="current-progress">
-                            <span>現在の進捗:</span>
-                            <span id="currentProgressValue">0%</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="prediction-content">
-                    <div class="prediction-chart">
-                        <canvas id="predictionChart" width="400" height="200"></canvas>
-                    </div>
-                    <div class="prediction-details">
-                        <div class="prediction-item">
-                            <label>予測完了日:</label>
-                            <span id="predictedCompletionDate">-</span>
-                        </div>
-                        <div class="prediction-item">
-                            <label>残り作業時間:</label>
-                            <span id="remainingWorkTime">-</span>
-                        </div>
-                        <div class="prediction-item">
-                            <label>信頼度:</label>
-                            <span id="predictionConfidence">-</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ボトルネック検出モーダル -->
-    <div class="modal" id="bottleneckModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-exclamation-circle"></i> ボトルネック検出</h3>
-                <span class="close" onclick="closeModal('bottleneckModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="bottleneck-header">
-                    <div class="project-info">
-                        <h4 id="bottleneckProjectName"></h4>
-                        <div class="analysis-date">
-                            <span>分析日時:</span>
-                            <span id="analysisDate"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="bottleneck-content">
-                    <div class="bottleneck-list" id="bottleneckList">
-                        <!-- ボトルネック項目が動的に生成されます -->
-                    </div>
-                    <div class="recommendations">
-                        <h5>改善提案</h5>
-                        <div id="recommendationsList">
-                            <!-- 改善提案が動的に生成されます -->
                         </div>
                     </div>
                 </div>

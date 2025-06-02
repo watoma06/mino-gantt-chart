@@ -3,7 +3,237 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeTabs();
     updateProgressCircles();
     initializeTooltips();
+    initializeGanttCharts();
 });
+
+// ガントチャートの初期化
+function initializeGanttCharts() {
+    generateGanttChart('boxing');
+    generateGanttChart('architecture');
+}
+
+// ガントチャート生成
+function generateGanttChart(projectType) {
+    const container = document.getElementById(`${projectType}GanttChart`);
+    const tasks = getProjectTasks(projectType);
+    
+    const ganttHTML = createGanttHTML(tasks, projectType);
+    container.innerHTML = ganttHTML;
+    
+    // アニメーションを適用
+    setTimeout(() => {
+        animateGanttBars(container);
+    }, 100);
+}
+
+// プロジェクトのタスクデータを取得
+function getProjectTasks(projectType) {
+    if (projectType === 'boxing') {
+        return [
+            {
+                name: 'ヒヤリングシート受領',
+                status: 'pending',
+                startWeek: 1,
+                duration: 1,
+                progress: 0
+            },
+            {
+                name: '要件定義・企画',
+                status: 'pending',
+                startWeek: 2,
+                duration: 1,
+                progress: 0
+            },
+            {
+                name: 'デザイン制作',
+                status: 'pending',
+                startWeek: 3,
+                duration: 2,
+                progress: 0
+            },
+            {
+                name: 'コーディング',
+                status: 'pending',
+                startWeek: 5,
+                duration: 2,
+                progress: 0
+            },
+            {
+                name: 'コンテンツ作成',
+                status: 'pending',
+                startWeek: 6,
+                duration: 2,
+                progress: 0
+            },
+            {
+                name: 'テスト・調整',
+                status: 'pending',
+                startWeek: 8,
+                duration: 1,
+                progress: 0
+            },
+            {
+                name: '本番公開',
+                status: 'pending',
+                startWeek: 9,
+                duration: 1,
+                progress: 0,
+                type: 'milestone'
+            },
+            {
+                name: '運用サポート開始',
+                status: 'pending',
+                startWeek: 10,
+                duration: 2,
+                progress: 0
+            }
+        ];
+    } else {
+        return [
+            {
+                name: 'ヒヤリングシート受領',
+                status: 'completed',
+                startWeek: 1,
+                duration: 1,
+                progress: 100
+            },
+            {
+                name: '要件定義・企画',
+                status: 'in-progress',
+                startWeek: 2,
+                duration: 1,
+                progress: 70
+            },
+            {
+                name: 'デザイン制作',
+                status: 'pending',
+                startWeek: 3,
+                duration: 2,
+                progress: 0
+            },
+            {
+                name: 'コーディング',
+                status: 'pending',
+                startWeek: 5,
+                duration: 2,
+                progress: 0
+            },
+            {
+                name: 'コンテンツ作成',
+                status: 'pending',
+                startWeek: 6,
+                duration: 2,
+                progress: 0
+            },
+            {
+                name: 'テスト・調整',
+                status: 'pending',
+                startWeek: 8,
+                duration: 1,
+                progress: 0
+            },
+            {
+                name: '本番公開',
+                status: 'pending',
+                startWeek: 9,
+                duration: 1,
+                progress: 0,
+                type: 'milestone'
+            },
+            {
+                name: '運用サポート開始',
+                status: 'pending',
+                startWeek: 10,
+                duration: 2,
+                progress: 0
+            }
+        ];
+    }
+}
+
+// ガントチャートのHTML生成
+function createGanttHTML(tasks, projectType) {
+    const weeks = 12;
+    const currentWeek = projectType === 'boxing' ? 1 : 2;
+    
+    let html = `
+        <div class="gantt-timeline">
+            <div class="gantt-header">
+                <div class="gantt-tasks-header">作業項目</div>
+                <div class="gantt-dates-header">
+                    ${Array.from({length: weeks}, (_, i) => `
+                        <div class="gantt-date-cell">第${i + 1}週</div>
+                    `).join('')}
+                </div>
+            </div>
+    `;
+    
+    tasks.forEach((task, index) => {
+        html += `
+            <div class="gantt-row">
+                <div class="gantt-task-name">${task.name}</div>
+                <div class="gantt-task-timeline">
+                    ${Array.from({length: weeks}, (_, weekIndex) => {
+                        const isTaskWeek = weekIndex >= task.startWeek - 1 && weekIndex < task.startWeek - 1 + task.duration;
+                        const isCurrentWeek = weekIndex === currentWeek - 1;
+                        
+                        if (isTaskWeek) {
+                            const barClass = task.type === 'milestone' ? 'milestone' : task.status;
+                            return `
+                                <div class="gantt-bar ${barClass}" style="grid-column: span ${task.duration};" data-task="${task.name}" data-progress="${task.progress}">
+                                    ${task.type === 'milestone' ? '🎯' : Math.round(task.progress) + '%'}
+                                    <div class="gantt-task-details">
+                                        ${task.name}<br>
+                                        進捗: ${task.progress}%<br>
+                                        期間: ${task.duration}週間
+                                    </div>
+                                </div>
+                            `;
+                        } else if (weekIndex === task.startWeek - 1) {
+                            return `<div></div>`;
+                        }
+                        return weekIndex < task.startWeek - 1 + task.duration ? '' : `<div></div>`;
+                    }).join('')}
+                    ${currentWeek >= task.startWeek && currentWeek < task.startWeek + task.duration ? 
+                        `<div class="gantt-current-date" style="left: ${((currentWeek - task.startWeek) / task.duration) * 100}%;"></div>` : ''}
+                </div>
+            </div>
+        `;
+    });
+    
+    html += `</div>`;
+    return html;
+}
+
+// ガントチャートのアニメーション
+function animateGanttBars(container) {
+    const bars = container.querySelectorAll('.gantt-bar');
+    
+    bars.forEach((bar, index) => {
+        setTimeout(() => {
+            bar.style.opacity = '0';
+            bar.style.transform = 'scaleX(0)';
+            bar.style.transformOrigin = 'left center';
+            
+            setTimeout(() => {
+                bar.style.transition = 'all 0.8s ease-out';
+                bar.style.opacity = '1';
+                bar.style.transform = 'scaleX(1)';
+                
+                // 進行中のタスクに進捗インジケーターを追加
+                if (bar.classList.contains('in-progress')) {
+                    const progress = parseInt(bar.dataset.progress);
+                    setTimeout(() => {
+                        const indicator = document.createElement('div');
+                        indicator.className = 'gantt-progress-indicator';
+                        indicator.style.width = progress + '%';
+                        bar.appendChild(indicator);
+                    }, 400);
+                }
+            }, index * 100);
+        }, index * 150);
+    });
+}
 
 // タブ切り替え機能
 function initializeTabs() {
@@ -689,3 +919,170 @@ function syncLocalData() {
     const timestamp = new Date().toISOString();
     localStorage.setItem('lastSync', timestamp);
 }
+
+// ヒヤリングシート認証機能
+function authenticateHearingSheet(projectType) {
+    const passwordInput = document.getElementById(`${projectType}-password`);
+    const authError = document.getElementById(`${projectType}-auth-error`);
+    const authForm = document.getElementById(`${projectType}-auth-form`);
+    const hearingContent = document.getElementById(`${projectType}-hearing-sheet`);
+    
+    const password = passwordInput.value.trim();
+    const correctPassword = getProjectPassword(projectType);
+    
+    if (password === correctPassword) {
+        // 認証成功
+        authForm.style.display = 'none';
+        hearingContent.classList.add('show');
+        authError.classList.remove('show');
+        
+        // ヒヤリングシートのデータを読み込み
+        loadHearingSheetData(projectType);
+        
+        // 成功通知
+        showNotification('認証に成功しました', 'success');
+    } else {
+        // 認証失敗
+        authError.classList.add('show');
+        passwordInput.value = '';
+        passwordInput.focus();
+        
+        // 入力フィールドを一瞬赤くする
+        passwordInput.style.borderColor = '#dc3545';
+        setTimeout(() => {
+            passwordInput.style.borderColor = '#ced4da';
+        }, 1000);
+    }
+}
+
+// プロジェクトごとのパスワードを取得
+function getProjectPassword(projectType) {
+    const passwords = {
+        'boxing': 'boxing2024',
+        'architecture': 'archi2024'
+    };
+    return passwords[projectType] || '';
+}
+
+// ヒヤリングシートデータを読み込み
+function loadHearingSheetData(projectType) {
+    const hearingContent = document.getElementById(`${projectType}-hearing-sheet`);
+    
+    if (projectType === 'architecture') {
+        // みの建築のヒヤリングシートデータは既にHTMLに含まれているので、
+        // ここでは表示を調整するだけ
+        return;
+    } else if (projectType === 'boxing') {
+        // みのボクシングジムのヒヤリングシートデータを動的に生成
+        hearingContent.innerHTML = `
+            <div class="hearing-grid">
+                <div class="hearing-item">
+                    <label>担当者様</label>
+                    <span>未提出</span>
+                </div>
+                <div class="hearing-item">
+                    <label>会社名</label>
+                    <span>みのボクシングジム</span>
+                </div>
+                <div class="hearing-item">
+                    <label>連絡先</label>
+                    <span>未提出</span>
+                </div>
+                <div class="hearing-item">
+                    <label>目的・ゴール</label>
+                    <span>ヒヤリングシート提出待ち</span>
+                </div>
+                <div class="hearing-item full-width">
+                    <label>ビジョン</label>
+                    <span>ヒヤリングシート提出後に詳細が明らかになります</span>
+                </div>
+                <div class="hearing-item full-width">
+                    <label>ターゲット</label>
+                    <span>ヒヤリングシート提出後に詳細が明らかになります</span>
+                </div>
+                <div class="hearing-item full-width">
+                    <label>現在の課題</label>
+                    <span>ヒヤリングシート提出後に詳細が明らかになります</span>
+                </div>
+                <div class="hearing-item full-width">
+                    <label>必要機能</label>
+                    <span>ヒヤリングシート提出後に詳細が明らかになります</span>
+                </div>
+                <div class="hearing-item">
+                    <label>デザインイメージ</label>
+                    <span>未定</span>
+                </div>
+                <div class="hearing-item">
+                    <label>参考サイト</label>
+                    <span>未定</span>
+                </div>
+                <div class="hearing-item">
+                    <label>予算感</label>
+                    <span>要相談</span>
+                </div>
+                <div class="hearing-item">
+                    <label>素材準備状況</label>
+                    <span>未確認</span>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn-primary" onclick="exportHearingData('${projectType}')">
+                    <i class="fas fa-download"></i>
+                    データエクスポート
+                </button>
+                <button class="btn-secondary" onclick="printHearingSheet('${projectType}')">
+                    <i class="fas fa-print"></i>
+                    印刷用表示
+                </button>
+                <button class="btn-info" onclick="showProjectComparison()">
+                    <i class="fas fa-chart-bar"></i>
+                    プロジェクト比較
+                </button>
+            </div>
+        `;
+    }
+}
+
+// ヒヤリングシートの表示/非表示切り替え
+function toggleHearingSheet(projectType) {
+    const authForm = document.getElementById(`${projectType}-auth-form`);
+    const hearingContent = document.getElementById(`${projectType}-hearing-sheet`);
+    const toggleBtn = document.querySelector(`[onclick="toggleHearingSheet('${projectType}')"] i`);
+    
+    // 認証済みでない場合は認証フォームの表示/非表示を切り替え
+    if (!hearingContent.classList.contains('show')) {
+        if (authForm.style.display === 'none' || authForm.style.display === '') {
+            authForm.style.display = 'block';
+            toggleBtn.className = 'fas fa-chevron-up';
+        } else {
+            authForm.style.display = 'none';
+            toggleBtn.className = 'fas fa-chevron-down';
+        }
+    } else {
+        // 認証済みの場合はコンテンツの表示/非表示を切り替え
+        if (hearingContent.style.display === 'none') {
+            hearingContent.style.display = 'block';
+            toggleBtn.className = 'fas fa-chevron-up';
+        } else {
+            hearingContent.style.display = 'none';
+            toggleBtn.className = 'fas fa-chevron-down';
+        }
+    }
+}
+
+// Enterキーでパスワード認証
+document.addEventListener('DOMContentLoaded', function() {
+    // ...existing code...
+    
+    // パスワード入力フィールドでEnterキーを押した時の処理
+    document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            const target = e.target;
+            if (target.id.includes('-password')) {
+                const projectType = target.id.replace('-password', '');
+                authenticateHearingSheet(projectType);
+            }
+        }
+    });
+});
