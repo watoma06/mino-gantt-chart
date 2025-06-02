@@ -99,6 +99,12 @@ body {
     color: var(--color-primary);
 }
 
+/* ヘッダーアクション（ログアウトボタンエリア） */
+.header-actions {
+    display: flex;
+    align-items: center;
+}
+
 /* ログアウトボタンのスタイル */
 .logout-button {
     background: var(--color-accent) !important;
@@ -111,6 +117,13 @@ body {
     font-size: 14px !important;
     transition: all 0.3s ease !important;
     font-family: inherit !important;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logout-button i {
+    color: #FFFFFF !important;
 }
 
 .logout-button:hover {
@@ -1158,15 +1171,18 @@ body {
     
     .header-content {
         padding: 0 1rem;
-        flex-direction: column;
-        gap: 0.5rem;
-        text-align: center;
-        justify-content: center;
+        flex-direction: row;
+        justify-content: space-between;
         align-items: center;
     }
     
     .header-logo {
         min-width: auto;
+    }
+    
+    .header-logo .logo-image {
+        height: 60px !important; /* 1.5倍のサイズ (40px → 60px) */
+        max-width: 200px !important;
     }
     
     .header-content h1 {
@@ -1179,20 +1195,15 @@ body {
         color: var(--color-primary);
     }
     
-    .user-info {
-        font-size: 0.9rem;
-        justify-content: center;
-        color: var(--color-text);
-    }
-    
-    .user-info i {
-        color: var(--color-primary);
+    .header-actions {
+        display: flex;
+        align-items: center;
     }
     
     .logout-button {
         font-size: 12px !important;
         padding: 6px 12px !important;
-        margin-left: 10px !important;
+        margin-left: 0 !important;
     }
     
     /* プロジェクトタブの調整 */
@@ -1430,8 +1441,8 @@ body {
     
     /* ヘッダーの配色は継承されるため、フォントサイズなどの調整のみ */
     .header-logo .logo-image {
-        height: 40px !important;
-        max-width: 150px !important;
+        height: 60px !important; /* 1.5倍のサイズ */
+        max-width: 200px !important;
         border: none !important;
         padding: 0 !important;
         background: none !important;
