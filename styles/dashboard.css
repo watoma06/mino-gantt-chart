@@ -31,10 +31,11 @@ body {
 
 /* ヘッダー */
 .dashboard-header {
-    background: var(--color-primary);
-    color: var(--color-bg);
+    background: #FFFFFF;
+    color: var(--color-text);
     padding: 1rem 0;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-bottom: 2px solid var(--color-primary);
 }
 
 .header-content {
@@ -78,11 +79,12 @@ body {
 .header-content h1 {
     font-size: 1.8rem;
     font-weight: 600;
+    color: var(--color-text);
 }
 
 .header-content h1 i {
     margin-right: 0.5rem;
-    color: var(--color-accent);
+    color: var(--color-primary);
 }
 
 .user-info {
@@ -90,6 +92,11 @@ body {
     align-items: center;
     gap: 0.5rem;
     font-size: 1.1rem;
+    color: var(--color-text);
+}
+
+.user-info i {
+    color: var(--color-primary);
 }
 
 /* ログアウトボタンのスタイル */
