@@ -618,6 +618,7 @@ body {
   gap: 1.5rem;
   overflow-x: visible; /* スクロールを無効化 */
   padding-bottom: 1.5rem;
+  margin-top: 2rem; /* 統一的な上マージンを設定 */
   width: 100%;
   box-sizing: border-box;
   scroll-snap-type: none;
