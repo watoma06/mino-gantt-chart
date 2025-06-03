@@ -23,8 +23,10 @@
     }
     
     // 認証済みの場合は通常の初期化を実行
-    console.log('認証済みユーザーでアクセス中');
+    // console.log('認証済みユーザーでアクセス中'); // Removed
 })();
+
+const KANBAN_AUTO_REFRESH_INTERVAL_MS = 60 * 1000; // 60 seconds
 
 // ダッシュボードの初期化
 document.addEventListener('DOMContentLoaded', function() {
@@ -35,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeKanbanBoards();
 
     // Update days remaining every minute
-    setInterval(updateAllDaysRemainingDisplays, 60000);
+    setInterval(updateAllDaysRemainingDisplays, KANBAN_AUTO_REFRESH_INTERVAL_MS);
 });
 
 // ログアウト機能の設定
@@ -226,9 +228,9 @@ function getDaysRemainingClass(daysRemaining) {
 }
 
 function renderKanbanBoard(projectType) {
-  console.log(`Kanbanボード描画中: ${projectType}`);
+  // console.log(`Kanbanボード描画中: ${projectType}`); // Removed
   const tasks = getProjectTasks(projectType);
-  console.log(`タスク数: ${tasks.length}`, tasks);
+  // console.log(`タスク数: ${tasks.length}`, tasks); // Removed
   
   // ステータスごとに分類
   const todoList = document.getElementById(`${projectType}-todo-list`);
@@ -236,8 +238,8 @@ function renderKanbanBoard(projectType) {
   const completedList = document.getElementById(`${projectType}-completed-list`);
   
   if (!todoList || !inprogressList || !completedList) {
-    console.error(`Kanban要素が見つかりません: ${projectType}`);
-    return;
+    // console.error(`Kanban要素が見つかりません: ${projectType}`); // Removed
+    return; // Silently return if elements aren't found, error will be caught by initializeKanbanBoards
   }
   
   todoList.innerHTML = '';
@@ -291,7 +293,7 @@ function renderKanbanBoard(projectType) {
     }
   });
   
-  console.log(`${projectType} Kanbanボード描画完了`);
+  // console.log(`${projectType} Kanbanボード描画完了`); // Removed
 }
 
 function getStatusBadgeText(status) {
@@ -308,10 +310,14 @@ function getStatusBadgeText(status) {
 
 // 初期化時にカンバン描画
 function initializeKanbanBoards() {
-  console.log('Kanbanボードを初期化中...');
-  renderKanbanBoard('boxing');
-  renderKanbanBoard('architecture');
-  console.log('Kanbanボードの初期化完了');
+  // console.log('Kanbanボードを初期化中...'); // Removed
+  try {
+    renderKanbanBoard('boxing');
+    renderKanbanBoard('architecture');
+  } catch (error) {
+    console.error("Error initializing Kanban board(s):", error); // This one STAYS
+  }
+  // console.log('Kanbanボードの初期化完了'); // Removed
 }
 
 // Function to update all "days remaining" displays
@@ -339,5 +345,5 @@ function updateAllDaysRemainingDisplays() {
             span.className = `days-remaining ${newClass}`;
         }
     });
-    console.log('Days remaining displays updated.');
+    // console.log('Days remaining displays updated.'); // Removed
 }
