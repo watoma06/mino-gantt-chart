@@ -6,6 +6,7 @@
     --color-primary: #367410;
     --color-secondary: #2A6F97;
     --color-accent: #FF914D;
+    --color-success: #28a745;
     --color-bg: #FFFFFF;
     --color-bg-light: #F2F2F2;
     --color-text: #303030;
@@ -686,17 +687,30 @@ body {
 /* =====================
    カンバンボード（カードベース進捗管理）
    ===================== */
-.kanban-board {
-  display: flex;
-  gap: 1.5rem;
-  overflow-x: visible; /* スクロールを無効化 */
-  padding-bottom: 1.5rem;
-  width: 100%;
-  box-sizing: border-box;
-  scroll-snap-type: none;
-  flex-wrap: wrap; /* 折り返しで全カラム表示 */
-  justify-content: space-between;
+.kanban-section {
+  background: var(--color-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+  border: 1px solid #e1e5e9;
 }
+
+.kanban-section h3 {
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+  color: var(--color-dark);
+  border-bottom: 2px solid var(--color-primary);
+  padding-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.kanban-section h3 i {
+  color: var(--color-primary);
+}
+
 .kanban-column {
   background: var(--color-bg);
   border-radius: 12px;
