@@ -150,6 +150,13 @@ body {
     justify-content: space-between;
 }
 
+/* PC版では左寄せ */
+@media (min-width: 769px) {
+    .project-tabs {
+        justify-content: flex-start;
+    }
+}
+
 .tab-button {
     background: none;
     border: none;
