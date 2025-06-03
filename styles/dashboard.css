@@ -6,7 +6,6 @@
     --color-primary: #367410;
     --color-secondary: #2A6F97;
     --color-accent: #FF914D;
-    --color-success: #28a745;
     --color-bg: #FFFFFF;
     --color-bg-light: #F2F2F2;
     --color-text: #303030;
@@ -22,7 +21,7 @@
 
 body {
     font-family: 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', 'Meiryo', 'メイリオ', sans-serif;
-    background-color: #ffffff;
+    background-color: var(--color-bg);
     color: var(--color-text);
     line-height: 1.6;
     color-scheme: light; /* ブラウザのダークモード設定を無効化 */
@@ -185,6 +184,12 @@ body {
     padding: 2rem;
 }
 
+@media (max-width: 768px) {
+    .dashboard-main {
+        padding: 1rem;
+    }
+}
+
 .project-content {
     display: none;
 }
@@ -211,8 +216,8 @@ body {
     background: var(--color-bg);
     border-radius: 12px;
     padding: 1.5rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    border: 2px solid #e1e5e9;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    border: 1px solid #e1e5e9;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     color: var(--color-dark);
 }
@@ -230,6 +235,8 @@ body {
     font-size: 2rem;
     margin-bottom: 1rem;
 }
+
+/* .progress-card .card-icon is removed as .progress-card itself is part of the old UI */
 
 .next-action-card .card-icon {
     color: var(--color-accent);
@@ -287,6 +294,7 @@ body {
 }
 
 /* 進捗詳細 */
+/* .progress-details and its children are removed as they are part of the old UI */
 
 .task-list {
     display: flex;
@@ -300,15 +308,11 @@ body {
     gap: 1rem;
     padding: 1rem;
     border-radius: 8px;
-    background: var(--color-bg);
-    border: 1px solid #e1e5e9;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    transition: background-color 0.3s ease;
 }
 
 .task-item:hover {
     background-color: var(--color-bg-light);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .task-status {
@@ -345,9 +349,8 @@ body {
     border-radius: 12px;
     padding: 1.5rem;
     margin: 2rem 0;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.12);
-    border: 2px solid var(--color-primary);
-    border-left: 6px solid var(--color-primary);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    border-left: 4px solid var(--color-primary);
 }
 
 .hearing-sheet-section.waiting {
@@ -484,8 +487,7 @@ body {
     border-radius: 12px;
     width: 80%;
     max-width: 600px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-    border: 2px solid #e1e5e9;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     animation: modalSlideIn 0.3s ease-out;
 }
 
@@ -581,11 +583,10 @@ body {
 .notification {
     background: var(--color-bg);
     border-left: 4px solid var(--color-primary);
-    border: 1px solid #e1e5e9;
     padding: 1rem;
     margin-bottom: 0.5rem;
     border-radius: 8px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     animation: slideInRight 0.3s ease-out;
 }
 
@@ -611,35 +612,21 @@ body {
 /* =====================
    カンバンボード（カードベース進捗管理）
    ===================== */
-.kanban-section {
-  background: var(--color-bg);
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin: 2rem 0;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-  border: 2px solid #e1e5e9;
-}
-
-.kanban-section h3 {
-  font-size: 1.3rem;
-  margin-bottom: 1.5rem;
-  color: var(--color-dark);
-  border-bottom: 2px solid var(--color-primary);
-  padding-bottom: 0.5rem;
+.kanban-board {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  gap: 1.5rem;
+  overflow-x: visible; /* スクロールを無効化 */
+  padding-bottom: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  scroll-snap-type: none;
+  flex-wrap: wrap; /* 折り返しで全カラム表示 */
+  justify-content: space-between;
 }
-
-.kanban-section h3 i {
-  color: var(--color-primary);
-}
-
 .kanban-column {
   background: var(--color-bg);
   border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.12);
-  border: 2px solid #e1e5e9;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
   min-width: 280px;
   flex: 1 1 0;
   display: flex;
@@ -701,8 +688,7 @@ body {
   background: white;
   border-radius: 8px;
   padding: 1rem;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.12);
-  border: 1px solid #e1e5e9;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   border-left: 4px solid var(--color-primary);
   transition: all 0.3s ease;
   cursor: pointer;
@@ -785,15 +771,4 @@ body {
     flex-direction: column;
     gap: 0.2rem;
   }
-}
-.kanban-board {
-  display: flex;
-  gap: 1.5rem;
-  overflow-x: visible;
-  padding-bottom: 1.5rem;
-  width: 100%;
-  box-sizing: border-box;
-  scroll-snap-type: none;
-  flex-wrap: wrap;
-  justify-content: space-between;
 }

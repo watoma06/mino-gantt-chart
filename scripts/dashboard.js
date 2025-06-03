@@ -4,10 +4,6 @@
 
 // ページ読み込み時の認証チェック
 (function() {
-    // テスト用: 認証状態を設定
-    sessionStorage.setItem('lexia_authenticated', 'true');
-    sessionStorage.setItem('auth_timestamp', new Date().getTime().toString());
-    
     // 認証状態をチェック
     const isAuthenticated = sessionStorage.getItem('lexia_authenticated');
     const authTimestamp = sessionStorage.getItem('auth_timestamp');
@@ -21,8 +17,8 @@
         sessionStorage.removeItem('lexia_authenticated');
         sessionStorage.removeItem('auth_timestamp');
         
-        // テスト環境ではリダイレクトしない
-        console.log('テスト環境: ログインページリダイレクトをスキップ');
+        // ログインページにリダイレクト
+        window.location.href = 'login.html';
         return;
     }
     
@@ -37,6 +33,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     initializeTabs();
     initializeKanbanBoards();
+
+    // Update days remaining every minute
+    setInterval(updateAllDaysRemainingDisplays, 60000);
 });
 
 // ログアウト機能の設定
@@ -112,6 +111,17 @@ function getProjectTasks(projectType) {
             { name: '保守・運用開始', status: 'milestone', startWeek: 12, duration: 1, dependency: '最終調整・納品' }
         ];
     }
+
+    // Calculate and add dueDate to each task
+    tasks = tasks.map(task => {
+        const taskStartDate = new Date(PROJECT_START_DATE);
+        taskStartDate.setDate(taskStartDate.getDate() + (task.startWeek - 1) * 7);
+
+        const calculatedDueDate = new Date(taskStartDate);
+        calculatedDueDate.setDate(calculatedDueDate.getDate() + task.duration * 7 - 1);
+
+        return { ...task, dueDate: calculatedDueDate };
+    });
     
     // スマホ環境での1-10週のデザイン設計・コーディングセルの削除
     if (window.innerWidth <= 768) {
@@ -186,6 +196,35 @@ function closeModal(modalId) {
 // =================
 // カンバンボード描画ロジック
 // =================
+
+// Helper function to format Date object to YYYY/MM/DD string
+function formatDateToYYYYMMDD(date) {
+    if (!date) return '';
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}/${month}/${day}`;
+}
+
+// Helper function to calculate days remaining until due date
+function calculateDaysRemaining(dueDate) {
+    if (!dueDate) return null;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize to start of today
+    const due = new Date(dueDate);
+    due.setHours(0, 0, 0, 0);   // Normalize to start of due date
+    return Math.round((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+}
+
+// Helper function to get styling class based on days remaining
+function getDaysRemainingClass(daysRemaining) {
+    if (daysRemaining === null) return '';
+    if (daysRemaining < 0) return 'overdue';
+    if (daysRemaining <= 3) return 'urgent'; // 3 days or less
+    if (daysRemaining <= 7) return 'warning'; // 1 week or less
+    return 'normal'; // Default if no other condition met
+}
+
 function renderKanbanBoard(projectType) {
   console.log(`Kanbanボード描画中: ${projectType}`);
   const tasks = getProjectTasks(projectType);
@@ -208,15 +247,41 @@ function renderKanbanBoard(projectType) {
   tasks.forEach(task => {
     const card = document.createElement('div');
     card.className = 'kanban-card ' + (task.status === 'completed' ? 'completed' : task.status === 'in-progress' ? 'in-progress' : 'todo');
+
+    const dueDateStr = formatDateToYYYYMMDD(task.dueDate);
+    const daysRemaining = calculateDaysRemaining(task.dueDate);
+    let daysRemainingText = "";
+    let daysRemainingClass = getDaysRemainingClass(daysRemaining);
+
+    if (daysRemaining !== null) {
+        if (daysRemaining >= 0) {
+            daysRemainingText = ` (残り${daysRemaining}日)`;
+        } else {
+            daysRemainingText = ` (${Math.abs(daysRemaining)}日超過)`;
+        }
+    }
+
+    let statusDisplayHTML = '';
+    if ((task.status === 'waiting' || task.status === 'blocked') && task.dependency) {
+        statusDisplayHTML = `<div class="task-dependency">⚠️ 前工程: ${task.dependency}</div>`;
+    } else {
+        statusDisplayHTML = `<span class="task-status-badge">${getStatusBadgeText(task.status)}</span>`;
+    }
+
     card.innerHTML = `
       <div class="task-title">${task.name}</div>
       <div class="task-meta">
-        <span>週: ${task.startWeek}</span>
-        <span>期間: ${task.duration}週</span>
+        <span>期限: ${dueDateStr}</span>
+        <span class="days-remaining" data-due-date="${task.dueDate ? task.dueDate.toISOString() : ''}">${daysRemainingText}</span>
       </div>
-      <span class="task-status-badge">${getStatusBadgeText(task.status)}</span>
-      ${task.dependency ? `<div class="task-meta">依存: ${task.dependency}</div>` : ''}
+      ${statusDisplayHTML}
     `;
+    // Set initial class for days-remaining span
+    const daysRemainingSpan = card.querySelector('.days-remaining');
+    if (daysRemainingSpan) {
+        daysRemainingSpan.className = `days-remaining ${daysRemainingClass}`;
+    }
+
     if (task.status === 'completed') {
       completedList.appendChild(card);
     } else if (task.status === 'in-progress') {
@@ -244,11 +309,35 @@ function getStatusBadgeText(status) {
 // 初期化時にカンバン描画
 function initializeKanbanBoards() {
   console.log('Kanbanボードを初期化中...');
-  try {
-    renderKanbanBoard('boxing');
-    renderKanbanBoard('architecture');
-    console.log('Kanbanボードの初期化完了');
-  } catch (error) {
-    console.error('Kanbanボード初期化エラー:', error);
-  }
+  renderKanbanBoard('boxing');
+  renderKanbanBoard('architecture');
+  console.log('Kanbanボードの初期化完了');
+}
+
+// Function to update all "days remaining" displays
+function updateAllDaysRemainingDisplays() {
+    const daySpans = document.querySelectorAll('.days-remaining');
+    daySpans.forEach(span => {
+        const dueDateISO = span.getAttribute('data-due-date');
+        if (dueDateISO) {
+            const dueDate = new Date(dueDateISO);
+            const daysRemaining = calculateDaysRemaining(dueDate);
+            let newText = "";
+
+            if (daysRemaining !== null) {
+                if (daysRemaining >= 0) {
+                    newText = ` (残り${daysRemaining}日)`;
+                } else {
+                    newText = ` (${Math.abs(daysRemaining)}日超過)`;
+                }
+            }
+            span.textContent = newText;
+
+            // Update styling class
+            const newClass = getDaysRemainingClass(daysRemaining);
+            // Ensure to keep the base class 'days-remaining' and only change the dynamic part
+            span.className = `days-remaining ${newClass}`;
+        }
+    });
+    console.log('Days remaining displays updated.');
 }
