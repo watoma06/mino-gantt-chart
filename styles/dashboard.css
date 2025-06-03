@@ -230,8 +230,6 @@ body {
     margin-bottom: 1rem;
 }
 
-/* .progress-card .card-icon is removed as .progress-card itself is part of the old UI */
-
 .next-action-card .card-icon {
     color: var(--color-accent);
 }
