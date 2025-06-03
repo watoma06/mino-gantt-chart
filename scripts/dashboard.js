@@ -23,8 +23,10 @@
     }
     
     // 認証済みの場合は通常の初期化を実行
-    console.log('認証済みユーザーでアクセス中');
+    // console.log('認証済みユーザーでアクセス中'); // Removed
 })();
+
+const KANBAN_AUTO_REFRESH_INTERVAL_MS = 60 * 1000; // 60 seconds
 
 // ダッシュボードの初期化
 document.addEventListener('DOMContentLoaded', function() {
@@ -32,10 +34,10 @@ document.addEventListener('DOMContentLoaded', function() {
     setupLogoutButton();
     
     initializeTabs();
-    updateProgressCircles();
-    initializeTooltips();
-    initializeProgressDashboards();
     initializeKanbanBoards();
+
+    // Update days remaining every minute
+    setInterval(updateAllDaysRemainingDisplays, KANBAN_AUTO_REFRESH_INTERVAL_MS);
 });
 
 // ログアウト機能の設定
@@ -84,114 +86,6 @@ function getCurrentWeek() {
     return Math.max(1, currentWeek); // 最低でも1週目として表示
 }
 
-// 日付をフォーマットする関数
-function formatDate(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}/${month}/${day}`;
-}
-
-// 短い日付フォーマット関数（M/D形式）
-function formatDateShort(date) {
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    return `${month}/${day}`;
-}
-
-// 週の開始日を取得する関数
-function getWeekStartDate(weekNumber) {
-    const startDate = new Date(PROJECT_START_DATE);
-    startDate.setDate(startDate.getDate() + (weekNumber - 1) * 7);
-    return startDate;
-}
-
-// Progress Dashboardの初期化
-function initializeProgressDashboards() {
-    generateProgressDashboard('boxing');
-    generateProgressDashboard('architecture');
-    
-    // リサイズ時の再生成を制御（デバウンス処理）
-    let resizeTimeout;
-    let lastWidth = window.innerWidth;
-    
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-            const currentWidth = window.innerWidth;
-            // 画面幅が768pxを境界にクロスした場合のみ再生成
-            if ((lastWidth <= 768 && currentWidth > 768) || 
-                (lastWidth > 768 && currentWidth <= 768)) {
-                generateProgressDashboard('boxing');
-                generateProgressDashboard('architecture');
-                lastWidth = currentWidth;
-            }
-        }, 250); // 250ms のデバウンス
-    });
-    
-    // スクロール中のアニメーション防止（強化版）
-    let scrollTimeout;
-    let isScrolling = false;
-    
-    // パッシブリスナーでスクロールを検出
-    document.addEventListener('scroll', () => {
-        if (!isScrolling) {
-            console.log('スクロール開始: アニメーション一時停止');
-        }
-        isScrolling = true;
-        document.body.classList.add('scrolling');
-        clearTimeout(scrollTimeout);
-        
-        // スクロール終了後1秒後にフラグをリセット
-        scrollTimeout = setTimeout(() => {
-            isScrolling = false;
-            document.body.classList.remove('scrolling');
-            console.log('スクロール終了: アニメーション再開可能');
-        }, 1000);
-    }, { passive: true });
-    
-    // タッチスクロール対応（モバイル）
-    document.addEventListener('touchmove', () => {
-        if (!isScrolling) {
-            console.log('タッチスクロール開始: アニメーション一時停止');
-        }
-        isScrolling = true;
-        document.body.classList.add('scrolling');
-        clearTimeout(scrollTimeout);
-        
-        scrollTimeout = setTimeout(() => {
-            isScrolling = false;
-            document.body.classList.remove('scrolling');
-            console.log('タッチスクロール終了: アニメーション再開可能');
-        }, 1000);
-    }, { passive: true });
-    
-    // スクロール状態をグローバルで参照可能にする
-    window.isScrolling = () => isScrolling;
-    
-    console.log(`Progress Dashboardが初期化されました。プロジェクト開始日: ${formatDate(PROJECT_START_DATE)}`);
-}
-
-// Progress Dashboardを生成
-function generateProgressDashboard(projectType) {
-    const container = document.getElementById(`${projectType}ProgressDashboard`);
-    if (!container) return;
-
-    const tasks = getProjectTasks(projectType);
-    
-    // Progress Dashboard HTMLを生成
-    const dashboardHTML = createProgressDashboardHTML(tasks, projectType);
-    
-    // Progress Dashboardを設定
-    container.innerHTML = '';
-    container.insertAdjacentHTML('beforeend', dashboardHTML);
-    
-    // プログレス円とバーのアニメーション開始
-    setTimeout(() => {
-        animateProgressElements(projectType);
-    }, 100);
-}
-
 // プロジェクトタスクデータを取得
 function getProjectTasks(projectType) {
     const currentWeek = getCurrentWeek();
@@ -219,6 +113,17 @@ function getProjectTasks(projectType) {
             { name: '保守・運用開始', status: 'milestone', startWeek: 12, duration: 1, dependency: '最終調整・納品' }
         ];
     }
+
+    // Calculate and add dueDate to each task
+    tasks = tasks.map(task => {
+        const taskStartDate = new Date(PROJECT_START_DATE);
+        taskStartDate.setDate(taskStartDate.getDate() + (task.startWeek - 1) * 7);
+
+        const calculatedDueDate = new Date(taskStartDate);
+        calculatedDueDate.setDate(calculatedDueDate.getDate() + task.duration * 7 - 1);
+
+        return { ...task, dueDate: calculatedDueDate };
+    });
     
     // スマホ環境での1-10週のデザイン設計・コーディングセルの削除
     if (window.innerWidth <= 768) {
@@ -240,207 +145,6 @@ function getProjectTasks(projectType) {
     }
     
     return tasks;
-}
-
-// Progress Dashboard HTMLを作成
-function createProgressDashboardHTML(tasks, projectType) {
-    // 総合進捗を計算
-    const totalProgress = calculateOverallProgress(tasks);
-    
-    let html = '';
-    
-    // 各タスクのプログレスカードを生成
-    tasks.forEach((task, index) => {
-        const progress = getTaskProgress(task);
-        const statusBadge = getStatusBadge(task.status);
-        const progressBarClass = getProgressBarClass(task.status);
-        
-        html += `
-            <div class="progress-card" data-status="${task.status}" style="animation-delay: ${index * 0.1}s;">
-                <div class="progress-card-header">
-                    <h4>${task.name}</h4>
-                    ${statusBadge}
-                </div>
-                
-                <div class="progress-info">
-                    <div class="progress-details">
-                        <div class="detail-item">
-                            <span class="detail-label">期間:</span>
-                            <span class="detail-value">${task.duration}週間</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">開始週:</span>
-                            <span class="detail-value">${task.startWeek}週目</span>
-                        </div>
-                        ${task.dependency ? `
-                        <div class="detail-item">
-                            <span class="detail-label">依存:</span>
-                            <span class="detail-value">${task.dependency}</span>
-                        </div>
-                        ` : ''}
-                    </div>
-                    
-                    <div class="progress-visual">
-                        <div class="progress-circle-small">
-                            <svg viewBox="0 0 36 36" class="circular-chart">
-                                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                                <path class="circle progress-circle-${task.status}" 
-                                      stroke-dasharray="${progress}, 100" 
-                                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                            </svg>
-                            <span class="progress-text-small">${progress}%</span>
-                        </div>
-                        
-                        <div class="progress-bar-container">
-                            <div class="progress-bar ${progressBarClass}">
-                                <div class="progress-fill" style="width: 0%" data-target="${progress}%"></div>
-                                <div class="progress-shimmer"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-    });
-    
-    return html;
-}
-
-// タスクの進捗率を計算
-function getTaskProgress(task) {
-    switch(task.status) {
-        case 'completed': return 100;
-        case 'in-progress': return 60;
-        case 'ready': return 10;
-        case 'waiting': return 5;
-        case 'blocked': return 0;
-        case 'milestone': return 100;
-        default: return 0;
-    }
-}
-
-// 総合進捗を計算
-function calculateOverallProgress(tasks) {
-    if (!tasks || tasks.length === 0) return 0;
-    
-    const totalProgress = tasks.reduce((sum, task) => {
-        return sum + getTaskProgress(task);
-    }, 0);
-    
-    return Math.round(totalProgress / tasks.length);
-}
-
-// ステータスバッジを取得
-function getStatusBadge(status) {
-    const statusConfig = {
-        'completed': { text: '完了', class: 'completed', icon: 'fa-check-circle' },
-        'in-progress': { text: '進行中', class: 'in-progress', icon: 'fa-clock' },
-        'ready': { text: '開始可能', class: 'ready', icon: 'fa-play-circle' },
-        'waiting': { text: '待機中', class: 'pending', icon: 'fa-pause-circle' },
-        'blocked': { text: 'ブロック中', class: 'pending', icon: 'fa-ban' },
-        'milestone': { text: 'マイルストーン', class: 'completed', icon: 'fa-flag' }
-    };
-    
-    const config = statusConfig[status] || { text: '未定', class: 'pending', icon: 'fa-question-circle' };
-    
-    return `
-        <div class="status-badge ${config.class}">
-            <i class="fas ${config.icon}"></i>
-            <span>${config.text}</span>
-        </div>
-    `;
-}
-
-// プログレスバーのクラスを取得
-function getProgressBarClass(status) {
-    switch(status) {
-        case 'completed': return 'completed';
-        case 'in-progress': return 'in-progress';
-        case 'ready': return 'ready';
-        case 'waiting': return 'pending';
-        case 'blocked': return 'pending';
-        case 'milestone': return 'completed';
-        default: return 'pending';
-    }
-}
-
-// Progress Dashboardのアニメーション
-function animateProgressElements(projectType) {
-    const container = document.getElementById(`${projectType}ProgressDashboard`);
-    if (!container) return;
-    
-    // スクロール中は完全にアニメーションをスキップ
-    if (typeof window.isScrolling === 'function' && window.isScrolling()) {
-        console.log('スクロール中のため、プログレスアニメーションをスキップします');
-        const cards = container.querySelectorAll('.progress-card');
-        const progressFills = container.querySelectorAll('.progress-fill');
-        const circles = container.querySelectorAll('.circle');
-        
-        cards.forEach(card => {
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0)';
-        });
-        
-        progressFills.forEach(fill => {
-            const target = fill.getAttribute('data-target');
-            fill.style.width = target;
-        });
-        
-        circles.forEach(circle => {
-            const dashArray = circle.getAttribute('stroke-dasharray');
-            if (dashArray) {
-                circle.style.strokeDasharray = dashArray;
-            }
-        });
-        
-        return;
-    }
-    
-    // プログレスカードのフェードインアニメーション
-    const cards = container.querySelectorAll('.progress-card');
-    cards.forEach((card, index) => {
-        setTimeout(() => {
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0)';
-        }, index * 150);
-    });
-    
-    // プログレスバーのアニメーション
-    const progressFills = container.querySelectorAll('.progress-fill');
-    progressFills.forEach((fill, index) => {
-        setTimeout(() => {
-            const target = fill.getAttribute('data-target');
-            fill.style.width = target;
-        }, (index * 150) + 300);
-    });
-    
-    // 円形プログレスのアニメーション
-    const circles = container.querySelectorAll('.circle');
-    circles.forEach((circle, index) => {
-        setTimeout(() => {
-            const dashArray = circle.getAttribute('stroke-dasharray');
-            if (dashArray) {
-                circle.style.strokeDasharray = dashArray;
-            }
-        }, (index * 150) + 500);
-    });
-    
-    console.log(`[${projectType}] Progress Dashboard アニメーション開始: ${cards.length}個のカード`);
-}
-
-// 総合進捗円の更新
-function updateOverallProgress(projectType) {
-    const tasks = getProjectTasks(projectType);
-    const overallProgress = calculateOverallProgress(tasks);
-    
-    // 総合進捗円を更新
-    const overallCircle = document.querySelector(`#${projectType}-project .overall-progress-circle .circle`);
-    const overallText = document.querySelector(`#${projectType}-project .overall-progress-circle .progress-text`);
-    
-    if (overallCircle && overallText) {
-        overallCircle.style.strokeDasharray = `${overallProgress}, 100`;
-        overallText.textContent = `${overallProgress}%`;
-    }
 }
 
 // =================
@@ -471,45 +175,6 @@ function initializeTabs() {
 // プログレス機能
 // =================
 
-// プログレスサークルの更新
-function updateProgressCircles() {
-    // Progress Dashboard の総合進捗を更新
-    updateOverallProgress('boxing');
-    updateOverallProgress('architecture');
-    
-    // 既存のカード内プログレス円（もし存在する場合）
-    const boxingProgress = document.querySelector('#boxing-project .progress-circle');
-    const architectureProgress = document.querySelector('#architecture-project .progress-circle');
-    
-    if (boxingProgress) {
-        const boxingTasks = getProjectTasks('boxing');
-        const boxingOverallProgress = calculateOverallProgress(boxingTasks);
-        updateProgressCircle(boxingProgress, boxingOverallProgress);
-    }
-    
-    if (architectureProgress) {
-        const architectureTasks = getProjectTasks('architecture');
-        const architectureOverallProgress = calculateOverallProgress(architectureTasks);
-        updateProgressCircle(architectureProgress, architectureOverallProgress);
-    }
-}
-
-// 個別プログレスサークルの更新
-function updateProgressCircle(circle, percentage) {
-    const deg = (percentage / 100) * 360;
-    circle.style.background = `conic-gradient(#4caf50 0deg ${deg}deg, #e1e5e9 ${deg}deg 360deg)`;
-}
-
-// =================
-// ツールチップ機能
-// =================
-
-// ツールチップの初期化
-function initializeTooltips() {
-    // Progress Dashboardのツールチップは CSS で実装済み
-    console.log('ツールチップ機能を初期化しました');
-}
-
 // =================
 // モーダル機能
 // =================
@@ -533,10 +198,39 @@ function closeModal(modalId) {
 // =================
 // カンバンボード描画ロジック
 // =================
+
+// Helper function to format Date object to YYYY/MM/DD string
+function formatDateToYYYYMMDD(date) {
+    if (!date) return '';
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}/${month}/${day}`;
+}
+
+// Helper function to calculate days remaining until due date
+function calculateDaysRemaining(dueDate) {
+    if (!dueDate) return null;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize to start of today
+    const due = new Date(dueDate);
+    due.setHours(0, 0, 0, 0);   // Normalize to start of due date
+    return Math.round((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+}
+
+// Helper function to get styling class based on days remaining
+function getDaysRemainingClass(daysRemaining) {
+    if (daysRemaining === null) return '';
+    if (daysRemaining < 0) return 'overdue';
+    if (daysRemaining <= 3) return 'urgent'; // 3 days or less
+    if (daysRemaining <= 7) return 'warning'; // 1 week or less
+    return 'normal'; // Default if no other condition met
+}
+
 function renderKanbanBoard(projectType) {
-  console.log(`Kanbanボード描画中: ${projectType}`);
+  // console.log(`Kanbanボード描画中: ${projectType}`); // Removed
   const tasks = getProjectTasks(projectType);
-  console.log(`タスク数: ${tasks.length}`, tasks);
+  // console.log(`タスク数: ${tasks.length}`, tasks); // Removed
   
   // ステータスごとに分類
   const todoList = document.getElementById(`${projectType}-todo-list`);
@@ -544,8 +238,7 @@ function renderKanbanBoard(projectType) {
   const completedList = document.getElementById(`${projectType}-completed-list`);
   
   if (!todoList || !inprogressList || !completedList) {
-    console.error(`Kanban要素が見つかりません: ${projectType}`);
-    return;
+    throw new Error(`プロジェクト${projectType}に必要な Kanban DOM 要素が見つかりません。'${projectType}-todo-list'、'${projectType}-inprogress-list'、および '${projectType}-completed-list' などの要素が存在することを確認してください。`);
   }
   
   todoList.innerHTML = '';
@@ -555,15 +248,41 @@ function renderKanbanBoard(projectType) {
   tasks.forEach(task => {
     const card = document.createElement('div');
     card.className = 'kanban-card ' + (task.status === 'completed' ? 'completed' : task.status === 'in-progress' ? 'in-progress' : 'todo');
+
+    const dueDateStr = formatDateToYYYYMMDD(task.dueDate);
+    const daysRemaining = calculateDaysRemaining(task.dueDate);
+    let daysRemainingText = "";
+    let daysRemainingClass = getDaysRemainingClass(daysRemaining);
+
+    if (daysRemaining !== null) {
+        if (daysRemaining >= 0) {
+            daysRemainingText = ` (残り${daysRemaining}日)`;
+        } else {
+            daysRemainingText = ` (${Math.abs(daysRemaining)}日超過)`;
+        }
+    }
+
+    let statusDisplayHTML = '';
+    if ((task.status === 'waiting' || task.status === 'blocked') && task.dependency) {
+        statusDisplayHTML = `<div class="task-dependency">⚠️ 前工程: ${task.dependency}</div>`;
+    } else {
+        statusDisplayHTML = `<span class="task-status-badge">${getStatusBadgeText(task.status)}</span>`;
+    }
+
     card.innerHTML = `
       <div class="task-title">${task.name}</div>
       <div class="task-meta">
-        <span>週: ${task.startWeek}</span>
-        <span>期間: ${task.duration}週</span>
+        <span>期限: ${dueDateStr}</span>
+        <span class="days-remaining" data-due-date="${task.dueDate ? task.dueDate.toISOString() : ''}">${daysRemainingText}</span>
       </div>
-      <span class="task-status-badge">${getStatusBadgeText(task.status)}</span>
-      ${task.dependency ? `<div class="task-meta">依存: ${task.dependency}</div>` : ''}
+      ${statusDisplayHTML}
     `;
+    // Set initial class for days-remaining span
+    const daysRemainingSpan = card.querySelector('.days-remaining');
+    if (daysRemainingSpan) {
+        daysRemainingSpan.className = `days-remaining ${daysRemainingClass}`;
+    }
+
     if (task.status === 'completed') {
       completedList.appendChild(card);
     } else if (task.status === 'in-progress') {
@@ -573,7 +292,7 @@ function renderKanbanBoard(projectType) {
     }
   });
   
-  console.log(`${projectType} Kanbanボード描画完了`);
+  // console.log(`${projectType} Kanbanボード描画完了`); // Removed
 }
 
 function getStatusBadgeText(status) {
@@ -590,8 +309,40 @@ function getStatusBadgeText(status) {
 
 // 初期化時にカンバン描画
 function initializeKanbanBoards() {
-  console.log('Kanbanボードを初期化中...');
-  renderKanbanBoard('boxing');
-  renderKanbanBoard('architecture');
-  console.log('Kanbanボードの初期化完了');
+  // console.log('Kanbanボードを初期化中...'); // Removed
+  try {
+    renderKanbanBoard('boxing');
+    renderKanbanBoard('architecture');
+  } catch (error) {
+    console.error("Error initializing Kanban board(s):", error); // This one STAYS
+  }
+  // console.log('Kanbanボードの初期化完了'); // Removed
+}
+
+// Function to update all "days remaining" displays
+function updateAllDaysRemainingDisplays() {
+    const daySpans = document.querySelectorAll('.days-remaining');
+    daySpans.forEach(span => {
+        const dueDateISO = span.getAttribute('data-due-date');
+        if (dueDateISO) {
+            const dueDate = new Date(dueDateISO);
+            const daysRemaining = calculateDaysRemaining(dueDate);
+            let newText = "";
+
+            if (daysRemaining !== null) {
+                if (daysRemaining >= 0) {
+                    newText = ` (残り${daysRemaining}日)`;
+                } else {
+                    newText = ` (${Math.abs(daysRemaining)}日超過)`;
+                }
+            }
+            span.textContent = newText;
+
+            // Update styling class
+            const newClass = getDaysRemainingClass(daysRemaining);
+            // Ensure to keep the base class 'days-remaining' and only change the dynamic part
+            span.className = `days-remaining ${newClass}`;
+        }
+    });
+    // console.log('Days remaining displays updated.'); // Removed
 }
