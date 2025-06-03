@@ -10,6 +10,7 @@
     --color-bg-light: #F2F2F2;
     --color-text: #303030;
     --color-text-light: #666666;
+    --color-success: #28a745; /* Standard green for success states */
     color-scheme: light; /* 全体のカラースキームを強制的にライトモードに設定 */
 }
 
