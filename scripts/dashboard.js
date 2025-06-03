@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateProgressCircles();
     initializeTooltips();
     initializeProgressDashboards();
+    initializeKanbanBoards();
 });
 
 // ログアウト機能の設定
@@ -527,4 +528,57 @@ function closeModal(modalId) {
     if (modal) {
         modal.style.display = 'none';
     }
+}
+
+// =================
+// カンバンボード描画ロジック
+// =================
+function renderKanbanBoard(projectType) {
+  const tasks = getProjectTasks(projectType);
+  // ステータスごとに分類
+  const todoList = document.getElementById(`${projectType}-todo-list`);
+  const inprogressList = document.getElementById(`${projectType}-inprogress-list`);
+  const completedList = document.getElementById(`${projectType}-completed-list`);
+  if (!todoList || !inprogressList || !completedList) return;
+  todoList.innerHTML = '';
+  inprogressList.innerHTML = '';
+  completedList.innerHTML = '';
+  tasks.forEach(task => {
+    const card = document.createElement('div');
+    card.className = 'kanban-card ' + (task.status === 'completed' ? 'completed' : task.status === 'in-progress' ? 'in-progress' : 'todo');
+    card.innerHTML = `
+      <div class="task-title">${task.name}</div>
+      <div class="task-meta">
+        <span>週: ${task.startWeek}</span>
+        <span>期間: ${task.duration}週</span>
+      </div>
+      <span class="task-status-badge">${getStatusBadgeText(task.status)}</span>
+      ${task.dependency ? `<div class="task-meta">依存: ${task.dependency}</div>` : ''}
+    `;
+    if (task.status === 'completed') {
+      completedList.appendChild(card);
+    } else if (task.status === 'in-progress') {
+      inprogressList.appendChild(card);
+    } else {
+      todoList.appendChild(card);
+    }
+  });
+}
+
+function getStatusBadgeText(status) {
+  switch(status) {
+    case 'completed': return '完了';
+    case 'in-progress': return '進行中';
+    case 'ready': return '開始可能';
+    case 'waiting': return '待機中';
+    case 'blocked': return 'ブロック中';
+    case 'milestone': return 'マイルストーン';
+    default: return '未定';
+  }
+}
+
+// 初期化時にカンバン描画
+function initializeKanbanBoards() {
+  renderKanbanBoard('boxing');
+  renderKanbanBoard('architecture');
 }
