@@ -972,8 +972,153 @@ body {
 .progress-card:nth-child(4) { animation-delay: 0.4s; }
 .progress-card:nth-child(5) { animation-delay: 0.5s; }
 
-/* ガントチャート */
-.gantt-chart-section {
+/* モーダル */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: var(--color-bg);
+    margin: 5% auto;
+    border-radius: 12px;
+    width: 80%;
+    max-width: 600px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    color: var(--color-dark);
+    margin: 0;
+}
+
+.close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close:hover {
+    color: #000;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.proposal-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.proposal-options label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.time-slots {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.time-slot {
+    padding: 0.8rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    background: var(--color-bg);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.time-slot:hover {
+    border-color: var(--color-primary);
+    background: #f8f9ff;
+}
+
+.time-slot.selected {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: #FFFFFF;
+}
+
+/* 通知 */
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1001;
+}
+
+.notification {
+    background: var(--color-bg);
+    border-left: 4px solid var(--color-primary);
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.notification.error {
+    border-left-color: var(--color-accent);
+}
+
+.notification.warning {
+    border-left-color: var(--color-accent);
+}
+
+/* =================
+   プログレスダッシュボード
+   ================= */
+
+/* プログレスダッシュボードセクション */
+.progress-dashboard-section {
     background: var(--color-bg);
     border-radius: 12px;
     padding: 1.5rem;
@@ -982,7 +1127,7 @@ body {
     border: 1px solid #e1e5e9;
 }
 
-.gantt-chart-section h3 {
+.progress-dashboard-section h3 {
     color: var(--color-dark);
     margin-bottom: 1.5rem;
     font-size: 1.4rem;
@@ -991,1327 +1136,431 @@ body {
     gap: 0.5rem;
 }
 
-.gantt-chart-section h3 i {
+.progress-dashboard-section h3 i {
     color: var(--color-primary);
 }
 
-/* ガントチャートコンテナ */
-.gantt-chart-container {
-    overflow-x: auto;
-    border: 1px solid #e1e5e9;
-    border-radius: 8px;
-    background: #ffffff;
-    color: var(--color-dark);
-    min-height: 400px;
-    position: relative;
-    color-scheme: light; /* ガントチャートエリアでのダークモード無効化 */
-    /* スクロール最適化 */
-    -webkit-overflow-scrolling: touch;
-    /* 不要なレイアウト再計算を防ぐ */
-    contain: layout style paint;
-    /* スクロール中のアニメーション防止 */
-    scroll-behavior: smooth;
-}
-
-/* ガントチャートタイムライン */
-.gantt-timeline {
+/* プログレスダッシュボードグリッド */
+.progress-dashboard {
     display: grid;
-    min-width: 800px;
-    position: relative;
-    background: #ffffff;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
 }
 
-.gantt-header {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    background: #ffffff;
-    border-bottom: 2px solid #e1e5e9;
-    font-weight: 600;
-    color: var(--color-dark);
-}
-
-.gantt-tasks-header {
-    color: var(--color-dark);
-    background: #ffffff;
-}
-
-.gantt-tasks-header {
-    padding: 1rem;
-    border-right: 1px solid #e1e5e9;
-    display: flex;
-    align-items: center;
-}
-
-.gantt-dates-header {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    background: #ffffff;
-}
-
-.gantt-date-cell {
-    padding: 1rem 0.5rem;
+/* 全体進捗カード */
+.overall-progress-card {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    color: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
     text-align: center;
-    border-right: 1px solid #e1e5e9;
-    font-size: 0.9rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(54, 116, 16, 0.3);
 }
 
-.gantt-date-cell .week-number {
-    font-weight: 600;
-    color: var(--color-dark);
+.overall-progress-card h4 {
+    color: #ffffff;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
 }
 
-.gantt-date-cell .week-dates {
-    font-size: 0.75rem;
-    color: var(--color-text-light);
-    font-weight: normal;
+.overall-progress-percentage {
+    font-size: 3rem;
+    font-weight: bold;
+    margin: 1rem 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* ガントチャート行 */
-.gantt-row {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    border-bottom: 1px solid #e1e5e9;
-    min-height: 60px;
-    background: #ffffff;
-}
-
-.gantt-task-name {
-    padding: 1rem;
-    border-right: 1px solid #e1e5e9;
-    display: flex;
-    align-items: center;
-    font-weight: 500;
-    background: #ffffff;
-    color: var(--color-dark);
-}
-
-.gantt-task-timeline {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    position: relative;
-    background: #ffffff;
-}
-
-.gantt-task-timeline > div {
-    border-right: 1px solid #e1e5e9;
-    min-height: 60px;
-}
-
-.gantt-cell {
-    border-right: 1px solid #e1e5e9;
-    min-height: 60px;
-    position: relative;
-    background: #ffffff;
-}
-
-/* ガントチャートバー */
-.gantt-bar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 8px 4px;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: white;
-    position: relative;
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    opacity: 0;
-    transform: scale(0.8);
-    will-change: transform, opacity;
-    /* スクロール中のアニメーション再実行を防ぐ */
-    animation-fill-mode: forwards;
-    /* スクロール中はアニメーション無効化 */
-    animation-play-state: running;
-}
-
-/* スクロール中のアニメーション完全停止 */
-body.scrolling .gantt-bar {
-    animation-play-state: paused;
-    animation: none;
-}
-
-/* アニメーション済みのガントチャートバー */
-.gantt-bar.animated {
-    opacity: 1;
-    transform: scale(1);
-    /* アニメーション完了後は固定状態 */
-    animation: none;
-}
-
-.gantt-bar:hover {
-    transform: translateY(-2px) scale(1);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-}
-
-/* ステータス別のガントチャートバー色分け */
-.gantt-bar.completed {
-    background: #28a745;
-    animation: slideInCompleted 0.8s ease-out;
-    border-left: 4px solid #1e7e34;
-}
-
-.gantt-bar.in-progress {
-    background: #ffc107;
-    color: #212529;
-    animation: slideInProgress 0.8s ease-out;
-    position: relative;
-    overflow: hidden;
-    border-left: 4px solid #e0a800;
-}
-
-.gantt-bar.ready {
-    background: #17a2b8;
-    animation: slideInReady 0.8s ease-out;
-    border-left: 4px solid #138496;
-}
-
-.gantt-bar.waiting {
-    background: #fd7e14;
-    animation: slideInWaiting 0.8s ease-out;
-    border-left: 4px solid #e55a0a;
-}
-
-.gantt-bar.blocked {
-    background: #6c757d;
-    animation: slideInBlocked 0.8s ease-out;
-    border-left: 4px solid #545b62;
-    opacity: 0.8;
-}
-
-.gantt-bar.milestone {
-    background: #dc3545;
-    animation: pulseMilestone 2s infinite;
-    font-size: 1.2rem;
-    border-left: 4px solid #a71e2a;
-}
-
-/* ガントチャート進捗インジケーター */
-.gantt-progress-indicator {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
+.overall-progress-bar {
+    width: 100%;
+    height: 12px;
     background: rgba(255,255,255,0.3);
     border-radius: 6px;
-    animation: scaleProgress 2s ease-in-out infinite;
+    overflow: hidden;
+    margin: 1rem 0;
 }
 
-/* ガントチャート現在日付インジケーター */
-.gantt-current-date {
-    position: absolute;
-    top: 0;
-    width: 2px;
+.overall-progress-fill {
     height: 100%;
-    background: var(--color-accent);
-    z-index: 10;
-    animation: pulse 2s infinite;
-}
-
-.gantt-current-date::before {
-    content: '今日';
-    position: absolute;
-    top: -20px;
-    left: -15px;
-    background: var(--color-accent);
-    color: #FFFFFF;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 0.7rem;
-}
-
-/* 新しい現在日付ライン */
-.gantt-current-date-line {
-    position: absolute;
-    top: 0;
-    height: 100%;
-    width: 3px;
-    background: var(--color-accent);
-    z-index: 50;
-    box-shadow: 0 0 8px rgba(255, 145, 77, 0.5);
-    animation: pulse 2s infinite;
-    display: none;
-    pointer-events: none;
-    /* タイムライン内での絶対位置 */
-    left: 0;
-    transform: translateX(0); /* 位置調整用 */
-}
-
-.gantt-timeline {
-    position: relative; /* 子要素の絶対位置の基準とする */
-}
-
-.gantt-current-date-line .current-date-marker {
-    position: absolute;
-    top: -35px;
-    left: -30px;
-    background: linear-gradient(135deg, #dc3545, #fd7e14);
-    color: white;
-    padding: 4px 8px;
+    background: #ffffff;
     border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    white-space: nowrap;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    z-index: 51;
+    transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 10px rgba(255,255,255,0.5);
 }
 
-.gantt-current-date-line .current-date-marker::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 4px solid transparent;
-    border-top-color: #dc3545;
-}
-
-/* ガントチャートタスク詳細ツールチップ */
-.gantt-task-details {
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0,0,0,0.9);
-    color: white;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-    z-index: 100;
-}
-
-.gantt-bar:hover .gantt-task-details {
-    opacity: 1;
-}
-
-/* ガントチャートアニメーション */
-@keyframes slideInCompleted {
-    from {
-        transform: translateX(-100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-@keyframes slideInProgress {
-    from {
-        transform: translateX(-100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-@keyframes slideInPending {
-    from {
-        transform: translateY(20px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-@keyframes slideInReady {
-    from {
-        transform: translateX(-50%) scale(0.8);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0) scale(1);
-        opacity: 1;
-    }
-}
-
-@keyframes slideInWaiting {
-    from {
-        transform: translateY(-20px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-@keyframes slideInBlocked {
-    from {
-        transform: translateX(-100%);
-        opacity: 0;
-        filter: grayscale(100%);
-    }
-    to {
-        transform: translateX(0);
-        opacity: 0.7;
-        filter: grayscale(50%);
-    }
-}
-
-@keyframes pulseMilestone {
-    0%, 100% {
-        transform: scale(1);
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    50% {
-        transform: scale(1.05);
-        box-shadow: 0 4px 12px rgba(220,53,69,0.3);
-    }
-}
-
-@keyframes scaleProgress {
-    0%, 100% {
-        transform: scaleX(1);
-        opacity: 0.3;
-    }
-    50% {
-        transform: scaleX(1.1);
-        opacity: 0.6;
-    }
-}
-
-@keyframes pulse {
-    0%, 100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.5;
-    }
-}
-
-/* ヒヤリングシート認証 */
-.hearing-sheet-section {
-    background: var(--color-bg);
+/* プログレスカード */
+.progress-card {
+    background: #ffffff;
     border-radius: 12px;
     padding: 1.5rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    border: 1px solid #e1e5e9;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
 }
 
-.hearing-sheet-section h3 {
+.progress-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    border-color: var(--color-primary);
+}
+
+.progress-card-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 1rem;
+}
+
+.progress-card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 600;
     color: var(--color-dark);
 }
 
-/* 通知スタイル */
-.notification-container {
+.progress-card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 1.2rem;
+}
+
+.progress-card-percentage {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--color-primary);
+}
+
+/* ステータス別アイコン色 */
+.status-completed .progress-card-icon {
+    background: linear-gradient(135deg, #28a745, #20c997);
+}
+
+.status-in-progress .progress-card-icon {
+    background: linear-gradient(135deg, #ffc107, #fd7e14);
+}
+
+.status-ready .progress-card-icon {
+    background: linear-gradient(135deg, #17a2b8, #007bff);
+}
+
+.status-pending .progress-card-icon {
+    background: linear-gradient(135deg, #6c757d, #495057);
+}
+
+/* プログレスバー */
+.progress-bar-container {
+    width: 100%;
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 1rem 0;
+    position: relative;
+}
+
+.progress-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* ステータス別プログレスバー色 */
+.status-completed .progress-bar {
+    background: linear-gradient(90deg, #28a745, #20c997);
+}
+
+.status-in-progress .progress-bar {
+    background: linear-gradient(90deg, #ffc107, #fd7e14);
+    animation: progressPulse 2s ease-in-out infinite;
+}
+
+.status-ready .progress-bar {
+    background: linear-gradient(90deg, #17a2b8, #007bff);
+}
+
+.status-pending .progress-bar {
+    background: #6c757d;
+}
+
+/* プログレスバーアニメーション */
+@keyframes progressPulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: progressShimmer 2s infinite;
+}
+
+@keyframes progressShimmer {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+/* プログレスカード詳細 */
+.progress-card-details {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+}
+
+.progress-card-date {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.progress-card-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-completed .progress-card-status {
+    background: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+}
+
+.status-in-progress .progress-card-status {
+    background: rgba(255, 193, 7, 0.1);
+    color: #e0a800;
+}
+
+.status-ready .progress-card-status {
+    background: rgba(23, 162, 184, 0.1);
+    color: #17a2b8;
+}
+
+.status-pending .progress-card-status {
+    background: rgba(108, 117, 125, 0.1);
+    color: #6c757d;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .progress-dashboard {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .overall-progress-card {
+        padding: 1.5rem;
+    }
+    
+    .overall-progress-percentage {
+        font-size: 2.5rem;
+    }
+    
+    .progress-card {
+        padding: 1rem;
+    }
+    
+    .progress-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .progress-card-details {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
+
+/* フェードインアニメーション */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.progress-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.progress-card:nth-child(1) { animation-delay: 0.1s; }
+.progress-card:nth-child(2) { animation-delay: 0.2s; }
+.progress-card:nth-child(3) { animation-delay: 0.3s; }
+.progress-card:nth-child(4) { animation-delay: 0.4s; }
+.progress-card:nth-child(5) { animation-delay: 0.5s; }
+
+/* モーダル */
+.modal {
+    display: none;
     position: fixed;
-    top: 2rem;
-    right: 2rem;
-    z-index: 10000;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: var(--color-bg);
+    margin: 5% auto;
+    border-radius: 12px;
+    width: 80%;
+    max-width: 600px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    color: var(--color-dark);
+    margin: 0;
+}
+
+.close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close:hover {
+    color: #000;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.proposal-options {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.proposal-options label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.time-slots {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.time-slot {
+    padding: 0.8rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    background: var(--color-bg);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.time-slot:hover {
+    border-color: var(--color-primary);
+    background: #f8f9ff;
+}
+
+.time-slot.selected {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: #FFFFFF;
+}
+
+/* 通知 */
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1001;
 }
 
 .notification {
     background: var(--color-bg);
+    border-left: 4px solid var(--color-primary);
+    padding: 1rem;
+    margin-bottom: 0.5rem;
     border-radius: 8px;
-    padding: 1rem 1.5rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    max-width: 400px;
-    animation: slideInRight 0.3s ease;
-    border-left: 4px solid;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    animation: slideInRight 0.3s ease-out;
 }
 
-.notification.success {
-    border-left-color: #28a745;
-}
-
-.notification.success i {
-    color: #28a745;
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .notification.error {
-    border-left-color: #dc3545;
+    border-left-color: var(--color-accent);
 }
 
-.notification.error i {
-    color: #dc3545;
-}
-
-.notification.info {
-    border-left-color: #17a2b8;
-}
-
-.notification.info i {
-    color: #17a2b8;
-}
-
-.notification button {
-    background: none;
-    border: none;
-    color: #6c757d;
-    cursor: pointer;
-    margin-left: auto;
-    padding: 0.25rem;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
-}
-
-.notification button:hover {
-    background-color: #f8f9fa;
-}
-
-/* ヒアリングシート待機状態 */
-.pending-status {
-    text-align: center;
-    padding: 2rem;
-    background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%);
-    border-radius: 12px;
-    border: 2px solid #ffc107;
-}
-
-.pending-status .status-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    animation: pulse 2s infinite;
-}
-
-.pending-status h3 {
-    color: #856404;
-    margin-bottom: 1rem;
-    font-size: 1.4rem;
-}
-
-.pending-status p {
-    color: #856404;
-    margin-bottom: 1.5rem;
-    font-size: 1.1rem;
-}
-
-.pending-status .status-details {
-    background: var(--color-bg);
-    border-radius: 8px;
-    padding: 1rem;
-    margin: 1.5rem 0;
-    border: 1px solid #f0c14b;
-}
-
-.pending-status .status-details p {
-    margin: 0.5rem 0;
-    color: var(--color-dark);
-    font-size: 0.95rem;
-    text-align: left;
-}
-
-.pending-status .action-buttons {
-    margin-top: 1.5rem;
-}
-
-/* モバイル対応 */
-@media (max-width: 768px) {
-    /* 基本的な文字サイズ調整 */
-    body {
-        font-size: 14px;
-        line-height: 1.5;
-    }
-    
-    /* スクロール中のアニメーション無効化 */
-    .gantt-chart-container {
-        /* モバイルでのスクロール最適化 */
-        -webkit-overflow-scrolling: touch;
-        contain: strict;
-        /* GPU加速でスムーズなスクロール */
-        transform: translateZ(0);
-        -webkit-transform: translateZ(0);
-        /* スマホでの表示領域確保 */
-        min-height: 350px;
-    }
-    
-    /* モバイルでのアニメーション制御 */
-    .gantt-bar {
-        /* アニメーション遅延を短縮 */
-        animation-duration: 0.3s;
-        /* スクロール中の再描画を最小化 */
-        will-change: auto;
-    }
-    
-    /* スクロール中のアニメーション無効化 */
-    .gantt-chart-container:hover .gantt-bar {
-        animation-play-state: paused;
-    }
-    
-    /* ヘッダーの調整 */
-    .dashboard-header {
-        padding: 1rem 0; /* 上下のパディングを増加 */
-        background: #FFFFFF;
-        color: var(--color-text);
-        border-bottom: 2px solid var(--color-primary);
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
-    
-    .header-content {
-        padding: 0 1rem;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-        gap: 1rem; /* ロゴとボタンの間隔を確保 */
-    }
-    
-    .header-logo {
-        min-width: auto;
-        flex-shrink: 0; /* ロゴが縮小されないように */
-    }
-     .header-logo .logo-image {
-        height: 60px;
-        max-width: 200px;
-    }
-
-    .header-content h1 {
-        font-size: 1.4rem;
-        margin-bottom: 0.25rem;
-        color: var(--color-text);
-    }
-
-    .header-content h1 i {
-        color: var(--color-primary);
-    }
-
-    .header-actions {
-        display: flex;
-        align-items: center;
-        flex-shrink: 0; /* ボタンが縮小されないように */
-    }
-
-    .logout-button {
-        font-size: 12px;
-        padding: 6px 12px;
-        margin-left: 0;
-        cursor: pointer;
-        touch-action: manipulation; /* タッチ操作最適化 */
-        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1); /* タップハイライト */
-    }
-    
-    /* モバイルではログアウトボタンのテキストを非表示 */
-    .logout-button span {
-        display: none;
-    }
-    
-    .logout-button {
-        padding: 8px;
-        border-radius: 50%;
-        width: 44px; /* Apple/Google推奨の最小タッチサイズ */
-        height: 44px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 44px;
-        min-height: 44px;
-    }
-    
-    /* プロジェクトタブの調整 */
-    .project-tabs {
-        padding: 0 1rem;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
-    
-    .tab-button {
-        padding: 0.75rem 1rem;
-        font-size: 0.9rem;
-        min-width: max-content;
-    }
-    
-    /* メインコンテンツの調整 */
-    .dashboard-main {
-        padding: 1rem;
-    }
-    
-    /* プロジェクト概要の調整 */
-    .project-overview h2 {
-        font-size: 1.3rem;
-        margin-bottom: 1rem;
-    }
-    
-    /* カードレイアウトの調整 */
-    .overview-cards {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-    }
-    
-    .card {
-        padding: 1rem;
-    }
-    
-    .card-content h3 {
-        font-size: 1.1rem;
-        margin-bottom: 0.75rem;
-    }
-    
-    .card-content p {
-        font-size: 0.9rem;
-    }
-    
-    /* プログレスサークルの調整 */
-    .progress-circle {
-        width: 60px;
-        height: 60px;
-    }
-    
-    .progress-circle::before {
-        width: 45px;
-        height: 45px;
-    }
-    
-    .progress-text {
-        font-size: 1rem;
-    }
-    
-    /* アクションアイテムの調整 */
-    .action-item, .milestone-item {
-        padding: 0.6rem;
-    }
-    
-    .action-item span, .milestone-item span {
-        font-size: 0.9rem;
-    }
-    
-    .action-item small, .milestone-item small {
-        font-size: 0.8rem;
-    }
-    
-    /* 進捗詳細の調整 */
-    .progress-details {
-        padding: 1rem;
-    }
-    
-    .progress-details h3 {
-        font-size: 1.2rem;
-        margin-bottom: 1rem;
-    }
-    
-    .task-item {
-        padding: 0.75rem;
-        gap: 0.75rem;
-    }
-    
-    .task-info h4 {
-        font-size: 1rem;
-        margin-bottom: 0.2rem;
-    }
-    
-    .task-info p {
-        font-size: 0.85rem;
-    }
-    
-    /* ヒヤリングシートセクションの調整 */
-    .hearing-sheet-section {
-        padding: 1rem;
-        margin: 1.5rem 0;
-    }
-    
-    .hearing-sheet-section h3 {
-        font-size: 1.1rem;
-        flex-direction: column;
-        gap: 0.5rem;
-        align-items: flex-start;
-    }
-    
-    .hearing-grid {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
-        margin-bottom: 1rem;
-    }
-    
-    .hearing-item label {
-        font-size: 0.85rem;
-    }
-    
-    .hearing-item span {
-        padding: 0.4rem;
-        font-size: 0.9rem;
-    }
-    
-    /* ボタンの調整 */
-    .action-buttons {
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-    
-    .btn-primary, .btn-secondary, .btn-info {
-        padding: 0.6rem 1.2rem;
-        font-size: 0.9rem;
-        width: 100%;
-        justify-content: center;
-    }
-    
-    /* 通知の調整 */
-    .notification-container {
-        top: 1rem;
-        right: 1rem;
-        left: 1rem;
-    }
-    
-    .notification {
-        max-width: 100%;
-        padding: 0.75rem 1rem;
-        font-size: 0.9rem;
-    }
-    
-    /* ガントチャートの調整 */
-    .gantt-chart-section {
-        padding: 1rem;
-        margin-bottom: 1.5rem;
-        min-height: 400px; /* スマホでの最小高さを設定 */
-    }
-    
-    .gantt-chart-section h3 {
-        font-size: 1.2rem;
-        margin-bottom: 1rem;
-    }
-    
-    .gantt-dates-header {
-        grid-template-columns: repeat(6, 1fr);
-    }
-    
-    .gantt-task-timeline {
-        grid-template-columns: repeat(6, 1fr);
-    }
-    
-    .gantt-header {
-        grid-template-columns: 120px 1fr;
-    }
-    
-    .gantt-row {
-        grid-template-columns: 120px 1fr;
-        min-height: 50px; /* スマホでの行の最小高さを設定 */
-    }
-    
-    .gantt-task-name {
-        font-size: 0.8rem;
-        padding: 0.8rem 0.5rem; /* 上下のパディングを増やして見やすく */
-        min-height: 50px; /* タスク名エリアの最小高さを設定 */
-        display: flex;
-        align-items: center; /* テキストを垂直中央揃え */
-    }
-    
-    .gantt-date-cell {
-        font-size: 0.7rem;
-        padding: 0.5rem 0.2rem;
-        gap: 0.1rem;
-    }
-    
-    .gantt-date-cell .week-number {
-        font-size: 0.7rem;
-    }
-    
-    .gantt-date-cell .week-dates {
-        font-size: 0.6rem;
-    }
-    
-    .gantt-current-date-line .current-date-marker {
-        font-size: 0.6rem;
-        padding: 2px 4px;
-        left: -12px;
-    }
-    
-    .gantt-bar {
-        font-size: 0.6rem;
-        margin: 4px 1px;
-        min-height: 20px;
-    }
-    
-    /* モーダルの調整 */
-    .modal-content {
-        width: 95%;
-        margin: 10% auto;
-    }
-    
-    .modal-header {
-        padding: 1rem;
-    }
-    
-    .modal-header h3 {
-        font-size: 1.1rem;
-    }
-    
-    .modal-body {
-        padding: 1rem;
-    }
-}
-
-/* より小さなスマホ画面用 (480px以下) */
-@media (max-width: 480px) {
-    body {
-        font-size: 13px;
-    }
-    
-    /* ヘッダーの配色は継承されるため、フォントサイズなどの調整のみ */
-    .header-logo .logo-image {
-        height: 60px; /* 1.5倍のサイズ */
-        max-width: 200px;
-        border: none;
-        padding: 0;
-        background: none;
-    }
-    
-    .header-content h1 {
-        font-size: 1.2rem;
-    }
-    
-    .user-info {
-        font-size: 0.8rem;
-    }
-    
-    .logout-button {
-        font-size: 11px;
-        padding: 5px 10px;
-    }
-    
-    .tab-button {
-        padding: 0.6rem 0.8rem;
-        font-size: 0.8rem;
-    }
-    
-    .dashboard-main {
-        padding: 0.75rem;
-    }
-    
-    .project-overview h2 {
-        font-size: 1.1rem;
-    }
-    
-    .card {
-        padding: 0.75rem;
-    }
-    
-    .card-content h3 {
-        font-size: 1rem;
-    }
-    
-    .gantt-header {
-        grid-template-columns: 100px 1fr;
-    }
-    
-    .gantt-row {
-        grid-template-columns: 100px 1fr;
-    }
-    
-    .gantt-task-name {
-        font-size: 0.7rem;
-        padding: 0.4rem;
-    }
-    
-    .gantt-dates-header {
-        grid-template-columns: repeat(4, 1fr);
-    }
-    
-    .gantt-task-timeline {
-        grid-template-columns: repeat(4, 1fr);
-    }
-    
-    .gantt-date-cell {
-        font-size: 0.65rem;
-        padding: 0.4rem 0.1rem;
-    }
-    
-    .gantt-bar {
-        font-size: 0.55rem;
-        margin: 3px 1px;
-        min-height: 18px;
-    }
-    
-    .hearing-grid {
-        gap: 0.5rem;
-    }
-    
-    .hearing-item span {
-        padding: 0.3rem;
-        font-size: 0.85rem;
-    }
-    
-    .btn-primary, .btn-secondary, .btn-info {
-        padding: 0.5rem 1rem;
-        font-size: 0.85rem;
-    }
-}
-
-/* 極小スマホ画面用 (360px以下) */
-@media (max-width: 360px) {
-    body {
-        font-size: 12px;
-    }
-    
-    /* ヘッダーの配色調整 - モバイル用白背景 */
-    .dashboard-header {
-        background: #FFFFFF;
-        color: var(--color-text);
-        border-bottom: 2px solid var(--color-primary);
-    }
-    
-    /* ヘッダーのさらなる調整 */
-    .header-content h1 {
-        font-size: 1.1rem;
-        color: var(--color-text);
-    }
-    
-    .header-content h1 i {
-        margin-right: 0.25rem;
-        color: var(--color-primary); /* アイコンを緑色に */
-    }
-    
-    .header-actions {
-        display: flex;
-        align-items: center;
-    }
-    
-    .logout-button {
-        font-size: 10px;
-        padding: 4px 8px;
-        margin-left: 0;
-    }
-    
-    /* タブボタンの最小化 */
-    .tab-button {
-        padding: 0.5rem 0.6rem;
-        font-size: 0.75rem;
-    }
-    
-    .tab-button i {
-        display: none; /* アイコンを非表示にしてスペース確保 */
-    }
-    
-    /* メインコンテンツの最小化 */
-    .dashboard-main {
-        padding: 0.5rem;
-    }
-    
-    .project-overview h2 {
-        font-size: 1rem;
-        margin-bottom: 0.75rem;
-    }
-    
-    /* カードの最小化 */
-    .card {
-        padding: 0.5rem;
-    }
-    
-    .card-content h3 {
-        font-size: 0.9rem;
-        margin-bottom: 0.5rem;
-    }
-    
-    .card-content p {
-        font-size: 0.8rem;
-    }
-    
-    /* プログレスサークルの最小化 */
-    .progress-circle {
-        width: 50px;
-        height: 50px;
-    }
-    
-    .progress-circle::before {
-        width: 38px;
-        height: 38px;
-    }
-    
-    .progress-text {
-        font-size: 0.9rem;
-    }
-    
-    /* ガントチャートの極小対応 */
-    .gantt-header {
-        grid-template-columns: 80px 1fr;
-    }
-    
-    .gantt-row {
-        grid-template-columns: 80px 1fr;
-    }
-    
-    .gantt-task-name {
-        font-size: 0.6rem;
-        padding: 0.3rem;
-        word-break: break-all;
-    }
-    
-    .gantt-dates-header {
-        grid-template-columns: repeat(3, 1fr);
-    }
-    
-    .gantt-task-timeline {
-        grid-template-columns: repeat(3, 1fr);
-    }
-    
-    .gantt-date-cell {
-        font-size: 0.6rem;
-        padding: 0.3rem 0.05rem;
-    }
-    
-    .gantt-bar {
-        font-size: 0.5rem;
-        margin: 2px 0.5px;
-        min-height: 16px;
-    }
-    
-    .gantt-current-date-line .current-date-marker {
-        font-size: 0.55rem;
-        padding: 1px 3px;
-        left: -10px;
-    }
-    
-    /* ボタンの最小化 */
-    .btn-primary, .btn-secondary, .btn-info {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.8rem;
-    }
-    
-    /* ヒヤリングシートの最小化 */
-    .hearing-sheet-section {
-        padding: 0.75rem;
-    }
-    
-    .hearing-sheet-section h3 {
-        font-size: 1rem;
-    }
-    
-    .hearing-item label {
-        font-size: 0.8rem;
-    }
-    
-    .hearing-item span {
-        padding: 0.25rem;
-        font-size: 0.8rem;
-    }
-    
-    /* モーダルの最小化 */
-    .modal-content {
-        width: 98%;
-        margin: 5% auto;
-    }
-    
-    .modal-header {
-        padding: 0.75rem;
-    }
-    
-    .modal-header h3 {
-        font-size: 1rem;
-    }
-    
-    .modal-body {
-        padding: 0.75rem;
-    }
-}
-
-/* 横向きスマホ対応 */
-@media (max-width: 768px) and (orientation: landscape) {
-    /* ヘッダーの配色調整 - モバイル横向き用白背景 */
-    .dashboard-header {
-        background: #FFFFFF;
-        color: var(--color-text);
-        border-bottom: 2px solid var(--color-primary);
-    }
-    
-    .header-content {
-        flex-direction: row;
-        justify-content: space-between;
-    }
-    
-    .header-content h1 {
-        font-size: 1.2rem;
-        color: var(--color-text);
-    }
-    
-    .header-content h1 i {
-        color: var(--color-primary); /* アイコンを緑色に */
-    }
-    
-    .user-info {
-        color: var(--color-text);
-    }
-    
-    .user-info i {
-        color: var(--color-primary); /* ユーザーアイコンも緑色に */
-    }
-    
-    .project-tabs {
-        display: flex;
-        justify-content: center;
-    }
-    
-    .gantt-dates-header {
-        grid-template-columns: repeat(12, 1fr);
-    }
-    
-    .gantt-task-timeline {
-        grid-template-columns: repeat(12, 1fr);
-    }
-    
-    .gantt-header {
-        grid-template-columns: 120px 1fr;
-    }
-    
-    .gantt-row {
-        grid-template-columns: 120px 1fr;
-    }
-}
-
-/* タッチデバイス対応 */
-@media (pointer: coarse) {
-    /* タッチしやすいボタンサイズ */
-    .tab-button {
-        min-height: 44px; /* Appleの推奨最小サイズ */
-        touch-action: manipulation; /* ダブルタップズーム無効化 */
-    }
-    
-    .btn-primary, .btn-secondary, .btn-info {
-        min-height: 44px;
-        touch-action: manipulation;
-    }
-    
-    .logout-button {
-        min-height: 36px;
-        touch-action: manipulation;
-    }
-    
-    /* ガントチャートバーのタッチ対応 */
-    .gantt-bar {
-        min-height: 32px;
-        cursor: pointer;
-        touch-action: manipulation;
-    }
-    
-    /* スクロール可能エリアの改善 */
-    .gantt-chart-container {
-        -webkit-overflow-scrolling: touch; /* iOSのスムーズスクロール */
-        scroll-behavior: smooth;
-    }
-    
-    .project-tabs {
-        -webkit-overflow-scrolling: touch;
-        scroll-behavior: smooth;
-    }
-    
-    /* タップハイライトの調整 */
-    .tab-button, .btn-primary, .btn-secondary, .btn-info, .logout-button {
-        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
-    }
-}
-
-.legend-color.completed {
-    background: #28a745;
-}
-
-.legend-color.in-progress {
-    background: #ffc107;
-}
-
-.legend-color.ready {
-    background: #17a2b8;
-}
-
-.legend-color.waiting {
-    background: #fd7e14;
-}
-
-.legend-color.blocked {
-    background: #6c757d;
-}
-
-.legend-color.milestone {
-    background: #dc3545;
-    border: 2px solid #a71e2a;
-}
-
-/* モバイル表示時のロゴとボタン配置 */
-@media (max-width: 768px) {
-    .header-content {
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-        padding: 0 1rem;
-    }
-
-    .header-logo {
-        min-width: auto;
-        flex-shrink: 0;
-    }
-
-    .header-logo .logo-image {
-        height: 80px;
-        max-width: 200px;
-        border: none;
-        padding: 0;
-        background: none;
-    }
-}
-
-/* ガントチャート全体の強制スタイル（ブラウザダークモード対策） */
-.dashboard-container .gantt-chart-container,
-.dashboard-container .gantt-chart-container *,
-.dashboard-container .gantt-timeline,
-.dashboard-container .gantt-timeline *,
-.dashboard-container .gantt-header,
-.dashboard-container .gantt-header *,
-.dashboard-container .gantt-row,
-.dashboard-container .gantt-row *,
-.dashboard-container .gantt-task-name,
-.dashboard-container .gantt-task-timeline,
-.dashboard-container .gantt-cell,
-.dashboard-container .gantt-date-cell,
-.dashboard-container .gantt-dates-header,
-.dashboard-container .gantt-tasks-header {
-    background-color: #ffffff;
-    color: var(--color-dark);
-}
-
-/* ガントチャートバーは例外（色付きのまま） */
-.dashboard-container .gantt-bar {
-    background-color: #28a745;
-    color: #ffffff;
-}
-
-.dashboard-container .gantt-bar.in-progress {
-    background-color: #ffc107;
-    color: #212529;
-}
-
-.dashboard-container .gantt-bar.ready {
-    background-color: #17a2b8;
-    color: #ffffff;
-}
-
-.dashboard-container .gantt-bar.waiting {
-    background-color: #fd7e14;
-    color: #ffffff;
-}
-
-.dashboard-container .gantt-bar.completed {
-    background-color: #28a745;
-    color: #ffffff;
-}
-
-.dashboard-container .gantt-bar.milestone {
-    background-color: #dc3545;
-    color: #ffffff;
-}
-
-.dashboard-container .gantt-bar.blocked {
-    background-color: #6c757d;
-    color: #ffffff;
+.notification.warning {
+    border-left-color: var(--color-accent);
 }
