@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeTabs();
     updateProgressCircles();
     initializeTooltips();
-    initializeGanttCharts();
+    initializeProgressDashboards();
 });
 
 // ログアウト機能の設定
@@ -68,7 +68,7 @@ function handleLogout(event) {
 }
 
 // =================
-// ガントチャート機能
+// Progress Dashboard機能
 // =================
 
 // プロジェクト開始日の設定（2025年6月1日）
@@ -105,111 +105,10 @@ function getWeekStartDate(weekNumber) {
     return startDate;
 }
 
-// 現在日付インジケーターを更新する関数
-function updateCurrentDateIndicator() {
-    const today = new Date();
-    const currentWeek = getCurrentWeek();
-    
-    // 両方のプロジェクトの現在日付インジケーターを更新
-    ['boxing', 'architecture'].forEach(projectType => {
-        const indicator = document.getElementById(`current-date-${projectType}`);
-        const ganttContainer = document.getElementById(`${projectType}GanttChart`);
-        
-        if (indicator && ganttContainer) {
-            // 現在の週が表示範囲内の場合のみ表示
-            if (currentWeek >= 1 && currentWeek <= 12) {
-                // ガントチャートのタイムライン要素を取得
-                const timeline = ganttContainer.querySelector('.gantt-timeline');
-                const datesHeader = ganttContainer.querySelector('.gantt-dates-header');
-                
-                if (timeline && datesHeader) {
-                    // 各週のセルサイズを実際のDOM要素から計算
-                    const dateCells = datesHeader.querySelectorAll('.gantt-date-cell');
-                    if (dateCells.length > 0) {
-                        const timelineRect = timeline.getBoundingClientRect();
-                        const firstCellRect = dateCells[0].getBoundingClientRect();
-                        const cellWidth = firstCellRect.width;
-                        
-                        // タスク名列の幅を実際のDOM要素から取得
-                        const taskHeader = ganttContainer.querySelector('.gantt-tasks-header');
-                        const taskColumnWidth = taskHeader ? taskHeader.getBoundingClientRect().width : 200;
-                        
-                        // 現在の週内での日の位置を計算（0-6の範囲）
-                        const dayOfWeek = getCurrentDayOfWeek();
-                        
-                        // ガントチャートコンテナの左端からの距離を考慮
-                        const containerRect = ganttContainer.getBoundingClientRect();
-                        const timelineOffsetLeft = timeline.getBoundingClientRect().left - containerRect.left;
-                        
-                        // 現在の週の開始位置を計算（タイムラインの左端からの相対位置）
-                        const weekStartOffset = (currentWeek - 1) * cellWidth;
-                        
-                        // 週内での日の位置を計算
-                        const dayOffset = (dayOfWeek / 7) * cellWidth;
-                        
-                        // 最終的な位置（タスク名列の幅を加算）
-                        const finalPosition = taskColumnWidth + weekStartOffset + dayOffset;
-                        
-                        // タイムライン全体の幅に対する相対位置で計算
-                        const timelineWidth = timelineRect.width;
-                        const relativePosition = (finalPosition / timelineWidth) * 100;
-                        
-                        indicator.style.left = `${finalPosition}px`;
-                        indicator.style.display = 'block';
-                        
-                        // 現在の日付をラベルに表示
-                        const label = indicator.querySelector('.current-date-label');
-                        if (label) {
-                            label.textContent = `今日 (${formatDateShort(today)})`;
-                        }
-                        
-                        console.log(`[${projectType}] 今日の位置更新:`, {
-                            週: currentWeek,
-                            日: dayOfWeek,
-                            タスク列幅: taskColumnWidth,
-                            セル幅: cellWidth,
-                            週開始オフセット: weekStartOffset,
-                            日オフセット: dayOffset,
-                            最終位置: `${finalPosition.toFixed(2)}px`,
-                            相対位置: `${relativePosition.toFixed(2)}%`,
-                            タイムライン幅: timelineWidth,
-                            コンテナ左端: containerRect.left,
-                            タイムライン左端: timeline.getBoundingClientRect().left,
-                            タイムラインオフセット: timelineOffsetLeft
-                        });
-                    }
-                }
-            } else {
-                indicator.style.display = 'none';
-            }
-        }
-    });
-}
-
-// 現在の週の何日目かを取得する関数
-function getCurrentDayOfWeek() {
-    const today = new Date();
-    const currentWeekStart = getWeekStartDate(getCurrentWeek());
-    const diffTime = today.getTime() - currentWeekStart.getTime();
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    return Math.max(0, Math.min(6, diffDays)); // 0-6の範囲内
-}
-
-// ガントチャートの初期化
-function initializeGanttCharts() {
-    generateGanttChart('boxing');
-    generateGanttChart('architecture');
-    
-    // 初期表示時に現在日付インジケーターを設定
-    // DOM要素が完全に描画された後に実行するため遅延を追加
-    setTimeout(() => {
-        updateCurrentDateIndicator();
-    }, 1000);
-    
-    // リアルタイム更新のため、1分ごとに現在日付を更新
-    setInterval(() => {
-        updateCurrentDateIndicator();
-    }, 60000); // 1分ごと
+// Progress Dashboardの初期化
+function initializeProgressDashboards() {
+    generateProgressDashboard('boxing');
+    generateProgressDashboard('architecture');
     
     // リサイズ時の再生成を制御（デバウンス処理）
     let resizeTimeout;
@@ -222,13 +121,10 @@ function initializeGanttCharts() {
             // 画面幅が768pxを境界にクロスした場合のみ再生成
             if ((lastWidth <= 768 && currentWidth > 768) || 
                 (lastWidth > 768 && currentWidth <= 768)) {
-                generateGanttChart('boxing');
-                generateGanttChart('architecture');
+                generateProgressDashboard('boxing');
+                generateProgressDashboard('architecture');
                 lastWidth = currentWidth;
             }
-            
-            // 位置調整は常に実行
-            updateCurrentDateIndicator();
         }, 250); // 250ms のデバウンス
     });
     
@@ -245,7 +141,7 @@ function initializeGanttCharts() {
         document.body.classList.add('scrolling');
         clearTimeout(scrollTimeout);
         
-        // スクロール終了後1秒後にフラグをリセット（従来の0.5秒から延長）
+        // スクロール終了後1秒後にフラグをリセット
         scrollTimeout = setTimeout(() => {
             isScrolling = false;
             document.body.classList.remove('scrolling');
@@ -272,55 +168,27 @@ function initializeGanttCharts() {
     // スクロール状態をグローバルで参照可能にする
     window.isScrolling = () => isScrolling;
     
-    console.log(`ガントチャートが初期化されました。プロジェクト開始日: ${formatDate(PROJECT_START_DATE)}`);
+    console.log(`Progress Dashboardが初期化されました。プロジェクト開始日: ${formatDate(PROJECT_START_DATE)}`);
 }
 
-// ガントチャートを生成
-function generateGanttChart(projectType) {
-    const container = document.getElementById(`${projectType}GanttChart`);
+// Progress Dashboardを生成
+function generateProgressDashboard(projectType) {
+    const container = document.getElementById(`${projectType}ProgressDashboard`);
     if (!container) return;
 
     const tasks = getProjectTasks(projectType);
     
-    // 既存のアニメーション状態をチェック
-    const existingBars = container.querySelectorAll('.gantt-bar');
-    const hasAnimatedBars = existingBars.length > 0 && 
-                           Array.from(existingBars).some(bar => bar.classList.contains('animated'));
+    // Progress Dashboard HTMLを生成
+    const dashboardHTML = createProgressDashboardHTML(tasks, projectType);
     
-    // スクロール中はアニメーションを完全にスキップ
-    const isCurrentlyScrolling = typeof window.isScrolling === 'function' && window.isScrolling();
-    
-    const ganttHTML = createGanttHTML(tasks, projectType);
-    
-    // ガントチャートを設定
+    // Progress Dashboardを設定
     container.innerHTML = '';
-    container.insertAdjacentHTML('beforeend', ganttHTML);
+    container.insertAdjacentHTML('beforeend', dashboardHTML);
     
-    // アニメーション実行条件を厳格化
-    if (!hasAnimatedBars && !isCurrentlyScrolling) {
-        setTimeout(() => {
-            // アニメーション実行前に再度スクロール状態をチェック
-            if (typeof window.isScrolling === 'function' && !window.isScrolling()) {
-                animateGanttBars(projectType);
-            } else {
-                // スクロール中の場合は即座に表示状態にする
-                const bars = container.querySelectorAll('.gantt-bar');
-                bars.forEach(bar => {
-                    bar.style.opacity = '1';
-                    bar.style.transform = 'scale(1)';
-                    bar.classList.add('animated');
-                });
-            }
-        }, 100);
-    } else {
-        // 既に表示済みまたはスクロール中の場合は即座に可視状態にする
-        const bars = container.querySelectorAll('.gantt-bar');
-        bars.forEach(bar => {
-            bar.style.opacity = '1';
-            bar.style.transform = 'scale(1)';
-            bar.classList.add('animated');
-        });
-    }
+    // プログレス円とバーのアニメーション開始
+    setTimeout(() => {
+        animateProgressElements(projectType);
+    }, 100);
 }
 
 // プロジェクトタスクデータを取得
@@ -373,177 +241,205 @@ function getProjectTasks(projectType) {
     return tasks;
 }
 
-// ガントチャートHTMLを作成
-function createGanttHTML(tasks, projectType) {
-    const currentWeek = getCurrentWeek();
+// Progress Dashboard HTMLを作成
+function createProgressDashboardHTML(tasks, projectType) {
+    // 総合進捗を計算
+    const totalProgress = calculateOverallProgress(tasks);
     
-    // 実際の日付を生成（12週間分）
-    const weeks = [];
-    for (let i = 1; i <= 12; i++) {
-        const weekStartDate = getWeekStartDate(i);
-        const weekEndDate = new Date(weekStartDate);
-        weekEndDate.setDate(weekEndDate.getDate() + 6);
-        
-        weeks.push({
-            number: i,
-            displayText: `${i}週`,
-            dateRange: `${formatDateShort(weekStartDate)}-${formatDateShort(weekEndDate)}`,
-            startDate: weekStartDate
-        });
-    }
+    let html = '';
     
-    let html = `
-        <div class="gantt-timeline">
-            <div class="gantt-header">
-                <div class="gantt-tasks-header">タスク</div>
-                <div class="gantt-dates-header">
-                    ${weeks.map(week => `
-                        <div class="gantt-date-cell" title="${week.dateRange}">
-                            <div class="week-number">${week.displayText}</div>
-                            <div class="week-dates">${week.dateRange}</div>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-    `;
-    
+    // 各タスクのプログレスカードを生成
     tasks.forEach((task, index) => {
+        const progress = getTaskProgress(task);
+        const statusBadge = getStatusBadge(task.status);
+        const progressBarClass = getProgressBarClass(task.status);
+        
         html += `
-            <div class="gantt-row">
-                <div class="gantt-task-name">${task.name}</div>
-                <div class="gantt-task-timeline" id="gantt-timeline-${projectType}-${index}">
-                    ${weeks.map((week, weekIndex) => {
-                        const weekNum = week.number;
-                        const isTaskWeek = weekNum >= task.startWeek && weekNum < task.startWeek + task.duration;
+            <div class="progress-card" data-status="${task.status}" style="animation-delay: ${index * 0.1}s;">
+                <div class="progress-card-header">
+                    <h4>${task.name}</h4>
+                    ${statusBadge}
+                </div>
+                
+                <div class="progress-info">
+                    <div class="progress-details">
+                        <div class="detail-item">
+                            <span class="detail-label">期間:</span>
+                            <span class="detail-value">${task.duration}週間</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">開始週:</span>
+                            <span class="detail-value">${task.startWeek}週目</span>
+                        </div>
+                        ${task.dependency ? `
+                        <div class="detail-item">
+                            <span class="detail-label">依存:</span>
+                            <span class="detail-value">${task.dependency}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="progress-visual">
+                        <div class="progress-circle-small">
+                            <svg viewBox="0 0 36 36" class="circular-chart">
+                                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                <path class="circle progress-circle-${task.status}" 
+                                      stroke-dasharray="${progress}, 100" 
+                                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            </svg>
+                            <span class="progress-text-small">${progress}%</span>
+                        </div>
                         
-                        if (isTaskWeek) {
-                            const barClass = task.status === 'milestone' ? 'milestone' : task.status;
-                            const progress = task.status === 'in-progress' ? '60%' : '100%';
-                            const statusColor = getStatusColor(task.status);
-                            const statusIcon = getStatusIcon(task.status);
-                            
-                            return `
-                                <div class="gantt-cell">
-                                    <div class="gantt-bar ${barClass}" 
-                                         data-task="${task.name}" 
-                                         style="animation-delay: ${index * 0.1}s; background-color: ${statusColor};">
-                                        ${statusIcon} ${task.name.substring(0, 6)}
-                                        <div class="gantt-task-details">
-                                            ${task.name}<br>
-                                            状況: ${getStatusText(task.status)}<br>
-                                            期間: ${task.duration}週間<br>
-                                            日程: ${week.dateRange}<br>
-                                            ${task.dependency ? `依存: ${task.dependency}` : ''}
-                                        </div>
-                                        ${task.status === 'in-progress' ? `<div class="gantt-progress-indicator" style="width: ${progress};"></div>` : ''}
-                                    </div>
-                                </div>
-                            `;
-                        } else {
-                            return '<div class="gantt-cell"></div>';
-                        }
-                    }).join('')}
+                        <div class="progress-bar-container">
+                            <div class="progress-bar ${progressBarClass}">
+                                <div class="progress-fill" style="width: 0%" data-target="${progress}%"></div>
+                                <div class="progress-shimmer"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         `;
     });
     
-    // 現在日付インジケーターを追加（タイムライン内に配置）
-    html += `
-        <div class="gantt-current-date-line" id="current-date-${projectType}">
-            <div class="current-date-marker">
-                <span class="current-date-label">今日</span>
-            </div>
-        </div>
-    `;
-    
-    html += '</div>';
     return html;
 }
 
-// ステータステキストを取得
-function getStatusText(status) {
-    switch(status) {
-        case 'completed': return '✅ 完了';
-        case 'in-progress': return '🔄 進行中';
-        case 'ready': return '📋 開始可能';
-        case 'waiting': return '⏳ 待機中';
-        case 'blocked': return '🚫 ブロック中';
-        case 'milestone': return '🎯 マイルストーン';
-        default: return '❓ 未定';
+// タスクの進捗率を計算
+function getTaskProgress(task) {
+    switch(task.status) {
+        case 'completed': return 100;
+        case 'in-progress': return 60;
+        case 'ready': return 10;
+        case 'waiting': return 5;
+        case 'blocked': return 0;
+        case 'milestone': return 100;
+        default: return 0;
     }
 }
 
-// ステータスの色を取得
-function getStatusColor(status) {
+// 総合進捗を計算
+function calculateOverallProgress(tasks) {
+    if (!tasks || tasks.length === 0) return 0;
+    
+    const totalProgress = tasks.reduce((sum, task) => {
+        return sum + getTaskProgress(task);
+    }, 0);
+    
+    return Math.round(totalProgress / tasks.length);
+}
+
+// ステータスバッジを取得
+function getStatusBadge(status) {
+    const statusConfig = {
+        'completed': { text: '完了', class: 'completed', icon: 'fa-check-circle' },
+        'in-progress': { text: '進行中', class: 'in-progress', icon: 'fa-clock' },
+        'ready': { text: '開始可能', class: 'ready', icon: 'fa-play-circle' },
+        'waiting': { text: '待機中', class: 'pending', icon: 'fa-pause-circle' },
+        'blocked': { text: 'ブロック中', class: 'pending', icon: 'fa-ban' },
+        'milestone': { text: 'マイルストーン', class: 'completed', icon: 'fa-flag' }
+    };
+    
+    const config = statusConfig[status] || { text: '未定', class: 'pending', icon: 'fa-question-circle' };
+    
+    return `
+        <div class="status-badge ${config.class}">
+            <i class="fas ${config.icon}"></i>
+            <span>${config.text}</span>
+        </div>
+    `;
+}
+
+// プログレスバーのクラスを取得
+function getProgressBarClass(status) {
     switch(status) {
-        case 'completed': return '#28a745'; // 緑色 - 完了
-        case 'in-progress': return '#ffc107'; // 黄色 - 進行中
-        case 'ready': return '#17a2b8'; // 青色 - 開始可能
-        case 'waiting': return '#fd7e14'; // オレンジ色 - 待機中
-        case 'blocked': return '#6c757d'; // グレー色 - ブロック中
-        case 'milestone': return '#dc3545'; // 赤色 - マイルストーン
-        default: return '#e9ecef'; // 薄いグレー - 未定
+        case 'completed': return 'completed';
+        case 'in-progress': return 'in-progress';
+        case 'ready': return 'ready';
+        case 'waiting': return 'pending';
+        case 'blocked': return 'pending';
+        case 'milestone': return 'completed';
+        default: return 'pending';
     }
 }
 
-// ステータスアイコンを取得
-function getStatusIcon(status) {
-    switch(status) {
-        case 'completed': return '✅';
-        case 'in-progress': return '🔄';
-        case 'ready': return '📋';
-        case 'waiting': return '⏳';
-        case 'blocked': return '🚫';
-        case 'milestone': return '🎯';
-        default: return '❓';
-    }
-}
-
-// ガントチャートバーのアニメーション
-function animateGanttBars(projectType) {
-    const container = document.getElementById(`${projectType}GanttChart`);
+// Progress Dashboardのアニメーション
+function animateProgressElements(projectType) {
+    const container = document.getElementById(`${projectType}ProgressDashboard`);
     if (!container) return;
     
     // スクロール中は完全にアニメーションをスキップ
     if (typeof window.isScrolling === 'function' && window.isScrolling()) {
-        console.log('スクロール中のため、アニメーションをスキップします');
-        const bars = container.querySelectorAll('.gantt-bar');
-        bars.forEach(bar => {
-            bar.style.opacity = '1';
-            bar.style.transform = 'scale(1)';
-            bar.classList.add('animated');
+        console.log('スクロール中のため、プログレスアニメーションをスキップします');
+        const cards = container.querySelectorAll('.progress-card');
+        const progressFills = container.querySelectorAll('.progress-fill');
+        const circles = container.querySelectorAll('.circle');
+        
+        cards.forEach(card => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
         });
+        
+        progressFills.forEach(fill => {
+            const target = fill.getAttribute('data-target');
+            fill.style.width = target;
+        });
+        
+        circles.forEach(circle => {
+            const dashArray = circle.getAttribute('stroke-dasharray');
+            if (dashArray) {
+                circle.style.strokeDasharray = dashArray;
+            }
+        });
+        
         return;
     }
     
-    const bars = container.querySelectorAll('.gantt-bar');
-    bars.forEach((bar, index) => {
-        // 既にアニメーション済みの場合はスキップ
-        if (bar.classList.contains('animated')) {
-            return;
-        }
-        
+    // プログレスカードのフェードインアニメーション
+    const cards = container.querySelectorAll('.progress-card');
+    cards.forEach((card, index) => {
         setTimeout(() => {
-            // アニメーション実行前に再度スクロール状態を厳格にチェック
-            if (typeof window.isScrolling === 'function' && window.isScrolling()) {
-                // スクロール中の場合は即座に表示状態にする
-                bar.style.opacity = '1';
-                bar.style.transform = 'scale(1)';
-                bar.classList.add('animated');
-                return;
-            }
-            
-            // アニメーション終了後の状態をマーク
-            bar.style.opacity = '1';
-            bar.style.transform = 'scale(1)';
-            bar.classList.add('animated'); // アニメーション済みマーク
-            
-            console.log(`[${projectType}] バー ${index + 1} アニメーション完了`);
-        }, index * 100);
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 150);
     });
     
-    console.log(`[${projectType}] ガントチャートアニメーション開始: ${bars.length}個のバー`);
+    // プログレスバーのアニメーション
+    const progressFills = container.querySelectorAll('.progress-fill');
+    progressFills.forEach((fill, index) => {
+        setTimeout(() => {
+            const target = fill.getAttribute('data-target');
+            fill.style.width = target;
+        }, (index * 150) + 300);
+    });
+    
+    // 円形プログレスのアニメーション
+    const circles = container.querySelectorAll('.circle');
+    circles.forEach((circle, index) => {
+        setTimeout(() => {
+            const dashArray = circle.getAttribute('stroke-dasharray');
+            if (dashArray) {
+                circle.style.strokeDasharray = dashArray;
+            }
+        }, (index * 150) + 500);
+    });
+    
+    console.log(`[${projectType}] Progress Dashboard アニメーション開始: ${cards.length}個のカード`);
+}
+
+// 総合進捗円の更新
+function updateOverallProgress(projectType) {
+    const tasks = getProjectTasks(projectType);
+    const overallProgress = calculateOverallProgress(tasks);
+    
+    // 総合進捗円を更新
+    const overallCircle = document.querySelector(`#${projectType}-project .overall-progress-circle .circle`);
+    const overallText = document.querySelector(`#${projectType}-project .overall-progress-circle .progress-text`);
+    
+    if (overallCircle && overallText) {
+        overallCircle.style.strokeDasharray = `${overallProgress}, 100`;
+        overallText.textContent = `${overallProgress}%`;
+    }
 }
 
 // =================
@@ -576,15 +472,24 @@ function initializeTabs() {
 
 // プログレスサークルの更新
 function updateProgressCircles() {
+    // Progress Dashboard の総合進捗を更新
+    updateOverallProgress('boxing');
+    updateOverallProgress('architecture');
+    
+    // 既存のカード内プログレス円（もし存在する場合）
     const boxingProgress = document.querySelector('#boxing-project .progress-circle');
     const architectureProgress = document.querySelector('#architecture-project .progress-circle');
     
     if (boxingProgress) {
-        updateProgressCircle(boxingProgress, 10);
+        const boxingTasks = getProjectTasks('boxing');
+        const boxingOverallProgress = calculateOverallProgress(boxingTasks);
+        updateProgressCircle(boxingProgress, boxingOverallProgress);
     }
     
     if (architectureProgress) {
-        updateProgressCircle(architectureProgress, 20);
+        const architectureTasks = getProjectTasks('architecture');
+        const architectureOverallProgress = calculateOverallProgress(architectureTasks);
+        updateProgressCircle(architectureProgress, architectureOverallProgress);
     }
 }
 
@@ -600,7 +505,7 @@ function updateProgressCircle(circle, percentage) {
 
 // ツールチップの初期化
 function initializeTooltips() {
-    // ガントチャートのツールチップは CSS で実装済み
+    // Progress Dashboardのツールチップは CSS で実装済み
     console.log('ツールチップ機能を初期化しました');
 }
 
