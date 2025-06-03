@@ -147,12 +147,13 @@ body {
     display: flex;
     max-width: 1200px;
     margin: 0 auto;
+    justify-content: space-between;
 }
 
 .tab-button {
     background: none;
     border: none;
-    padding: 1rem 2rem;
+    padding: 1rem 1rem;
     cursor: pointer;
     font-size: 1rem;
     color: var(--color-dark);
