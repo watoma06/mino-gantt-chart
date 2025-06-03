@@ -286,7 +286,6 @@ body {
 }
 
 /* 進捗詳細 */
-/* .progress-details and its children are removed as they are part of the old UI */
 
 .task-list {
     display: flex;
