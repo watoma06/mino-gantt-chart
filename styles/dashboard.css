@@ -231,8 +231,6 @@ body {
     margin-bottom: 1rem;
 }
 
-/* .progress-card .card-icon is removed as .progress-card itself is part of the old UI */
-
 .next-action-card .card-icon {
     color: var(--color-accent);
 }
@@ -289,7 +287,6 @@ body {
 }
 
 /* 進捗詳細 */
-/* .progress-details and its children are removed as they are part of the old UI */
 
 .task-list {
     display: flex;
@@ -789,7 +786,6 @@ body {
     gap: 0.2rem;
   }
 }
-
 .kanban-board {
   display: flex;
   gap: 1.5rem;
