@@ -238,7 +238,8 @@ function renderKanbanBoard(projectType) {
   const completedList = document.getElementById(`${projectType}-completed-list`);
   
   if (!todoList || !inprogressList || !completedList) {
-    throw new Error(`プロジェクト${projectType}に必要な Kanban DOM 要素が見つかりません。'${projectType}-todo-list'、'${projectType}-inprogress-list'、および '${projectType}-completed-list' などの要素が存在することを確認してください。`);
+    // console.error(`Kanban要素が見つかりません: ${projectType}`); // Removed
+    return; // Silently return if elements aren't found, error will be caught by initializeKanbanBoards
   }
   
   todoList.innerHTML = '';
