@@ -534,15 +534,24 @@ function closeModal(modalId) {
 // カンバンボード描画ロジック
 // =================
 function renderKanbanBoard(projectType) {
+  console.log(`Kanbanボード描画中: ${projectType}`);
   const tasks = getProjectTasks(projectType);
+  console.log(`タスク数: ${tasks.length}`, tasks);
+  
   // ステータスごとに分類
   const todoList = document.getElementById(`${projectType}-todo-list`);
   const inprogressList = document.getElementById(`${projectType}-inprogress-list`);
   const completedList = document.getElementById(`${projectType}-completed-list`);
-  if (!todoList || !inprogressList || !completedList) return;
+  
+  if (!todoList || !inprogressList || !completedList) {
+    console.error(`Kanban要素が見つかりません: ${projectType}`);
+    return;
+  }
+  
   todoList.innerHTML = '';
   inprogressList.innerHTML = '';
   completedList.innerHTML = '';
+  
   tasks.forEach(task => {
     const card = document.createElement('div');
     card.className = 'kanban-card ' + (task.status === 'completed' ? 'completed' : task.status === 'in-progress' ? 'in-progress' : 'todo');
@@ -563,6 +572,8 @@ function renderKanbanBoard(projectType) {
       todoList.appendChild(card);
     }
   });
+  
+  console.log(`${projectType} Kanbanボード描画完了`);
 }
 
 function getStatusBadgeText(status) {
@@ -579,6 +590,8 @@ function getStatusBadgeText(status) {
 
 // 初期化時にカンバン描画
 function initializeKanbanBoards() {
+  console.log('Kanbanボードを初期化中...');
   renderKanbanBoard('boxing');
   renderKanbanBoard('architecture');
+  console.log('Kanbanボードの初期化完了');
 }
