@@ -286,6 +286,28 @@ body {
     z-index: 1;
 }
 
+/* 円形プログレス（SVG） */
+.circular-chart {
+  width: 60px;
+  height: 60px;
+  display: block;
+  margin: 0 auto;
+}
+
+.circle-bg {
+  fill: none;
+  stroke: #e1e5e9;
+  stroke-width: 3.5;
+}
+
+.circle {
+  fill: none;
+  stroke: #4caf50; /* 進捗色。必要に応じてステータスで色分け */
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  transition: stroke-dasharray 1.2s cubic-bezier(0.4,0,0.2,1);
+}
+
 /* アクションアイテム */
 .action-item, .milestone-item {
     background: var(--color-bg);
