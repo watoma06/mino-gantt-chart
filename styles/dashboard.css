@@ -617,12 +617,13 @@ body {
 .kanban-board {
   display: flex;
   gap: 1.5rem;
-  overflow-x: visible; /* スクロールを無効化 */
+  overflow-x: visible;
   padding-bottom: 1.5rem;
+  margin-top: 0.5rem;
   width: 100%;
   box-sizing: border-box;
   scroll-snap-type: none;
-  flex-wrap: wrap; /* 折り返しで全カラム表示 */
+  flex-wrap: wrap;
   justify-content: space-between;
 }
 .kanban-column {
