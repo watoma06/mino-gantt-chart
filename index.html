@@ -45,18 +45,6 @@
                 <div class="project-overview">
                     <h2>みのボクシングジム プロジェクト概要</h2>
                     <div class="overview-cards">
-                        <div class="card progress-card">
-                            <div class="card-icon">
-                                <i class="fas fa-chart-pie"></i>
-                            </div>
-                            <div class="card-content">
-                                <h3>全体進捗</h3>
-                                <div class="progress-circle">
-                                    <span class="progress-text">10%</span>
-                                </div>
-                                <p>ヒヤリングシート待ち</p>
-                            </div>
-                        </div>
                         
                         <div class="card next-action-card">
                             <div class="card-icon">
@@ -86,68 +74,10 @@
                     </div>
                 </div>
 
-                <!-- プログレスダッシュボード -->
-                <div class="progress-dashboard-section">
-                    <h3>
-                        <i class="fas fa-chart-bar"></i>
-                        制作進捗ダッシュボード
-                    </h3>
-                    
-                    <!-- 全体進捗 -->
-                    <div class="overall-progress-card">
-                        <h4><i class="fas fa-chart-pie"></i> 全体進捗</h4>
-                        <div class="overall-progress-percentage" id="boxingOverallProgress">10%</div>
-                        <div class="overall-progress-bar">
-                            <div class="overall-progress-fill" id="boxingOverallBar" style="width: 10%;"></div>
-                        </div>
-                        <p>プロジェクト開始: 2025年6月1日 | 予定完了: 2025年8月31日</p>
-                    </div>
-                    
-                    <!-- プログレス詳細 -->
-                    <div class="progress-dashboard" id="boxingProgressDashboard">
-                        <!-- プログレスカードがここに動的に生成されます -->
-                    </div>
-                </div>
-
-                <!-- 進捗詳細 -->
-                <div class="progress-details">
-                    <h3>進捗詳細</h3>
-                    <div class="task-list">
-                        <div class="task-item pending">
-                            <div class="task-status">
-                                <i class="fas fa-hourglass-start"></i>
-                            </div>
-                            <div class="task-info">
-                                <h4>初回ヒヤリングシート提出</h4>
-                                <p>状況: クライアント側で準備中</p>
-                            </div>
-                        </div>
-                        
-                        <div class="task-item pending">
-                            <div class="task-status">
-                                <i class="fas fa-hourglass-start"></i>
-                            </div>
-                            <div class="task-info">
-                                <h4>打ち合わせ日程調整</h4>
-                                <p>開始予定: ヒヤリングシート受領後</p>
-                            </div>
-                        </div>
-                        
-                        <div class="task-item pending">
-                            <div class="task-status">
-                                <i class="fas fa-hourglass-start"></i>
-                            </div>
-                            <div class="task-info">
-                                <h4>要件定義・設計</h4>
-                                <p>開始予定: 打ち合わせ後</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- =====================
                      カンバンボード（カードベース進捗管理）
                      ===================== -->
+                <h3><i class="fas fa-tasks"></i> タスク進捗カンバン</h3>
                 <div class="kanban-board" id="boxingKanbanBoard">
                     <div class="kanban-column" data-status="todo">
                         <div class="kanban-column-header"><i class="fas fa-list"></i> ToDo</div>
@@ -169,18 +99,6 @@
                 <div class="project-overview">
                     <h2>みの建築 プロジェクト概要</h2>
                     <div class="overview-cards">
-                        <div class="card progress-card">
-                            <div class="card-icon">
-                                <i class="fas fa-chart-pie"></i>
-                            </div>
-                            <div class="card-content">
-                                <h3>全体進捗</h3>
-                                <div class="progress-circle">
-                                    <span class="progress-text">20%</span>
-                                </div>
-                                <p>ヒヤリング済み</p>
-                            </div>
-                        </div>
                         
                         <div class="card next-action-card">
                             <div class="card-icon">
@@ -210,72 +128,10 @@
                     </div>
                 </div>
 
-                <!-- Progress Dashboard -->
-                <div class="progress-dashboard-section">
-                    <h3>
-                        <i class="fas fa-chart-bar"></i>
-                        制作工程プログレスダッシュボード
-                    </h3>
-                    
-                    <!-- Overall Progress -->
-                    <div class="overall-progress-card">
-                        <div class="overall-progress-content">
-                            <h4>総合進捗</h4>
-                            <div class="overall-progress-circle">
-                                <svg viewBox="0 0 36 36" class="circular-chart">
-                                    <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                                    <path class="circle" stroke-dasharray="20, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                                </svg>
-                                <span class="progress-text">20%</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Progress Cards Container -->
-                    <div class="progress-cards-container" id="architectureProgressDashboard">
-                        <!-- プログレスカードが動的に生成されます -->
-                    </div>
-                </div>
-
-                <!-- 進捗詳細 -->
-                <div class="progress-details">
-                    <h3>進捗詳細</h3>
-                    <div class="task-list">
-                        <div class="task-item completed">
-                            <div class="task-status">
-                                <i class="fas fa-check-circle"></i>
-                            </div>
-                            <div class="task-info">
-                                <h4>初回ヒヤリングシート受け取り</h4>
-                                <p>完了日: 6月1日 | 担当者内容把握済み</p>
-                            </div>
-                        </div>
-                        
-                        <div class="task-item in-progress">
-                            <div class="task-status">
-                                <i class="fas fa-clock"></i>
-                            </div>
-                            <div class="task-info">
-                                <h4>提案書・見積書作成</h4>
-                                <p>進捗: 30% | 予算感・機能要件確認済み</p>
-                            </div>
-                        </div>
-                        
-                        <div class="task-item pending">
-                            <div class="task-status">
-                                <i class="fas fa-hourglass-start"></i>
-                            </div>
-                            <div class="task-info">
-                                <h4>打ち合わせ日程調整</h4>
-                                <p>状況: みのボクシングジムと合わせて調整中</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- =====================
                      カンバンボード（カードベース進捗管理）
                      ===================== -->
+                <h3><i class="fas fa-tasks"></i> タスク進捗カンバン</h3>
                 <div class="kanban-board" id="architectureKanbanBoard" style="margin-top:2rem;">
                     <div class="kanban-column" data-status="todo">
                         <div class="kanban-column-header"><i class="fas fa-list"></i> ToDo</div>
