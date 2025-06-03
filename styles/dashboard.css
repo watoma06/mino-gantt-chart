@@ -691,6 +691,9 @@ body {
   gap: 1.5rem;
   overflow-x: auto;
   padding-bottom: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  scroll-snap-type: x mandatory;
 }
 .kanban-column {
   background: var(--color-bg);
@@ -701,6 +704,7 @@ body {
   display: flex;
   flex-direction: column;
   max-width: 350px;
+  scroll-snap-align: start;
 }
 .kanban-column-header {
   padding: 1rem;
@@ -771,16 +775,49 @@ body {
   border: 2px dashed var(--color-primary);
 }
 
-/* スマホ対応 */
+/* スクロールバーのカスタマイズ（横スクロールを目立たせる） */
+.kanban-board::-webkit-scrollbar {
+  height: 10px;
+}
+.kanban-board::-webkit-scrollbar-thumb {
+  background: #e1e5e9;
+  border-radius: 6px;
+}
+.kanban-board::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* スマホ・タブレット対応 */
 @media (max-width: 900px) {
   .kanban-board {
-    flex-direction: column;
+    flex-direction: row;
     gap: 1rem;
-    overflow-x: visible;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding-bottom: 1.5rem;
+    min-width: 100vw;
   }
   .kanban-column {
-    max-width: 100%;
-    min-width: 0;
+    min-width: 80vw;
+    max-width: 90vw;
+    margin-right: 1rem;
+  }
+}
+@media (max-width: 600px) {
+  .kanban-board {
+    gap: 0.5rem;
+    padding-bottom: 1rem;
+  }
+  .kanban-column {
+    min-width: 95vw;
+    max-width: 98vw;
+    margin-right: 0.5rem;
+  }
+  .kanban-task-list {
+    padding: 0.5rem;
+  }
+  .kanban-card {
+    padding: 0.7rem;
   }
 }
 
